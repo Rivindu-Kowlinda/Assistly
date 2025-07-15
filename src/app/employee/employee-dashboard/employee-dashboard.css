@@ -1,0 +1,32 @@
+/* reset default padding on mobile */
+:host ::ng-deep .p-progressbar {
+  height: 0.5rem;
+  background-color: #D8DADC;
+  padding-left: 0;
+}
+
+@media (min-width: 768px) {
+  /* once viewport ≥768px, apply 270px left padding */
+  :host ::ng-deep .p-progressbar {
+    padding-left: 260px;
+  }
+  #mainPage{
+    padding: 30px;
+    margin-left: 200px;
+    margin-top: 20px;
+    background-color: white;
+    max-width: 88%;
+    border-radius: 5px;
+  }
+
+}
+
+/* bar fill color remains the same */
+:host ::ng-deep .p-progressbar .p-progressbar-value {
+  background-color: #607D8B;
+}
+th,td {
+  max-width: 285px;
+}
+
+

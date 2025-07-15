@@ -1,0 +1,21 @@
+<div class="login-container">
+  <div class="login-left">
+    <div class="branding">
+      <h1>Assistly</h1>
+    </div>
+    <h2>Login into<br />your account</h2>
+  </div>
+
+  <div class="login-right">
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="name@example.com" />
+
+      <label>Password</label>
+      <input type="password" formControlName="password" placeholder="Your password" />
+
+
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    </form>
+  </div>
+</div>

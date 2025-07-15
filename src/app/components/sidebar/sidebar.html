@@ -1,0 +1,42 @@
+<div class="navbar" [class.open]="isOpen">
+  <button
+    class="toggle-button"
+    *ngIf="isMobile"
+    (click)="toggleNavbar()"
+    aria-label="Toggle navigation"
+  >
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+
+  <nav>
+    <ul class="nav-list">
+      <li>
+        <a href="#" (click)="navigateTo('/login'); $event.preventDefault()"
+           [class.active]="router.url === '/login'">
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="#" (click)="navigateTo('/request-help'); $event.preventDefault()"
+           [class.active]="router.url === '/request-help'">
+          Request Help
+        </a>
+      </li>
+      <li>
+        <a href="#" (click)="navigateTo('/send-help'); $event.preventDefault()"
+           [class.active]="router.url === '/send-help'">
+          Send Help
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="profile">
+    <a href="#" (click)="navigateTo('/profile'); $event.preventDefault()"
+       [class.active]="router.url === '/profile'">
+      Profile
+    </a>
+  </div>
+</div>
