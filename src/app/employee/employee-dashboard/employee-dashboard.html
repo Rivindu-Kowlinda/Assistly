@@ -4,11 +4,11 @@
   <div class="main-wrapper">
     <router-outlet></router-outlet>
     <div id="mainPage">
-      <div class="card mb-4">
+      <div class="chart">
         <chart-line></chart-line>
       </div>
     <br>
-      <div class="card">
+      <div class="historyCard">
         <p-table
           #dt2
           [value]="requests"
@@ -129,9 +129,14 @@
           </ng-template>
         </p-table>
       </div>
-      <div class = "dialDiv">
-        <dial [segments]="[25, 40, 35]" [labels]="['Done','InWork','Left']"></dial>
-      </div>  
+      <div class="cards-container">
+        <div class="leaderboardCard">
+          <leaderboard></leaderboard>
+        </div>
+        <div class="dialDiv">
+          <dial [segments]="[25, 40, 35]" [labels]="['Done','InWork','Left']"></dial>
+        </div>
+      </div>
     </div>
   </div>
 </div>

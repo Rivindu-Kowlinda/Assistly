@@ -1,0 +1,54 @@
+<div class="card">
+    <div class="toolbar" style="margin-bottom:1rem;">
+      <select
+        [(ngModel)]="selectedSort"
+        style="width: 12rem; padding: 0.5rem; font-size: 1rem;"
+      >
+        <option *ngFor="let opt of sortOptions" [value]="opt.value">
+          {{ opt.label }}
+        </option>
+      </select>
+    </div>
+  
+    <p-table
+      #tbl
+      [value]="helpers"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      [sortField]="selectedSort"
+      [sortOrder]="-1"
+      [paginator]="true"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width:60px">#</th>
+          <th pSortableColumn="username">
+            Username <p-sortIcon field="username"></p-sortIcon>
+          </th>
+          <th pSortableColumn="points">
+            Points <p-sortIcon field="points"></p-sortIcon>
+          </th>
+          <th pSortableColumn="acceptedRequests">
+            Accepted Requests <p-sortIcon field="acceptedRequests"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+  
+      <ng-template pTemplate="body" let-helper let-i="rowIndex">
+        <tr>
+          <td>{{ tbl.first + i + 1 }}</td>
+          <td>{{ helper.username }}</td>
+          <td>{{ helper.points }}</td>
+          <td>{{ helper.acceptedRequests }}</td>
+        </tr>
+      </ng-template>
+  
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4">No helpers found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  

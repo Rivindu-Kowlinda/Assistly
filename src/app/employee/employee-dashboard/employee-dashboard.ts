@@ -12,6 +12,7 @@ import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 import { ChartLine } from '../../components/chart-line/chart-line';
 import { Dial } from '../../components/dial/dial';
+import { Leaderboard } from '../../components/leaderboard/leaderboard';
 
 export interface Request {
   id: number;
@@ -40,7 +41,8 @@ export interface Request {
     RouterOutlet,
     FormsModule,
     ChartLine,
-    Dial
+    Dial,
+    Leaderboard
 ]
 })
 export class EmployeeDashboard implements OnInit {
