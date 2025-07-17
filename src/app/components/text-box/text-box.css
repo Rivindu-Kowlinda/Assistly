@@ -1,0 +1,8 @@
+textarea {
+    resize: none;       /* no drag handles */
+    overflow: hidden;   /* hide scrollbars */
+    background-color: rgb(234, 234, 234);
+    width: 98%;
+    color: black;
+  }
+  

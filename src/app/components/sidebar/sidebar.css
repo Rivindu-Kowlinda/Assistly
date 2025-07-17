@@ -1,89 +1,153 @@
-/* container */
+:root {
+  --sidebar-width: 200px;
+  --sidebar-bg: #fff;
+  --sidebar-shadow: rgba(0, 0, 0, 0.05);
+  --link-color: #333;
+  --link-hover-bg: #f4f4f4;
+  --link-active-bg: #ff6a00;
+  --link-active-color: #fff;
+  --transition-speed: 0.25s;
+}
+
+/* ——— Sidebar Container ——— */
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 200px;
-  background: #ffffff;
-  border-right: 1px solid #e0e0e0;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  box-shadow: 2px 0 6px var(--sidebar-shadow);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1rem;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease;
+  padding: 2rem 1rem;
+  transition: transform var(--transition-speed) ease;
+  z-index: 1000;
 }
 
-/* closed state on mobile */
+/* off-canvas when closed on mobile */
 .navbar:not(.open) {
   transform: translateX(-100%);
 }
-
-/* nav links */
-.nav-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.nav-list li {
-  margin-bottom: 1rem;
-}
-.nav-list a {
-  text-decoration: none;
-  font-weight: 500;
-  color: #333;
-  display: block;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: background 0.2s;
-}
-.nav-list a.active,
-.nav-list a:hover {
-  background: #f0f0f0;
-}
-
-/* profile at bottom */
-.profile a {
-  text-decoration: none;
-  font-weight: 500;
-  color: #333;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  display: block;
-}
-.profile a.active,
-.profile a:hover {
-  background: #f0f0f0;
-}
-
-/* hamburger toggle button */
-.toggle-button {
-  position: absolute;
-  top: 1rem;
-  right: -3.5rem;
-  background: none;
-  border: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 2rem;
-  height: 1.5rem;
-  cursor: pointer;
-}
-.toggle-button .bar {
-  height: 3px;
-  width: 100%;
-  background-color: #333;
-  border-radius: 2px;
-}
-
-/* ensure always visible/open on desktop */
 @media (min-width: 769px) {
   .navbar {
     transform: translateX(0) !important;
   }
-  .toggle-button {
-    display: none;
+}
+
+/* ——— Navigation Links ——— */
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-list li + li {
+  margin-top: 0.5rem;
+}
+
+/* Base link style */
+.navbar .nav-list a {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--link-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition:
+    background var(--transition-speed) ease,
+    transform var(--transition-speed) ease,
+    color var(--transition-speed) ease;
+}
+
+/* Hover: light-gray bg + slight slide */
+.navbar .nav-list a:hover {
+  background-color: var(--link-hover-bg);
+  transform: translateX(5px);
+}
+
+/* Active: orange bg + white text, inset bar */
+.navbar .nav-list a.active {
+  background-color: var(--link-active-bg);
+  color: var(--link-active-color);
+  box-shadow: inset 4px 0 0 var(--link-active-bg);
+}
+
+/* ——— Profile Section ——— */
+.profile {
+  margin-top: auto;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+.profile a {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--link-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition:
+    background var(--transition-speed) ease,
+    color var(--transition-speed) ease;
+}
+.profile a:hover {
+  background-color: var(--link-hover-bg);
+  color: var(--link-color);
+}
+/* If you want the bottom link to stay highlighted when active: */
+.profile a.active {
+  background-color: var(--link-hover-bg);
+  color: var(--link-color);
+}
+
+/* ——— Hamburger Toggle ——— */
+.toggle-button {
+  position: absolute;
+  top: 1rem;
+  right: -3.5rem;
+  width: 2rem;
+  height: 2rem;
+  background: var(--sidebar-bg);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background var(--transition-speed) ease,
+    border-color var(--transition-speed) ease;
+  z-index: 1100;
+}
+.toggle-button:hover {
+  background: var(--link-hover-bg);
+  border-color: #ccc;
+}
+.toggle-button .bar {
+  width: 1rem;
+  height: 2px;
+  background: var(--link-color);
+  border-radius: 1px;
+  transition:
+    transform var(--transition-speed) ease,
+    opacity var(--transition-speed) ease;
+}
+.toggle-button.active .bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.toggle-button.active .bar:nth-child(2) {
+  opacity: 0;
+}
+.toggle-button.active .bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ——— Main Content Adjustment ——— */
+.dashboard-layout .main-wrapper {
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition-speed) ease;
+}
+@media (max-width: 768px) {
+  .dashboard-layout .main-wrapper {
+    margin-left: 0 !important;
+    padding: 1rem;
   }
 }

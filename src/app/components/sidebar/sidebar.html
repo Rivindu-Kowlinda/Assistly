@@ -13,14 +13,14 @@
   <nav>
     <ul class="nav-list">
       <li>
-        <a href="#" (click)="navigateTo('/login'); $event.preventDefault()"
-           [class.active]="router.url === '/login'">
+        <a href="#" (click)="navigateTo('/employeeDashboard'); $event.preventDefault()"
+           [class.active]="router.url === '/employeeDashboard'">
           Dashboard
         </a>
       </li>
       <li>
-        <a href="#" (click)="navigateTo('/request-help'); $event.preventDefault()"
-           [class.active]="router.url === '/request-help'">
+        <a href="#" (click)="navigateTo('/request'); $event.preventDefault()"
+           [class.active]="router.url === '/request'">
           Request Help
         </a>
       </li>
@@ -28,6 +28,10 @@
         <a href="#" (click)="navigateTo('/send-help'); $event.preventDefault()"
            [class.active]="router.url === '/send-help'">
           Send Help
+        </a>
+        <a href="#" (click)="navigateTo('/completed'); $event.preventDefault()"
+           [class.active]="router.url === '/completed'">
+          Request History
         </a>
       </li>
     </ul>

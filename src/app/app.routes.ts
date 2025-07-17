@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { EmployeeDashboard } from './employee/employee-dashboard/employee-dashboard';
 import { Login } from './login/login';
+import { Request } from './employee/request/request';
 import { Component } from '@angular/core';
 
 export const routes: Routes = [
@@ -12,5 +13,9 @@ export const routes: Routes = [
     {
         path:"employeeDashboard",
         component: EmployeeDashboard
+    },
+    {
+        path:"request",
+        component: Request
     }
 ];

@@ -519,35 +519,38 @@ th, td {
 /* new: side‑by‑side wrapper */
 .cards-container {
   display: flex;
+  flex-wrap: wrap;         /* allow items to wrap */
   gap: 20px;
-  align-items: stretch; /* forces equal height */
-  width: 100%;
+  align-items: stretch;    /* equal height rows */
   margin-top: 1rem;
 }
 
-/* tweak: leaderboard flexes to fill remaining space */
+/* Leaderboard: take up remaining space, but never shrink below 300px */
 .leaderboardCard {
   background-color: #fff;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0px 5px 5px #D8DADC;
-  flex: 1;
+  flex: 1 1 60%;           /* flex-grow, flex-shrink, flex-basis */
+  min-width: 300px;        /* stop shrinking too far */
   display: flex;
   flex-direction: column;
 }
 
-/* tweak: keep dial fixed width, center its contents */
+/* Dial: can shrink down to 200px, then wrap below leaderboard */
 .dialDiv {
   background-color: #fff;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0px 5px 5px #D8DADC;
-  flex: 0 0 300px;       /* fixed 300px width */
+  flex: 1 1 30%;           /* allow shrinking */
+  min-width: 200px;        /* smallest it goes */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 
 /* existing mobile stack behavior (you already had this) */
 @media (max-width: 768px) {
