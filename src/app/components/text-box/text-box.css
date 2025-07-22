@@ -1,8 +1,107 @@
-textarea {
-    resize: none;       /* no drag handles */
-    overflow: hidden;   /* hide scrollbars */
-    background-color: rgb(234, 234, 234);
-    width: 98%;
-    color: black;
+/* text-box.css */
+.text-box-container {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.toolbar {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+  border-radius: 6px 6px 0 0;
+}
+
+.rich-editor {
+  min-height: 120px;
+  max-height: 400px;
+  padding: 12px;
+  outline: none;
+  line-height: 1.5;
+  font-family: inherit;
+  font-size: 14px;
+  overflow-y: auto;
+  border-radius: 0 0 6px 6px;
+  resize: vertical;
+}
+
+.rich-editor:empty:before {
+  content: attr(placeholder);
+  color: #6c757d;
+  pointer-events: none;
+  font-style: italic;
+}
+
+.rich-editor[contenteditable="false"] {
+  cursor: default;
+  background-color: rgb(234,234,234) !important;
+  color: black !important;
+}
+
+.rich-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.rich-editor img:hover {
+  transform: scale(1.02);
+}
+
+.rich-editor[contenteditable="false"] img:hover {
+  transform: none;
+}
+
+.rich-editor p {
+  margin: 0 0 10px 0;
+}
+
+.rich-editor br {
+  margin: 5px 0;
+}
+
+/* Focus styles */
+.rich-editor:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6;
+}
+
+/* Disabled state */
+.text-box-container.disabled {
+  opacity: 0.7;
+}
+
+.text-box-container.disabled .toolbar {
+  display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 6px 8px;
   }
   
+  .rich-editor {
+    padding: 8px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Print styles */
+@media print {
+  .toolbar {
+    display: none;
+  }
+  
+  .rich-editor {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}

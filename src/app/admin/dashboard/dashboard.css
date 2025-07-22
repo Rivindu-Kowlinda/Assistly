@@ -1,0 +1,616 @@
+/* reset default padding on mobile */
+:host ::ng-deep .p-progressbar {
+    height: 0.5rem;
+    background-color: #D8DADC;
+    padding-left: 0;
+  }
+  
+  @media (min-width: 768px) {
+    /* once viewport ≥768px, apply 270px left padding */
+    :host ::ng-deep .p-progressbar {
+      padding-left: 260px;
+    }
+    #mainPage{
+      padding: 30px;
+      margin-left: 200px;
+      margin-top: 20px;
+      background-color: white;
+      max-width: 88%;
+      border-radius: 5px;
+    }
+  }
+  
+  /* bar fill color remains the same */
+  :host ::ng-deep .p-progressbar .p-progressbar-value {
+    background-color: #607D8B;
+  }
+  
+  th, td {
+    max-width: 285px;
+  }
+  
+  .chart {
+    box-shadow: 0px 5px 5px #D8DADC;
+    border-radius: 5px;
+    padding: 3px;
+  }
+  
+  /* History Card Container */
+  .historyCard {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 5px 5px #D8DADC;
+    overflow: visible;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Table Base Styling - Remove any black backgrounds */
+  .historyCard ::ng-deep .p-datatable {
+    background: #fff !important;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .historyCard ::ng-deep .p-datatable-wrapper {
+    background: #fff !important;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .historyCard ::ng-deep .p-datatable table {
+    background: #fff !important;
+    border-radius: 12px;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Fix table caption/search area - ensure white background */
+  .historyCard ::ng-deep .p-datatable-header {
+    background-color: #fff !important;
+    border: none !important;
+    padding: 1rem !important;
+    border-radius: 12px 12px 0 0 !important;
+  }
+  
+  /* Header Styling - Light grey background instead of black */
+  .historyCard ::ng-deep .p-datatable-thead > tr > th {
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 0.75rem !important;
+    font-weight: 600;
+  }
+  
+  /* Body Cell Styling */
+  .historyCard ::ng-deep .p-datatable-tbody > tr > td {
+    background-color: #fff !important;
+    color: #495057 !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 0.75rem !important;
+  }
+  
+  /* Row hover effect - light grey instead of black */
+  .historyCard ::ng-deep .p-datatable-tbody > tr:hover > td {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Corner Radius for Header */
+  .historyCard ::ng-deep .p-datatable-thead > tr:first-child > th:first-child {
+    border-top-left-radius: 12px !important;
+  }
+  
+  .historyCard ::ng-deep .p-datatable-thead > tr:first-child > th:last-child {
+    border-top-right-radius: 12px !important;
+  }
+  
+  /* Corner Radius for Last Row */
+  .historyCard ::ng-deep .p-datatable-tbody > tr:last-child > td:first-child {
+    border-bottom-left-radius: 12px !important;
+  }
+  
+  .historyCard ::ng-deep .p-datatable-tbody > tr:last-child > td:last-child {
+    border-bottom-right-radius: 12px !important;
+  }
+  
+  /* Input Fields Styling */
+  .historyCard ::ng-deep .p-inputtext,
+  .historyCard ::ng-deep .p-column-filter .p-inputtext {
+    background-color: #fff !important;
+    color: #495057 !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+  }
+  
+  .historyCard ::ng-deep .p-inputtext:focus {
+    border-color: #86b7fe !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+  }
+  
+  /* Icon field styling - ensure white background */
+  .historyCard ::ng-deep .p-iconfield {
+    background-color: transparent !important;
+  }
+  
+  .historyCard ::ng-deep .p-inputicon {
+    color: #6c757d !important;
+  }
+  
+  /* Dropdown Styling - Fix black backgrounds */
+  .historyCard ::ng-deep .p-dropdown {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    position: relative;
+  }
+  
+  .historyCard ::ng-deep .p-dropdown .p-dropdown-label {
+    color: #495057 !important;
+    background-color: #fff !important;
+  }
+  
+  .historyCard ::ng-deep .p-dropdown .p-dropdown-trigger {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  .historyCard ::ng-deep .p-dropdown-panel {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    z-index: 9999 !important;
+    position: absolute !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Dropdown items */
+  .historyCard ::ng-deep .p-dropdown-item {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  .historyCard ::ng-deep .p-dropdown-item:hover {
+    background-color: #f8f9fa !important;
+  }
+  
+  .historyCard ::ng-deep .p-dropdown-item.p-highlight {
+    background-color: #e7f3ff !important;
+    color: #495057 !important;
+  }
+  
+  /* Fix for status dropdown specifically */
+  .historyCard ::ng-deep .p-select {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+  }
+  
+  .historyCard ::ng-deep .p-select .p-select-label {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  .historyCard ::ng-deep .p-select .p-select-trigger {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  .historyCard ::ng-deep .p-select-panel {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+  }
+  
+  .historyCard ::ng-deep .p-select-item {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  .historyCard ::ng-deep .p-select-item:hover {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Fix paginator dropdown (rows per page) */
+  .historyCard ::ng-deep .p-paginator .p-dropdown {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+  }
+  
+  .historyCard ::ng-deep .p-paginator .p-dropdown .p-dropdown-label {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  .historyCard ::ng-deep .p-paginator .p-dropdown .p-dropdown-trigger {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  /* Specific fix for paginator dropdown */
+  .historyCard ::ng-deep .p-paginator .p-dropdown {
+    position: relative;
+  }
+  
+  .historyCard ::ng-deep .p-paginator .p-dropdown .p-dropdown-panel {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    margin-top: 2px !important;
+  }
+  
+  /* Status Tags - Keep Original Colors */
+  .historyCard ::ng-deep .p-tag {
+    /* Don't override tag colors - let them keep their original styling */
+  }
+  
+  /* Paginator Styling - ensure white background */
+  .historyCard ::ng-deep .p-paginator {
+    background-color: #fff !important;
+    border: none !important;
+    border-top: 1px solid #dee2e6 !important;
+    color: #495057 !important;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .historyCard ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+    background-color: transparent !important;
+    color: #495057 !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 4px !important;
+    margin: 0 2px !important;
+  }
+  
+  .historyCard ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+  }
+  
+  .historyCard ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:hover {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Paginator controls (first, prev, next, last) */
+  .historyCard ::ng-deep .p-paginator .p-paginator-first,
+  .historyCard ::ng-deep .p-paginator .p-paginator-prev,
+  .historyCard ::ng-deep .p-paginator .p-paginator-next,
+  .historyCard ::ng-deep .p-paginator .p-paginator-last {
+    background-color: transparent !important;
+    color: #495057 !important;
+    border: 1px solid #dee2e6 !important;
+  }
+  
+  .historyCard ::ng-deep .p-paginator .p-paginator-first:hover,
+  .historyCard ::ng-deep .p-paginator .p-paginator-prev:hover,
+  .historyCard ::ng-deep .p-paginator .p-paginator-next:hover,
+  .historyCard ::ng-deep .p-paginator .p-paginator-last:hover {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Scrollbar styling - ensure no black backgrounds with more specific targeting */
+  .historyCard ::ng-deep .p-datatable-wrapper::-webkit-scrollbar,
+  .historyCard ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar,
+  .historyCard ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+    background: #f8f9fa !important;
+  }
+  
+  .historyCard ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-track,
+  .historyCard ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar-track,
+  .historyCard ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar-track {
+    background: #f8f9fa !important;
+    border-radius: 4px;
+  }
+  
+  .historyCard ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-thumb,
+  .historyCard ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar-thumb,
+  .historyCard ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar-thumb {
+    background: #ced4da !important;
+    border-radius: 4px;
+  }
+  
+  .historyCard ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-thumb:hover,
+  .historyCard ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar-thumb:hover,
+  .historyCard ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd !important;
+  }
+  
+  /* Fix horizontal scrollbar */
+  .historyCard ::ng-deep .p-datatable-wrapper::-webkit-scrollbar:horizontal,
+  .historyCard ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar:horizontal,
+  .historyCard ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar:horizontal {
+    background: #f8f9fa !important;
+  }
+  
+  /* General scrollbar fix for the entire card */
+  .historyCard::-webkit-scrollbar {
+    background: #f8f9fa !important;
+  }
+  
+  .historyCard::-webkit-scrollbar-track {
+    background: #f8f9fa !important;
+  }
+  
+  .historyCard::-webkit-scrollbar-thumb {
+    background: #ced4da !important;
+  }
+  
+  /* Fix scrollbar corner */
+  .historyCard ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-corner,
+  .historyCard ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar-corner,
+  .historyCard ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar-corner {
+    background: #f8f9fa !important;
+  }
+  
+  /* Global scrollbar override */
+  ::ng-deep .p-datatable-wrapper::-webkit-scrollbar,
+  ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar,
+  ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar {
+    background: #f8f9fa !important;
+  }
+  
+  ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-track,
+  ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar-track,
+  ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar-track {
+    background: #f8f9fa !important;
+  }
+  
+  ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-corner,
+  ::ng-deep .p-datatable-scrollable-wrapper::-webkit-scrollbar-corner,
+  ::ng-deep .p-datatable-scrollable-body::-webkit-scrollbar-corner {
+    background: #f8f9fa !important;
+  }
+  
+  /* Prevent layout shifts */
+  .historyCard ::ng-deep .p-paginator .p-dropdown-panel {
+    position: fixed !important;
+    z-index: 9999 !important;
+  }
+  
+  /* Loading overlay - ensure white background */
+  .historyCard ::ng-deep .p-datatable-loading-overlay {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  /* Empty message styling */
+  .historyCard ::ng-deep .p-datatable-emptymessage > td {
+    background-color: #fff !important;
+    color: #6c757d !important;
+    text-align: center !important;
+    padding: 2rem !important;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .historyCard {
+      margin: 0 10px;
+      padding: 0.5rem;
+    }
+    
+    .historyCard ::ng-deep .p-datatable-thead > tr > th,
+    .historyCard ::ng-deep .p-datatable-tbody > tr > td {
+      padding: 0.5rem !important;
+      font-size: 0.875rem;
+    }
+    
+    /* Stack cards vertically on mobile */
+    .cards-container {
+      flex-direction: column !important;
+    }
+    
+    .leaderboardCard,
+    .dialDiv {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    
+    .dialDiv {
+      margin-top: 20px !important;
+    }
+  }
+  
+  /* Ensure container responsiveness */
+  .historyCard {
+    min-width: 0; /* Allow shrinking */
+    max-width: 100%;
+  }
+  
+  /* Table responsiveness */
+  .historyCard ::ng-deep .p-datatable-wrapper {
+    overflow-x: auto;
+    max-width: 100%;
+    position: relative;
+  }
+  
+  /* Ensure all dropdown panels are properly positioned and styled */
+  .historyCard ::ng-deep .p-dropdown-panel,
+  .historyCard ::ng-deep .p-multiselect-panel,
+  .historyCard ::ng-deep .p-calendar-panel,
+  .historyCard ::ng-deep .p-select-panel {
+    z-index: 9999 !important;
+    position: fixed !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+  }
+  
+  /* Global dropdown panel override - force white background */
+  ::ng-deep .p-dropdown-panel,
+  ::ng-deep .p-select-panel {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+  }
+  
+  /* Global dropdown item override */
+  ::ng-deep .p-dropdown-item,
+  ::ng-deep .p-select-item {
+    background-color: #fff !important;
+    color: #495057 !important;
+  }
+  
+  ::ng-deep .p-dropdown-item:hover,
+  ::ng-deep .p-select-item:hover {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Prevent any overflow issues that might cause layout shifts */
+  .historyCard {
+    contain: layout style;
+  }
+  
+  /* Additional overrides to ensure no black backgrounds anywhere */
+  .historyCard ::ng-deep * {
+    /* Override any inherited black backgrounds */
+  }
+  
+  .historyCard ::ng-deep .p-datatable-header-cell,
+  .historyCard ::ng-deep .p-datatable-filter-container,
+  .historyCard ::ng-deep .p-datatable-column-filter {
+    background-color: transparent !important;
+  }
+  
+  /* Ensure search input container has white background */
+  .historyCard ::ng-deep .p-datatable-header {
+    background-color: #fff !important;
+  }
+  
+  /* Filter row styling */
+  .historyCard ::ng-deep .p-datatable-thead > tr:nth-child(2) > th {
+    background-color: #f8f9fa !important;
+    border-top: none !important;
+  }
+  
+  /* Ensure calendar panel has white background */
+  .historyCard ::ng-deep .p-calendar-panel {
+    background-color: #fff !important;
+  }
+  
+  .historyCard ::ng-deep .p-datepicker {
+    background-color: #fff !important;
+  }
+  
+  .historyCard ::ng-deep .p-datepicker-header {
+    background-color: #f8f9fa !important;
+  }
+  
+  .historyCard ::ng-deep .p-datepicker-calendar {
+    background-color: #fff !important;
+  }
+  
+  /* Container for side-by-side cards */
+  .cards-container {
+    display: flex;
+    gap: 20px;
+    align-items: stretch; /* This makes both cards the same height */
+    width: 100%;
+  }
+  
+  /* new: side‑by‑side wrapper */
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;         /* allow items to wrap */
+    gap: 20px;
+    align-items: stretch;    /* equal height rows */
+    margin-top: 1rem;
+  }
+  
+  /* Leaderboard: take up remaining space, but never shrink below 300px */
+  .leaderboardCard {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0px 5px 5px #D8DADC;
+    flex: 1 1 60%;           /* flex-grow, flex-shrink, flex-basis */
+    min-width: 300px;        /* stop shrinking too far */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Dial: can shrink down to 200px, then wrap below leaderboard */
+  .dialDiv {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0px 5px 5px #D8DADC;
+    flex: 1 1 30%;           /* allow shrinking */
+    min-width: 200px;        /* smallest it goes */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  
+  /* existing mobile stack behavior (you already had this) */
+  @media (max-width: 768px) {
+    .cards-container {
+      flex-direction: column;
+    }
+    .dialDiv {
+      margin-top: 1rem;
+      width: 100%;
+      flex: none;
+    }
+  }
+  /* Add these styles to your existing employee-dashboard.css file */
+  
+  .clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .clickable-row:hover {
+    background-color: var(--p-surface-hover, #f8f9fa) !important;
+  }
+  
+  .clickable-row:hover td {
+    background-color: transparent !important;
+  }
+  
+  /* Optional: Add a subtle border effect on hover */
+  .clickable-row:hover {
+    box-shadow: 0 0 0 1px var(--p-primary-color, #007ad9) inset;
+  }
+  
+  /* Ensure filter rows don't have hover effects */
+  .p-datatable-thead tr:hover {
+    background-color: transparent !important;
+    cursor: default !important;
+  }
+  
+  .p-datatable-thead tr {
+    cursor: default !important;
+  }
+  
+  /* Hide only the external trigger button, not buttons inside the dialog */
+  popup > p-button {
+    display: none !important;
+  }
+  
+  /* Alternative: Hide direct child buttons of popup component */
+  popup ::ng-deep > p-button {
+    display: none !important;
+  }
+  
+  /* Ensure dialog buttons remain visible */
+  popup ::ng-deep .p-dialog p-button,
+  popup ::ng-deep .p-dialog button {
+    display: inline-flex !important;
+  }
+  popup ::ng-deep p-button button {
+    display: none !important;
+  }
+  
+  /* Alternative approach - hide any visible buttons outside the dialog */
+  

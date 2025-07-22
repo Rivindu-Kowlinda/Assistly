@@ -1,0 +1,46 @@
+<div class="navbar" [class.open]="isOpen">
+    <button
+      class="toggle-button"
+      *ngIf="isMobile"
+      (click)="toggleNavbar()"
+      aria-label="Toggle navigation"
+    >
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  
+    <nav>
+      <ul class="nav-list">
+        <li>
+          <a href="#" (click)="navigateTo('/adminDashboard'); $event.preventDefault()"
+             [class.active]="router.url === '/adminDashboard'">
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#" (click)="navigateTo('/users'); $event.preventDefault()"
+             [class.active]="router.url === '/users'">
+            Users
+          </a>
+        </li>
+        <li>
+          <a href="#" (click)="openSettingsDrawer(); $event.preventDefault()"
+             [class.active]="settingsDrawerVisible">
+            Settings
+          </a>
+        </li>
+      </ul>
+    </nav>
+  
+    <div class="profile">
+      <a href="#" (click)="navigateTo('/adminProfile'); $event.preventDefault()"
+         [class.active]="router.url === '/adminProfile'">
+        Profile
+      </a>
+    </div>
+  </div>
+  
+  <!-- Replaced hardcoded drawer with actual component -->
+  <settings [(visible)]="settingsDrawerVisible"></settings>
+  

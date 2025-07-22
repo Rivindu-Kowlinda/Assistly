@@ -1,0 +1,324 @@
+/* settings.css */
+
+/* Main container */
+.card {
+    margin: 2rem;
+}
+
+/* Settings Drawer Content */
+.settings-content {
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.settings-section {
+    flex: 1;
+}
+
+.settings-section h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.settings-description {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Role Summary Box */
+.role-summary {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    border-left: 4px solid #007bff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.role-badge {
+    background: #007bff;
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.role-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+}
+
+.role-badge.role-admin {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+.role-badge.role-manager {
+    background: linear-gradient(45deg, #fd7e14, #e8650e);
+    box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
+}
+
+.role-badge.role-editor {
+    background: linear-gradient(45deg, #198754, #146c43);
+    box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+}
+
+.role-badge.role-viewer {
+    background: linear-gradient(45deg, #0dcaf0, #0aa2c0);
+    box-shadow: 0 2px 4px rgba(13, 202, 240, 0.3);
+}
+
+.role-badge.role-guest {
+    background: linear-gradient(45deg, #6c757d, #545b62);
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.points-display {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Settings Actions */
+.settings-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e9ecef;
+}
+
+/* PrimeNG Custom Overrides */
+::ng-deep .role-select-buttons .p-selectbutton {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+::ng-deep .role-select-buttons .p-button {
+    flex: 1;
+    min-width: calc(50% - 0.25rem);
+    border: 2px solid #e9ecef;
+    background: white;
+    color: #495057;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .role-select-buttons .p-button:hover {
+    border-color: #007bff;
+    color: #007bff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+::ng-deep .role-select-buttons .p-button.p-highlight {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border-color: #007bff;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+::ng-deep .role-select-buttons .p-button.p-highlight.role-admin {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    border-color: #dc3545;
+}
+
+::ng-deep .role-select-buttons .p-button.p-highlight.role-manager {
+    background: linear-gradient(45deg, #fd7e14, #e8650e);
+    border-color: #fd7e14;
+}
+
+::ng-deep .role-select-buttons .p-button.p-highlight.role-editor {
+    background: linear-gradient(45deg, #198754, #146c43);
+    border-color: #198754;
+}
+
+::ng-deep .role-select-buttons .p-button.p-highlight.role-viewer {
+    background: linear-gradient(45deg, #0dcaf0, #0aa2c0);
+    border-color: #0dcaf0;
+}
+
+::ng-deep .role-select-buttons .p-button.p-highlight.role-guest {
+    background: linear-gradient(45deg, #6c757d, #545b62);
+    border-color: #6c757d;
+}
+
+::ng-deep .points-input .p-inputnumber-input {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .points-input .p-inputnumber-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+/* Button Styling */
+::ng-deep .save-button .p-button {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+::ng-deep .save-button .p-button:hover {
+    background: linear-gradient(45deg, #218838, #1abc9c);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+::ng-deep .cancel-button .p-button {
+    background: transparent;
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+::ng-deep .cancel-button .p-button:hover {
+    background: #6c757d;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* Drawer Header Styling */
+::ng-deep .p-drawer .p-drawer-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 3px solid #007bff;
+    padding: 1.5rem;
+}
+
+::ng-deep .p-drawer .p-drawer-title {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .p-drawer .p-drawer-header-icons button {
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+::ng-deep .p-drawer .p-drawer-header-icons button:hover {
+    color: #dc3545;
+    transform: scale(1.1);
+}
+
+/* Main trigger button styling */
+::ng-deep .card .p-button {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+::ng-deep .card .p-button:hover {
+    background: linear-gradient(45deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .card {
+        margin: 1rem;
+    }
+    
+    .settings-content {
+        padding: 1rem;
+    }
+    
+    .settings-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    ::ng-deep .p-drawer {
+        width: 90% !important;
+    }
+    
+    .role-summary {
+        padding: 1rem;
+    }
+    
+    .summary-item {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+    
+    .points-display {
+        font-size: 1.1rem;
+    }
+}
+
+/* Animation for drawer content */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.settings-content {
+    animation: fadeInUp 0.4s ease-out;
+}

@@ -1,7 +1,16 @@
-/* Layout container */
 .dashboard-layout {
     display: flex;
   }
+
+  #help1{
+    background-color: #ececec;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    box-shadow: 0px 5px 5px #D8DADC;
+    color: #121212;
+    max-width: 30%;
+}
   
   /* Sidebar */
   app-sidebar {
@@ -42,40 +51,6 @@
     .main-wrapper {
       margin-left: 0;
     }
-  }
-  p-step-panel {
-    background-color: white;
-  }
-  #sumamary{
-    min-width: 45%;
-    resize: none;
-  }
-  #userSummary{
-    min-width: 45%;
-    max-width: 45%;
-    margin-left: 10px;
-  }
-  scrollable-tabs{
-    width: 100%;
-  }
-  .summary-container {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-  }
-  .summary-container {
-    gap: 20px;
-    padding: 20px;
-    height: 100%;
-  }
-  
-  .summary-text, #userSummary {
-    min-height: 300px;
-  }
-  
-  .summary-text h4, #userSummary h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #333;
-    font-weight: 600;
+
+
   }

@@ -33,6 +33,7 @@
                 />
               </p-iconfield>
             </div>
+            
           </ng-template>
 
           <ng-template #header>
@@ -107,7 +108,7 @@
           </ng-template>
 
           <ng-template #body let-request>
-            <tr>
+            <tr (click)="onRowClick(request, $event)" class="clickable-row">
               <td>{{ request.requestName }}</td>
               <td>{{ request.type }}</td>
               <td>{{ request.dateTime | date:'short' }}</td>
@@ -140,3 +141,6 @@
     </div>
   </div>
 </div>
+
+<!-- Add the popup component -->
+<popup #popup></popup>

@@ -1,0 +1,158 @@
+<div class="card flex justify-center">
+  <p-button (click)="showDialog()" label="Open Team Chat" icon="pi pi-comments" />
+
+  <p-dialog
+    header="PrimeTek Team Chat"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '60rem', height: '85vh' }"
+    [breakpoints]="{ '1199px': '85vw', '575px': '95vw' }"
+    [contentStyle]="{ padding: '0', height: 'calc(85vh - 60px)' }"
+    [maximizable]="true"
+  >
+    <div class="chat-container">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <p-avatar icon="pi pi-users" styleClass="bg-primary text-white" size="large"></p-avatar>
+            <div class="online-indicator"></div>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-semibold text-lg text-gray-900">PrimeTek Team</span>
+            <span class="text-sm text-green-600 flex items-center gap-1">
+              <i class="pi pi-circle-fill text-xs"></i>
+              4 members online
+            </span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <p-button icon="pi pi-video" [text]="true" [rounded]="true" severity="secondary" size="small"></p-button>
+          <p-button icon="pi pi-phone" [text]="true" [rounded]="true" severity="secondary" size="small"></p-button>
+          <p-button icon="pi pi-ellipsis-v" [text]="true" [rounded]="true" severity="secondary" size="small"></p-button>
+        </div>
+      </div>
+
+      <!-- Message Feed -->
+      <div #chatScroll class="chat-messages">
+        <ng-container *ngFor="let msg of messages; trackBy: trackByMessageId">
+          <!-- System Messages -->
+          <div *ngIf="msg.type === 'system'" class="system-message">
+            <span>{{ msg.text }}</span>
+          </div>
+
+          <!-- Regular Messages -->
+          <div *ngIf="msg.type === 'text'" class="message-group" 
+               [class.own-message]="msg.sender === 'me'"
+               [class.other-message]="msg.sender === 'them'">
+            
+            <!-- Incoming Messages -->
+            <div *ngIf="msg.sender === 'them'" class="message-row incoming">
+              <p-avatar [image]="msg.avatar" size="large" class="message-avatar"></p-avatar>
+              <div class="message-content">
+                <div class="message-header">
+                  <span class="sender-name">{{ msg.senderName }}</span>
+                  <span class="message-time">{{ getMessageTime(msg.timestamp) }}</span>
+                </div>
+                <div class="message-bubble incoming-bubble">
+                  <p class="message-text">{{ msg.text }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Outgoing Messages -->
+            <div *ngIf="msg.sender === 'me'" class="message-row outgoing">
+              <div class="message-content">
+                <div class="message-header text-right">
+                  <span class="message-time">{{ getMessageTime(msg.timestamp) }}</span>
+                </div>
+                <div class="message-bubble outgoing-bubble">
+                  <p class="message-text">{{ msg.text }}</p>
+                </div>
+              </div>
+              <p-avatar [image]="msg.avatar" size="large" class="message-avatar"></p-avatar>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Typing Indicator -->
+        <div *ngIf="isTyping" class="message-row incoming">
+          <p-avatar image="https://i.pravatar.cc/40?u=typing" size="large" class="message-avatar"></p-avatar>
+          <div class="message-content">
+            <div class="message-bubble incoming-bubble typing-indicator">
+              <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="chat-input-container">
+        <!-- Accept Chat Button (shown when chat not accepted) -->
+        <div *ngIf="!chatAccepted" class="accept-chat-container">
+          <div class="accept-chat-content">
+            <div class="accept-chat-icon">
+              <i class="pi pi-users text-2xl text-blue-500"></i>
+            </div>
+            <div class="accept-chat-text">
+              <h3>Join Team Chat</h3>
+              <p>The PrimeTek team is inviting you to join their conversation</p>
+            </div>
+            <p-button 
+              label="Accept & Join Chat" 
+              icon="pi pi-check" 
+              (click)="acceptChat()"
+              class="accept-chat-btn"
+              size="large">
+            </p-button>
+          </div>
+        </div>
+
+        <!-- Regular Chat Input (shown when chat accepted) -->
+        <div *ngIf="chatAccepted" class="chat-input">
+          <p-button 
+            icon="pi pi-plus" 
+            [text]="true" 
+            [rounded]="true" 
+            severity="secondary" 
+            size="small"
+            class="attachment-btn">
+          </p-button>
+          
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="newMessage"
+            placeholder="Type a message..."
+            class="message-input"
+            (keydown)="onInputKeydown($event)"
+            [disabled]="isTyping"
+          />
+          
+          <p-button
+            icon="pi pi-face-smile"
+            [text]="true"
+            [rounded]="true"
+            severity="secondary"
+            size="small"
+            class="emoji-btn">
+          </p-button>
+          
+          <p-button
+            [icon]="newMessage.trim() ? 'pi pi-send' : 'pi pi-microphone'"
+            [rounded]="true"
+            [disabled]="isTyping"
+            severity="primary"
+            size="small"
+            class="send-btn"
+            (click)="sendMessage()">
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </p-dialog>
+</div>

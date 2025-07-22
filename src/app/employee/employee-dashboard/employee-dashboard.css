@@ -563,4 +563,53 @@ th, td {
     flex: none;
   }
 }
+/* Add these styles to your existing employee-dashboard.css file */
 
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: var(--p-surface-hover, #f8f9fa) !important;
+}
+
+.clickable-row:hover td {
+  background-color: transparent !important;
+}
+
+/* Optional: Add a subtle border effect on hover */
+.clickable-row:hover {
+  box-shadow: 0 0 0 1px var(--p-primary-color, #007ad9) inset;
+}
+
+/* Ensure filter rows don't have hover effects */
+.p-datatable-thead tr:hover {
+  background-color: transparent !important;
+  cursor: default !important;
+}
+
+.p-datatable-thead tr {
+  cursor: default !important;
+}
+
+/* Hide only the external trigger button, not buttons inside the dialog */
+popup > p-button {
+  display: none !important;
+}
+
+/* Alternative: Hide direct child buttons of popup component */
+popup ::ng-deep > p-button {
+  display: none !important;
+}
+
+/* Ensure dialog buttons remain visible */
+popup ::ng-deep .p-dialog p-button,
+popup ::ng-deep .p-dialog button {
+  display: inline-flex !important;
+}
+popup ::ng-deep p-button button {
+  display: none !important;
+}
+
+/* Alternative approach - hide any visible buttons outside the dialog */

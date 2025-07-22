@@ -1,0 +1,134 @@
+<div class="dashboard-layout">
+    <admin-sidebar></admin-sidebar>
+  
+    <div class="main-wrapper">
+      <router-outlet></router-outlet>
+      <div id="mainPage">
+      <br>
+        <div class="historyCard">
+          <p-table
+            #dt2
+            [value]="requests"
+            dataKey="id"
+            [rows]="10"
+            [rowsPerPageOptions]="[10,25,50]"
+            [loading]="loading"
+            [paginator]="true"
+            [globalFilterFields]="['requestName','type','dateTime','userName','status','price']"
+            [tableStyle]="{ 'min-width': '75rem' }"
+          >
+            <ng-template #caption>
+              <div class="flex">
+                <p-iconfield iconPosition="left" class="ml-auto">
+                  <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                  <input
+                    #gfilter
+                    pInputText
+                    type="text"
+                    (input)="dt2.filterGlobal(gfilter.value, 'contains')"
+                    placeholder="Search requests"
+                  />
+                </p-iconfield>
+              </div>
+            </ng-template>
+  
+            <ng-template #header>
+              <tr>
+                <th style="width:20%">Request Name</th>
+                <th style="width:15%">Type</th>
+                <th style="width:20%">Date/Time</th>
+                <th style="width:20%">User Name</th>
+                <th style="width:15%">Status</th>
+                <th style="width:10%">Price</th>
+              </tr>
+              <tr>
+                <th>
+                  <p-columnFilter
+                    type="text"
+                    field="requestName"
+                    placeholder="Search"
+                    filterOn="input">
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter
+                    type="text"
+                    field="type"
+                    placeholder="Search"
+                    filterOn="input">
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter
+                    type="date"
+                    field="dateTime"
+                    placeholder="Filter date"
+                    filterMatchMode="equals">
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter
+                    type="text"
+                    field="userName"
+                    placeholder="Search"
+                    filterOn="input">
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter field="status" matchMode="equals" [showMenu]="false">
+                    <ng-template #filter let-value let-filter="filterCallback">
+                      <p-select
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        [options]="statuses"
+                        placeholder="Select"
+                        [showClear]="true"
+                        style="min-width: 8rem"
+                      >
+                        <ng-template let-option #item>
+                          <p-tag [value]="option.value" [severity]="getSeverity(option.value)"></p-tag>
+                        </ng-template>
+                      </p-select>
+                    </ng-template>
+                  </p-columnFilter>                
+                </th>
+                <th>
+                  <p-columnFilter
+                    type="numeric"
+                    field="price"
+                    filterMatchMode="gte"
+                    placeholder="Min price">
+                  </p-columnFilter>
+                </th>
+              </tr>
+            </ng-template>
+  
+            <ng-template #body let-request>
+              <tr (click)="onRowClick(request, $event)" class="clickable-row">
+                <td>{{ request.requestName }}</td>
+                <td>{{ request.type }}</td>
+                <td>{{ request.dateTime | date:'short' }}</td>
+                <td>{{ request.userName }}</td>
+                <td>
+                  <p-tag
+                    [value]="request.status"
+                    [severity]="getSeverity(request.status)">
+                  </p-tag>
+                </td>
+                <td>{{ request.price | currency }}</td>
+              </tr>
+            </ng-template>
+  
+            <ng-template #emptymessage>
+              <tr>
+                <td colspan="6">No requests found.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add the popup component -->
+  <popup #popup></popup>

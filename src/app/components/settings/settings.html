@@ -1,0 +1,62 @@
+<div class="card flex justify-center">
+    <p-drawer [(visible)]="visible" (onHide)="visibleChange.emit(false)" header="Role Settings" position="right" [style]="{ width: '400px' }">
+      <div class="settings-content">
+        <div class="settings-section">
+          <h3>Configure Role Points</h3>
+          <p class="settings-description">Select a role and adjust its point cost</p>
+  
+          <div class="form-group">
+            <label for="role-select" class="form-label">Role</label>
+            <p-selectButton
+              id="role-select"
+              [(ngModel)]="selectedRole"
+              [options]="roles"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onRoleChange()"
+              styleClass="role-select-buttons">
+            </p-selectButton>
+          </div>
+  
+          <div class="form-group">
+            <label for="points-input" class="form-label">Points Cost</label>
+            <p-inputNumber
+              id="points-input"
+              [(ngModel)]="selectedRolePoints"
+              [min]="0"
+              [max]="10000"
+              [step]="10"
+              placeholder="Enter points"
+              (onInput)="onPointsChange()"
+              [style]="{ width: '100%' }"
+              styleClass="points-input">
+            </p-inputNumber>
+          </div>
+  
+          <div class="role-summary">
+            <div class="summary-item">
+              <span class="role-badge" [class]="'role-' + selectedRole">{{ selectedRole | titlecase }}</span>
+              <span class="points-display">{{ selectedRolePoints }} points</span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="settings-actions">
+          <p-button 
+            label="Save Settings" 
+            icon="pi pi-check" 
+            (onClick)="saveSettings()"
+            styleClass="save-button">
+          </p-button>
+          <p-button 
+            label="Cancel" 
+            icon="pi pi-times" 
+            severity="secondary"
+            (onClick)="visibleChange.emit(false)"
+            styleClass="cancel-button">
+          </p-button>
+        </div>
+      </div>
+    </p-drawer>
+  </div>
+  

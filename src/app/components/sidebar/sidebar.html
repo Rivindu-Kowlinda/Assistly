@@ -25,14 +25,10 @@
         </a>
       </li>
       <li>
-        <a href="#" (click)="navigateTo('/send-help'); $event.preventDefault()"
+        <a href="#" (click)="navigateTo('/help'); $event.preventDefault()"
            [class.active]="router.url === '/send-help'">
           Send Help
-        </a>
-        <a href="#" (click)="navigateTo('/completed'); $event.preventDefault()"
-           [class.active]="router.url === '/completed'">
-          Request History
-        </a>
+        </a> 
       </li>
     </ul>
   </nav>

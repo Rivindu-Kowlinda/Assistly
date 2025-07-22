@@ -1,69 +1,97 @@
-<!-- request.html -->
 <app-sidebar></app-sidebar>
 <div class="main-wrapper">
-    <p-stepper [value]="active">
-      <!-- Step I -->
-      <p-step-item [value]="0">
-        <p-step>Enter Request</p-step>
-        <p-step-panel>
-          <ng-template #content let-activateCallback="activateCallback">
-            <div class="flex flex-column h-12rem">
-              <div
-                class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
-              >
-              
-                <textBox></textBox>
+  <p-stepper [value]="active">
+    <!-- Step I -->
+    <p-step-item [value]="0">
+      <p-step>Enter Request</p-step>
+      <p-step-panel>
+        <ng-template #content let-activateCallback="activateCallback">
+          <div class="flex flex-column h-12rem">
+            <div
+              class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+            >
+              <textBox 
+                #requestTextBox
+                (contentChange)="onRequestContentChange($event)"
+                [value]="requestContent"
+              ></textBox>
+            </div>
+          </div>
+          <div class="flex py-4">
+            <p-button 
+              label="Next" 
+              (onClick)="goToNextStep(activateCallback, 1)"
+            ></p-button>
+          </div>
+        </ng-template>
+      </p-step-panel>
+    </p-step-item>
+
+    <!-- Step II -->
+    <p-step-item [value]="1">
+      <p-step>Select User</p-step>
+      <p-step-panel>
+        <ng-template #content let-activateCallback="activateCallback" let-deactivateCallback="deactivateCallback">
+          <div class="flex flex-column h-12rem">
+            <div
+              class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+            >
+              <employee-list [(selection)]="selectedEmployees" (onSelectionChange)="onEmployeeSelectionChange(selectedEmployees)"></employee-list>
+            </div>
+          </div>
+          <div class="flex py-4 gap-2">
+            <p-button
+              label="Back"
+              severity="secondary"
+              (onClick)="deactivateCallback()"
+            ></p-button>
+            <p-button 
+              label="Next" 
+              (onClick)="goToNextStep(activateCallback, 2)"
+            ></p-button>
+          </div>
+        </ng-template>
+      </p-step-panel>
+    </p-step-item>
+
+    <!-- Step III -->
+    <p-step-item [value]="2">
+      <p-step>Summary</p-step>
+      <p-step-panel>
+        <ng-template #content let-deactivateCallback="deactivateCallback">
+          <div class="flex flex-column h-12rem">
+            <div
+              class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+            >
+              <div class="summary-container flex w-full">
+                <div class="summary-text flex-1">
+                  <h4>Request Content:</h4>
+                  <textBox 
+                    #summaryTextBox 
+                    [disabled]="true"
+                    [value]="requestContent"
+                  ></textBox>
+                </div>
+                <div id="userSummary" class="flex-1">
+                  <h4>Selected Users:</h4>
+                  <scrollable-tabs></scrollable-tabs>
+                </div>
               </div>
             </div>
-            <div class="flex py-4">
-              <p-button label="Next" (onClick)="activateCallback(1)"></p-button>
-            </div>
-          </ng-template>
-        </p-step-panel>
-      </p-step-item>
-  
-      <!-- Step II -->
-      <p-step-item [value]="1">
-        <p-step>Select User</p-step>
-        <p-step-panel>
-          <ng-template #content let-activateCallback="activateCallback" let-deactivateCallback="deactivateCallback">
-            <div class="flex flex-column h-12rem">
-              <div
-                class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
-              >
-                Content II
-              </div>
-            </div>
-            <div class="flex py-4 gap-2">
-              <p-button
-                label="Back"
-                severity="secondary"
-                (onClick)="deactivateCallback()"
-              ></p-button>
-              <p-button label="Next" (onClick)="activateCallback(2)"></p-button>
-            </div>
-          </ng-template>
-        </p-step-panel>
-      </p-step-item>
-  
-      <!-- Step III -->
-      <p-step-item [value]="2">
-        <p-step>Summary</p-step>
-        <p-step-panel>
-          <ng-template #content let-deactivateCallback="deactivateCallback">
-            <div class="flex flex-column h-12rem">
-              <div
-                class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
-              >
-                Content III
-              </div>
-            </div>
-            <div class="flex py-4">
-              <p-button label="Back" (onClick)="deactivateCallback()"></p-button>
-            </div>
-          </ng-template>
-        </p-step-panel>
-      </p-step-item>
-    </p-stepper>
-  </div>
-  
+          </div>
+          <div class="flex py-4 gap-2">
+            <p-button 
+              label="Back" 
+              severity="secondary"
+              (onClick)="deactivateCallback()"
+            ></p-button>
+            <p-button 
+              label="Submit"
+              (onClick)="onSubmit()"
+            ></p-button>
+          </div>
+        </ng-template>
+      </p-step-panel>
+    </p-step-item>
+  </p-stepper>
+</div>

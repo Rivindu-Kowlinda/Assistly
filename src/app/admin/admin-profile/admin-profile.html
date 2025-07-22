@@ -1,0 +1,42 @@
+<admin-sidebar></admin-sidebar>
+<div class="main-wrapper">
+    <div class="profile-wrapper">
+        <div class="profile-card-modern">
+          <div class="left-section">
+            <img class="avatar" src="https://www.google.com/search?sca_esv=ea0b69d59ed7fea9&sxsrf=AE3TifOk2d5Z7T37OKupbcExmfcUDv1hfA:1753090113960&q=default+profile+image&udm=2&fbs=AIIjpHxU7SXXniUZfeShr2fp4giZ1Y6MJ25_tmWITc7uy4KIemkjk18Cn72Gp24fGkjjh6wQFVCbKXb4P6swJy4x5wjmC_909EqiJuKoJVBAt1bQqxuAxTVm5FaXw1YXOj1toa8WPxcw1gn6LYXewwLEtDLrjlF1DF5gsE1oM13IUcRi9WoWLy0RheFkcZrCqX8fIc9hqBDd7QkjIMco9MHF-AJTiny_Vw&sa=X&ved=2ahUKEwivzYHM0c2OAxWy1jgGHfe6DxIQtKgLKAF6BAgREAE&biw=1036&bih=906&dpr=1.5#vhid=bhXONIl2bblF7M&vssid=mosaic" alt="Profile" />
+            <h2 class="username">{{ user.username }}</h2>
+            <p class="role">{{ user.role }}</p>
+          </div>
+      
+          <div class="right-section">
+            <div class="stat">
+              <label>Balance</label>
+              <span>{{ user.balancePoints }} pts</span>
+            </div>
+            <div class="stat">
+              <label>Monthly Allocation</label>
+              <span>{{ user.monthlyAllocation }} pts</span>
+            </div>
+            <div class="stat">
+              <label>Requests</label>
+              <span>{{ user.requestCount }}</span>
+            </div>
+            <div class="stat">
+              <label>Help Pending</label>
+              <span>{{ user.helpPending }}</span>
+            </div>
+            <div class="stat">
+              <label>Help Completed</label>
+              <span>{{ user.helpCompleted }}</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+      
+      
+
+
+</div>
+
