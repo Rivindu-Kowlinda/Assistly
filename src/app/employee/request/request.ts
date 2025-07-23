@@ -9,7 +9,7 @@ import { ChipBasicDemo } from '../../components/chip/chip';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { TextArea } from '../../components/text-box/text-box';
 import { EmployeeList } from '../../components/employee-list/employee-list';
-import { ScrollableTabs } from '../../components/scrollable-tabs/scrollable-tabs';
+import { EmployeeTabs } from '../../components/scrollable-tabs/scrollable-tabs'; // Changed from ScrollableTabs
 
 @Component({
   selector: 'app-request',
@@ -24,116 +24,16 @@ import { ScrollableTabs } from '../../components/scrollable-tabs/scrollable-tabs
     Sidebar,
     TextArea,
     EmployeeList,
-    ScrollableTabs
+    EmployeeTabs // Changed from ScrollableTabs
   ],
-  template: `
-    <app-sidebar></app-sidebar>
-    <div class="main-wrapper">
-      <p-stepper [value]="active">
-        <!-- Step I -->
-        <p-step-item [value]="0">
-          <p-step>Enter Request</p-step>
-          <p-step-panel>
-            <ng-template #content let-activateCallback="activateCallback">
-              <div class="flex flex-column h-12rem">
-                <div
-                  class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
-                >
-                  <textBox 
-                    #requestTextBox
-                    (contentChange)="onRequestContentChange($event)"
-                    [value]="requestContent"
-                  ></textBox>
-                </div>
-              </div>
-              <div class="flex py-4">
-                <p-button 
-                  label="Next" 
-                  (onClick)="goToNextStep(activateCallback, 1)"
-                ></p-button>
-              </div>
-            </ng-template>
-          </p-step-panel>
-        </p-step-item>
-
-        <!-- Step II -->
-        <p-step-item [value]="1">
-          <p-step>Select User</p-step>
-          <p-step-panel>
-            <ng-template #content let-activateCallback="activateCallback" let-deactivateCallback="deactivateCallback">
-              <div class="flex flex-column h-12rem">
-                <div
-                  class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
-                >
-                  <employee-list (selectionChange)="onEmployeeSelectionChange($event)"></employee-list>
-                </div>
-              </div>
-              <div class="flex py-4 gap-2">
-                <p-button
-                  label="Back"
-                  severity="secondary"
-                  (onClick)="deactivateCallback()"
-                ></p-button>
-                <p-button 
-                  label="Next" 
-                  (onClick)="goToNextStep(activateCallback, 2)"
-                ></p-button>
-              </div>
-            </ng-template>
-          </p-step-panel>
-        </p-step-item>
-
-        <!-- Step III -->
-        <p-step-item [value]="2">
-          <p-step>Summary</p-step>
-          <p-step-panel>
-            <ng-template #content let-deactivateCallback="deactivateCallback">
-              <div class="flex flex-column h-12rem">
-                <div
-                  class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
-                >
-                  <div class="summary-container flex w-full">
-                    <div class="summary-text flex-1">
-                      <h4>Request Content:</h4>
-                      <textBox 
-                        #summaryTextBox 
-                        [disabled]="true"
-                        [value]="requestContent"
-                      ></textBox>
-                    </div>
-                    <div id="userSummary" class="flex-1">
-                      <h4>Selected Users:</h4>
-                      <scrollable-tabs></scrollable-tabs>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex py-4 gap-2">
-                <p-button 
-                  label="Back" 
-                  severity="secondary"
-                  (onClick)="deactivateCallback()"
-                ></p-button>
-                <p-button 
-                  label="Submit"
-                  (onClick)="onSubmit()"
-                ></p-button>
-              </div>
-            </ng-template>
-          </p-step-panel>
-        </p-step-item>
-      </p-stepper>
-    </div>
-  `,
+  templateUrl: './request.html',
   styles: [`
     .summary-container {
       gap: 20px;
       padding: 20px;
-      height: 100%;
     }
     
     .summary-text, #userSummary {
-      min-height: 300px;
     }
     
     .summary-text h4, #userSummary h4 {
@@ -142,6 +42,7 @@ import { ScrollableTabs } from '../../components/scrollable-tabs/scrollable-tabs
       color: #333;
       font-weight: 600;
     }
+    
   `]
 })
 export class Request {
@@ -159,7 +60,14 @@ export class Request {
   }
 
   onEmployeeSelectionChange(employees: any[]) {
-    this.selectedEmployees = employees;
+    this.selectedEmployees = [...employees];
+    console.log('Selected employees updated:', this.selectedEmployees);
+  }
+
+  onEmployeeRemoved(employee: any) {
+    // Remove the employee from selection when tab is closed
+    this.selectedEmployees = this.selectedEmployees.filter(emp => emp.id !== employee.id);
+    console.log('Employee removed:', employee.name);
   }
 
   // Method to handle step navigation and content sync
@@ -173,16 +81,42 @@ export class Request {
     }
   }
 
+  canSubmit(): boolean {
+    return this.requestContent.trim().length > 0 && this.selectedEmployees.length > 0;
+  }
+
   onSubmit() {
+    if (!this.canSubmit()) {
+      alert('Please enter request content and select at least one employee.');
+      return;
+    }
+
     const submissionData = {
       requestContent: this.requestContent,
-      selectedEmployees: this.selectedEmployees,
+      selectedEmployees: this.selectedEmployees.map(emp => ({
+        id: emp.id,
+        name: emp.name,
+        role: emp.role,
+        salary: emp.price,
+        country: emp.country.name
+      })),
       timestamp: new Date()
     };
     
     console.log('Submitting request:', submissionData);
-    // Add your submission logic here
-    alert('Request submitted successfully!');
+    
+    // Show success message with details
+    const employeeNames = this.selectedEmployees.map(emp => emp.name).join(', ');
+    alert(`Request submitted successfully!\n\nRequest: ${this.requestContent}\nEmployees: ${employeeNames}`);
+    
+    // Reset form after submission
+    this.resetForm();
+  }
+
+  private resetForm() {
+    this.requestContent = '';
+    this.selectedEmployees = [];
+    this.active = 0;
   }
 
   addChip() {

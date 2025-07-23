@@ -25,23 +25,19 @@ export class Settings {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   roles = [
-    { label: 'Admin', value: 'admin' },
-    { label: 'Manager', value: 'manager' },
-    { label: 'Editor', value: 'editor' },
-    { label: 'Viewer', value: 'viewer' },
-    { label: 'Guest', value: 'guest' }
+    { label: 'Senior', value: 'senior' },
+    { label: 'Mid', value: 'mid' },
+    { label: 'Junior', value: 'junior' }
   ];
 
   rolePoints = {
-    admin: 1000,
-    manager: 750,
-    editor: 500,
-    viewer: 250,
-    guest: 100
+    senior: 5,
+    mid: 3,
+    junior: 2
   };
 
-  selectedRole: string = 'admin';
-  selectedRolePoints: number = 1000;
+  selectedRole: string = 'senior';
+  selectedRolePoints: number = 5;
 
   onRoleChange() {
     this.selectedRolePoints = this.rolePoints[this.selectedRole as keyof typeof this.rolePoints];

@@ -1,18 +1,81 @@
-<div class="card">
-    <p-tabs value="0" scrollable>
-        <p-tablist>
-            @for(tab of scrollableTabs; track tab.value){
-                <p-tab [value]="tab.value">
-                    {{ tab.title }}
-                </p-tab>
-            }
-        </p-tablist>
-        <p-tabpanels>
-            @for(tab of scrollableTabs; track tab.value){
-                <p-tabpanel [value]="tab.value">
-                    <p class="m-0">{{ tab.content }}</p>
-                </p-tabpanel>
-            }
-        </p-tabpanels>
+<div class="employee-tabs-container">
+  <div class="card">
+    <p-tabs [value]="activeTabValue" scrollable>
+      <p-tablist>
+        @if(selectedEmployees.length === 0) {
+          <p-tab value="empty">
+            <i class="pi pi-info-circle"></i>
+            No Employees Selected
+          </p-tab>
+        }
+        @for(employee of selectedEmployees; track employee.id) {
+          <p-tab [value]="employee.id.toString()">
+            <div class="tab-header">
+              <div class="employee-avatar-small">
+                {{ getInitials(employee.name) }}
+              </div>
+              <span class="tab-name">{{ employee.name }}</span>
+              <button 
+                type="button" 
+                class="tab-close-btn" 
+                (click)="removeEmployee($event, employee)"
+                title="Remove employee"
+              >
+                <i class="pi pi-times"></i>
+              </button>
+            </div>
+          </p-tab>
+        }
+      </p-tablist>
+      <p-tabpanels>
+        @if(selectedEmployees.length === 0) {
+          <p-tabpanel value="empty">
+            <div class="empty-state">
+              <i class="pi pi-users empty-icon"></i>
+              <h3>No employees selected</h3>
+              <p>Select employees from the table to view their details here.</p>
+            </div>
+          </p-tabpanel>
+        }
+        @for(employee of selectedEmployees; track employee.id) {
+          <p-tabpanel [value]="employee.id.toString()">
+            <div class="employee-detail-card">
+              <div class="employee-header">
+                <div class="employee-avatar-large">
+                  {{ getInitials(employee.name) }}
+                </div>
+                <div class="employee-basic-info">
+                  <h2 class="employee-name">{{ employee.name }}</h2>
+                  <p-tag 
+                    [value]="employee.role" 
+                    [severity]="getRoleSeverity(employee.role)"
+                    class="role-tag"
+                  ></p-tag>
+                </div>
+              </div>
+              
+              <div class="employee-details-grid">
+                <div class="detail-item">
+                  <label>Employee ID</label>
+                  <span class="detail-value">{{ employee.id }}</span>
+                </div>
+                
+                <div class="detail-item">
+                  <label>Role</label>
+                  <span class="detail-value">{{ employee.role }}</span>
+                </div>
+                
+                <div class="detail-item">
+                  <label>Price</label>
+                  <span class="detail-value salary">{{ employee.price }}</span>
+                </div>
+                
+              </div>
+              
+            </div>
+          </p-tabpanel>
+        }
+      </p-tabpanels>
     </p-tabs>
+  </div>
 </div>

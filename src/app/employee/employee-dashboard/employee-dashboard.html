@@ -119,7 +119,7 @@
                   [severity]="getSeverity(request.status)">
                 </p-tag>
               </td>
-              <td>{{ request.price | currency }}</td>
+              <td>{{ request.price }}</td>
             </tr>
           </ng-template>
 
@@ -135,7 +135,7 @@
           <leaderboard></leaderboard>
         </div>
         <div class="dialDiv">
-          <dial [segments]="[25, 40, 35]" [labels]="['Done','InWork','Left']"></dial>
+          <dial [segments]="[25, 40, 35]" [labels]="['Available Quota Points','Earned Points','Used Points']"></dial>
         </div>
       </div>
     </div>

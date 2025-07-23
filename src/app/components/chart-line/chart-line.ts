@@ -17,14 +17,14 @@ export class ChartLine implements OnInit {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
       datasets: [
         {
-          label: 'Sales 2024',
+          label: 'Number of Helps',
           data: [120, 150, 170, 140, 180, 190, 220],
           fill: false,
           borderColor: '#42A5F5',
           tension: 0.4
         },
         {
-          label: 'Sales 2025',
+          label: 'Number of Requests',
           data: [100, 130, 160, 170, 200, 210, 240],
           fill: false,
           borderColor: '#FFA726',
@@ -48,7 +48,7 @@ export class ChartLine implements OnInit {
           grid: { display: false }
         },
         y: {
-          title: { display: true, text: 'Revenue (k$)' },
+          title: { display: true, text: 'Count' },
           grid: { color: '#eee' }
         }
       }

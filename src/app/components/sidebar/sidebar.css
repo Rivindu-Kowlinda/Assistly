@@ -49,7 +49,7 @@
   display: block;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  color: var(--link-color);
+  color: white;
   text-decoration: none;
   font-weight: 500;
   transition:
@@ -81,7 +81,7 @@
   display: block;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  color: var(--link-color);
+  color: white;
   text-decoration: none;
   font-weight: 500;
   transition:
@@ -90,12 +90,12 @@
 }
 .profile a:hover {
   background-color: var(--link-hover-bg);
-  color: var(--link-color);
+  color: white;
 }
 /* If you want the bottom link to stay highlighted when active: */
 .profile a.active {
   background-color: var(--link-hover-bg);
-  color: var(--link-color);
+  color: white;
 }
 
 /* ——— Hamburger Toggle ——— */

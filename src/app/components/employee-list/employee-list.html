@@ -1,214 +1,140 @@
-<div class="card">
-  <p-table
-    #dt
-    [value]="customers"
-    [(selection)]="selectedCustomers"
-    (onSelectionChange)="handleSelectionChange($event)"
-    dataKey="id"
-    [rowHover]="true"
-    [rows]="10"
-    [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[10,25,50]"
-    [loading]="loading"
-    [paginator]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [filterDelay]="0"
-    [globalFilterFields]="['name','country.name','representative.name','status']"
-  >
-    <!-- Caption with clear & search -->
-    <ng-template #caption>
-      <div class="flex justify-between">
-        <p-button
-          outlined="true"
-          icon="pi pi-filter-slash"
-          label="Clear"
-          (click)="clear(dt)"
-        ></p-button>
-        <p-iconField iconPosition="left">
-          <p-inputIcon><i class="pi pi-search"></i></p-inputIcon>
-          <input
-            pInputText
-            type="text"
-            [(ngModel)]="searchValue"
-            (input)="dt.filterGlobal(searchValue, 'contains')"
-            placeholder="Keyboard Search"
-          />
-        </p-iconField>
-      </div>
-    </ng-template>
+<div class="employee-table-container">
+  <div class="table-header">
+    <h2 class="table-title">Employee Management</h2>
+    <p class="table-subtitle">Manage your team members and their information</p>
+  </div>
 
-    <!-- Header row -->
-    <ng-template #header>
-      <tr>
-        <th style="width:4rem">
-          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-        </th>
-        <th pSortableColumn="name" style="min-width:14rem">
-          Name <p-sortIcon field="name"></p-sortIcon>
-          <p-columnFilter
-            type="text"
-            field="name"
-            display="menu"
-            class="ml-auto"
-          ></p-columnFilter>
-        </th>
-        <th pSortableColumn="country.name" style="min-width:14rem">
-          Country <p-sortIcon field="country.name"></p-sortIcon>
-          <p-columnFilter
-            type="text"
-            field="country.name"
-            display="menu"
-            class="ml-auto"
-          ></p-columnFilter>
-        </th>
-        <th pSortableColumn="representative.name" style="min-width:14rem">
-          Agent <p-sortIcon field="representative.name"></p-sortIcon>
-          <p-columnFilter
-            field="representative"
-            matchMode="in"
-            display="menu"
-            [showMatchModes]="false"
-            [showOperator]="false"
-            [showAddButton]="false"
-            class="ml-auto"
-          >
-            <ng-template #filter let-value let-filter="filterCallback">
-              <p-multiselect
-                [filter]="false"
-                [ngModel]="value"
-                (ngModelChange)="filter($event)"
-                [options]="representatives"
-                placeholder="Any"
-                optionLabel="name"
-                class="w-full"
-              >
-                <ng-template let-option #item>
-                  <div class="flex items-center gap-2">
-                    <img
-                      [alt]="option.name"
-                      src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ option.image }}"
-                      style="width:32px"
-                    />
-                    <span>{{ option.name }}</span>
-                  </div>
-                </ng-template>
-              </p-multiselect>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th pSortableColumn="date" style="min-width:14rem">
-          Date <p-sortIcon field="date"></p-sortIcon>
-          <p-columnFilter
-            type="date"
-            field="date"
-            display="menu"
-            class="ml-auto"
-          ></p-columnFilter>
-        </th>
-        <th pSortableColumn="balance" style="min-width:14rem">
-          Balance <p-sortIcon field="balance"></p-sortIcon>
-          <p-columnFilter
-            type="numeric"
-            field="balance"
-            display="menu"
-            currency="USD"
-            class="ml-auto"
-          ></p-columnFilter>
-        </th>
+  <div class="table-card">
+    <p-table
+      #dt
+      [value]="customers"
+      [(selection)]="selectedCustomers"
+      (selectionChange)="onSelectionChange($event)"
+      dataKey="id"
+      [rowHover]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10,25,50]"
+      [loading]="loading"
+      [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [filterDelay]="0"
+      [globalFilterFields]="['name','role','price']"
+      styleClass="custom-table"
+    >
+      <!-- Caption with clear & search -->
+      <ng-template #caption>
+        <div class="table-controls">
+          <div class="selected-info">
+            <span class="selected-count" *ngIf="selectedCustomers.length > 0">
+              {{ selectedCustomers.length }} selected
+            </span>
+          </div>
+          <div class="search-controls">
+            <p-button
+              outlined="true"
+              icon="pi pi-filter-slash"
+              label="Clear"
+              (click)="clear(dt)"
+              styleClass="clear-button"
+            ></p-button>
+            <p-iconField iconPosition="left" styleClass="search-field">
+              <p-inputIcon><i class="pi pi-search"></i></p-inputIcon>
+              <input
+                pInputText
+                type="text"
+                [(ngModel)]="searchValue"
+                (input)="dt.filterGlobal(searchValue, 'contains')"
+                placeholder="Search employees..."
+                class="search-input"
+              />
+            </p-iconField>
+          </div>
+        </div>
+      </ng-template>
 
-        <!-- Status column with native select filter -->
-        <th pSortableColumn="status" style="min-width:14rem">
-          Status <p-sortIcon field="status"></p-sortIcon>
-          <p-columnFilter
-            field="status"
-            matchMode="equals"
-            display="menu"
-            class="ml-auto"
-          >
-            <ng-template #filter let-value let-filter="filterCallback">
-              <select
-                [value]="value"
-                (change)="filter($any($event.target).value)"
-                class="p-inputtext w-full"
-              >
-                <option value="">Any</option>
-                <option
-                  *ngFor="let s of statuses"
-                  [value]="s.value"
-                >{{ s.label }}</option>
-              </select>
-            </ng-template>
-          </p-columnFilter>
-        </th>
+      <!-- Header row -->
+      <ng-template #header>
+        <tr>
+          <th style="width: 60px" class="checkbox-column">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th pSortableColumn="name" class="name-column">
+            <div class="column-header">
+              <span>Name</span>
+              <p-sortIcon field="name"></p-sortIcon>
+            </div>
+            <p-columnFilter
+              type="text"
+              field="name"
+              display="menu"
+              class="column-filter"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="role" class="role-column">
+            <div class="column-header">
+              <span>Role</span>
+              <p-sortIcon field="role"></p-sortIcon>
+            </div>
+            <p-columnFilter
+              type="text"
+              field="role"
+              display="menu"
+              class="column-filter"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="price" class="price-column">
+            <div class="column-header">
+              <span>Price</span>
+              <p-sortIcon field="price"></p-sortIcon>
+            </div>
+            <p-columnFilter
+              type="numeric"
+              field="price"
+              display="menu"
+              class="column-filter"
+            ></p-columnFilter>
+          </th>
+        </tr>
+      </ng-template>
 
-        <th pSortableColumn="activity" style="min-width:14rem">
-          Activity <p-sortIcon field="activity"></p-sortIcon>
-          <p-columnFilter
-            field="activity"
-            matchMode="between"
-            display="menu"
-            [showMatchModes]="false"
-            [showOperator]="false"
-            [showAddButton]="false"
-            class="ml-auto"
-          >
-            <ng-template #filter let-filter="filterCallback">
-              <p-slider
-                [(ngModel)]="activityValues"
-                [range]="true"
-                (onSlideEnd)="filter(activityValues)"
-                class="m-4"
-              ></p-slider>
-              <div class="flex items-center justify-between px-2">
-                <span>{{ activityValues[0] }}</span>
-                <span>{{ activityValues[1] }}</span>
+      <!-- Body rows -->
+      <ng-template #body let-customer>
+        <tr class="table-row">
+          <td class="checkbox-cell">
+            <p-tableCheckbox [value]="customer"></p-tableCheckbox>
+          </td>
+          <td class="name-cell">
+            <div class="employee-info">
+              <div class="avatar">
+                {{ getInitials(customer.name) }}
               </div>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th style="width:5rem"></th>
-      </tr>
-    </ng-template>
+              <div class="employee-details">
+                <span class="employee-name">{{ customer.name }}</span>
+              </div>
+            </div>
+          </td>
+          <td class="role-cell">
+            <span class="role-badge">{{ customer.role }}</span>
+          </td>
+          <td class="price-cell">
+            <span class="price-amount">{{ customer.price | number }}</span>
+          </td>
+        </tr>
+      </ng-template>
 
-    <!-- Body rows -->
-    <ng-template #body let-customer>
-      <tr class="p-selectable-row">
-        <td><p-tableCheckbox [value]="customer"></p-tableCheckbox></td>
-        <td>{{ customer.name }}</td>
-        <td>
-          <div class="flex items-center gap-2">
-            <img
-              src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
-              [class]="'flag flag-' + customer.country.code"
-              style="width:20px"
-            />
-            <span class="ml-1 align-middle">{{ customer.country.name }}</span>
-          </div>
-        </td>
-        <td>
-          <div class="flex items-center gap-2">
-            <img
-              [alt]="customer.representative.name"
-              src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{customer.representative.image}}"
-              width="32"
-              style="vertical-align:middle"
-            />
-            <span class="ml-1 align-middle">{{ customer.representative.name }}</span>
-          </div>
-        </td>
-        <td>{{ customer.date | date:'MM/dd/yyyy' }}</td>
-        <td>{{ customer.balance | currency:'USD':'symbol' }}</td>
-        <td><p-tag [value]="customer.status" [severity]="getSeverity(customer.status)"></p-tag></td>
-        <td><p-progressBar [value]="customer.activity" [showValue]="false"></p-progressBar></td>
-        <td style="text-align:center">
-          <p-button rounded="true" icon="pi pi-cog"></p-button>
-        </td>
-      </tr>
-    </ng-template>
-
-    <!-- Empty message -->
-    <ng-template #emptymessage>
-      <tr><td colspan="8">No customers found.</td></tr>
-    </ng-template>
-  </p-table>
+      <!-- Empty message -->
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="4" class="empty-message">
+            <div class="empty-state">
+              <i class="pi pi-users empty-icon"></i>
+              <h3>No employees found</h3>
+              <p>Try adjusting your search criteria</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

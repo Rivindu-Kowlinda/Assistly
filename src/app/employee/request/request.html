@@ -18,6 +18,8 @@
             </div>
           </div>
           <div class="flex py-4">
+            <br>
+            <br>
             <p-button 
               label="Next" 
               (onClick)="goToNextStep(activateCallback, 1)"
@@ -36,7 +38,10 @@
             <div
               class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
             >
-              <employee-list [(selection)]="selectedEmployees" (onSelectionChange)="onEmployeeSelectionChange(selectedEmployees)"></employee-list>
+              <employee-list 
+                [selection]="selectedEmployees" 
+                (selectionChange)="onEmployeeSelectionChange($event)"
+              ></employee-list>
             </div>
           </div>
           <div class="flex py-4 gap-2">
@@ -66,15 +71,21 @@
               <div class="summary-container flex w-full">
                 <div class="summary-text flex-1">
                   <h4>Request Content:</h4>
+                  <div id = "requestSummaryText">
                   <textBox 
                     #summaryTextBox 
                     [disabled]="true"
                     [value]="requestContent"
+                    id = "textbos"
                   ></textBox>
+                  </div>
                 </div>
                 <div id="userSummary" class="flex-1">
                   <h4>Selected Users:</h4>
-                  <scrollable-tabs></scrollable-tabs>
+                  <employee-tabs 
+                    [selectedEmployees]="selectedEmployees"
+                    (employeeRemoved)="onEmployeeRemoved($event)"
+                  ></employee-tabs>
                 </div>
               </div>
             </div>
@@ -87,6 +98,7 @@
             ></p-button>
             <p-button 
               label="Submit"
+              [disabled]="!canSubmit()"
               (onClick)="onSubmit()"
             ></p-button>
           </div>

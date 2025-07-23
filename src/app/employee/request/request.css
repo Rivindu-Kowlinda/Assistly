@@ -66,11 +66,10 @@
   .summary-container {
     gap: 20px;
     padding: 20px;
-    height: 100%;
   }
   
   .summary-text, #userSummary {
-    min-height: 300px;
+    min-width: 45%;
   }
   
   .summary-text h4, #userSummary h4 {
@@ -78,4 +77,8 @@
     margin-bottom: 10px;
     color: #333;
     font-weight: 600;
+  }
+  #requestSummaryText{
+    padding-top: 24px;
+    min-height: 371.33px;
   }

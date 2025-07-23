@@ -22,7 +22,7 @@ export class Dial implements OnInit {
   /** now takes 3 segments (must sum to 100) */
   @Input() segments: [number,number,number] = [30, 50, 20];
   /** matching labels for tooltips/legend */
-  @Input() labels: [string,string,string] = ['Completed','In Progress','Pending'];
+  @Input() labels: [string,string,string] = ['Available Quota Points','Earned Points','Used Points'];
 
   data!: ChartData<'doughnut', number[], string>;
   options!: ChartOptions<'doughnut'>;
@@ -43,22 +43,7 @@ export class Dial implements OnInit {
     };
 
     // center‑text plugin showing first slice’s percent
-    const centerText: Plugin<'doughnut'> = {
-      id: 'centerText',
-      beforeDraw: chart => {
-        const { ctx, width, height } = chart;
-        ctx.save();
-        const fontSize = (height / 114).toFixed(2);
-        ctx.font = `${fontSize}em sans-serif`;
-        ctx.textBaseline = 'middle';
-        // percent of the first segment
-        const pct = Math.round((seg[0] / total) * 100);
-        const text = pct + '%';
-        ctx.fillText(text, width/2, height/2);
-        ctx.restore();
-      }
-    };
-    Chart.register(centerText);
+
 
     this.options = {
       responsive: true,

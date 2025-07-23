@@ -21,17 +21,9 @@ interface User {
   id: number;
   name: string;
   username: string;
-  email: string;
-  phone: string;
   role: string;
   password: string;
-  country: { name: string; code: string };
-  representative: { name: string; image: string };
-  status: string;
-  verified: boolean;
-  date: Date;
-  lastLogin: Date;
-  department: string;
+  price: string;
 }
 
 @Component({
@@ -60,13 +52,10 @@ interface User {
 })
 export class TableFilterBasicDemo implements OnInit {
   customers: User[] = [];
-  representatives: any[] = [];
-  statuses: any[] = [];
   roles: any[] = [];
   loading = true;
 
-  selectedRepresentatives: any[] = [];
-  selectedStatus: any = null;
+  selectedRole: any = null;
   searchTerm: string = '';
 
   // Popup related properties
@@ -81,87 +70,56 @@ export class TableFilterBasicDemo implements OnInit {
         id: 1,
         name: 'John Doe',
         username: 'johndoe',
-        email: 'john.doe@company.com',
-        phone: '+1-555-0123',
-        role: 'Senior Employee',
+        role: 'Senior',
         password: '********',
-        country: { name: 'USA', code: 'us' },
-        representative: { name: 'Amy Elsner', image: 'amyelsner.png' },
-        status: 'qualified',
-        verified: true,
-        date: new Date('2023-01-15'),
-        lastLogin: new Date('2024-07-20'),
-        department: 'Engineering'
+        price: "5"
       },
       {
         id: 2,
         name: 'Jane Smith',
         username: 'janesmith',
-        email: 'jane.smith@company.com',
-        phone: '+49-123-456789',
-        role: 'Mid Employee',
+        role: 'Mid',
         password: '********',
-        country: { name: 'Germany', code: 'de' },
-        representative: { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-        status: 'unqualified',
-        verified: false,
-        date: new Date('2023-03-22'),
-        lastLogin: new Date('2024-07-19'),
-        department: 'Marketing'
+        price: "3"
       },
       {
         id: 3,
         name: 'Alice Johnson',
         username: 'alicejohnson',
-        email: 'alice.johnson@company.com',
-        phone: '+44-20-7946-0958',
         role: 'Admin',
         password: '********',
-        country: { name: 'UK', code: 'gb' },
-        representative: { name: 'Xuxue Feng', image: 'xuxuefeng.png' },
-        status: 'qualified',
-        verified: true,
-        date: new Date('2022-11-08'),
-        lastLogin: new Date('2024-07-22'),
-        department: 'IT Administration'
+        price: "-"
       },
       {
         id: 4,
         name: 'Bob Wilson',
         username: 'bobwilson',
-        email: 'bob.wilson@company.com',
-        phone: '+1-555-0789',
-        role: 'Junior Employee',
+        role: 'Junior',
         password: '********',
-        country: { name: 'Canada', code: 'ca' },
-        representative: { name: 'Amy Elsner', image: 'amyelsner.png' },
-        status: 'new',
-        verified: true,
-        date: new Date('2024-05-12'),
-        lastLogin: new Date('2024-07-21'),
-        department: 'Sales'
+        price: "2"
+      },
+      {
+        id: 5,
+        name: 'Sarah Connor',
+        username: 'sarahconnor',
+        role: 'Senior',
+        password: '********',
+        price: "5"
+      },
+      {
+        id: 6,
+        name: 'Mike Johnson',
+        username: 'mikejohnson',
+        role: 'Mid',
+        password: '********',
+        price: "3"
       }
     ];
 
-    this.representatives = [
-      { name: 'Amy Elsner', image: 'amyelsner.png' },
-      { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-      { name: 'Xuxue Feng', image: 'xuxuefeng.png' }
-    ];
-
-    this.statuses = [
-      { label: 'Unqualified', value: 'unqualified' },
-      { label: 'Qualified', value: 'qualified' },
-      { label: 'New', value: 'new' },
-      { label: 'Negotiation', value: 'negotiation' },
-      { label: 'Renewal', value: 'renewal' },
-      { label: 'Proposal', value: 'proposal' }
-    ];
-
     this.roles = [
-      { label: 'Junior Employee', value: 'Junior Employee' },
-      { label: 'Mid Employee', value: 'Mid Employee' },
-      { label: 'Senior Employee', value: 'Senior Employee' },
+      { label: 'Junior', value: 'Junior' },
+      { label: 'Mid', value: 'Mid' },
+      { label: 'Senior', value: 'Senior' },
       { label: 'Admin', value: 'Admin' }
     ];
 
@@ -172,24 +130,12 @@ export class TableFilterBasicDemo implements OnInit {
     table.clear();
   }
 
-  getSeverity(status: string) {
-    switch (status) {
-      case 'unqualified': return 'danger';
-      case 'qualified': return 'success';
-      case 'new': return 'info';
-      case 'negotiation': return 'warn';
-      case 'renewal': return null;
-      case 'proposal': return 'info';
-    }
-    return null;
-  }
-
   getRoleSeverity(role: string) {
     switch (role) {
       case 'Admin': return 'danger';
-      case 'Senior Employee': return 'success';
-      case 'Mid Employee': return 'warn';
-      case 'Junior Employee': return 'info';
+      case 'Senior': return 'success';
+      case 'Mid': return 'warn';
+      case 'Junior': return 'info';
     }
     return null;
   }
@@ -233,8 +179,15 @@ export class TableFilterBasicDemo implements OnInit {
 
   saveChanges() {
     if (this.editingUser && this.selectedUser) {
-      // Update selected user with editing user data
-      this.selectedUser = { ...this.editingUser };
+      // Only update editable fields: username, password, role
+      this.selectedUser.username = this.editingUser.username;
+      this.selectedUser.role = this.editingUser.role;
+      
+      // Only update password if it's not empty
+      if (this.editingUser.password && this.editingUser.password.trim() !== '') {
+        this.selectedUser.password = this.editingUser.password;
+      }
+      
       this.updateUserInList();
     }
   }

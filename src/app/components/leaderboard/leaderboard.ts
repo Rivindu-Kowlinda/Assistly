@@ -11,7 +11,8 @@ import { HelperService } from '../../services/helper/helper';
   templateUrl: './leaderboard.html',
   standalone: true,
   imports: [CommonModule, TableModule, FormsModule],
-  providers: [HelperService]
+  providers: [HelperService],
+  styleUrls: ["./leaderboard.css"]
 })
 export class Leaderboard implements OnInit {
   helpers: Helper[] = [];
