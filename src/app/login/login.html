@@ -6,16 +6,17 @@
     <h2>Login into<br />your account</h2>
   </div>
 
-  <div class="login-right">
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-      <label>Email</label>
-      <input type="email" formControlName="email" placeholder="name@example.com" />
+<!-- src/app/components/login/login.component.html -->
+    <div class="login-container">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <label>Username</label>
+        <input type="text" formControlName="username" placeholder="Your Username" />
 
-      <label>Password</label>
-      <input type="password" formControlName="password" placeholder="Your password" />
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="Your password" />
 
+        <button type="submit" [disabled]="loginForm.invalid">Login</button>
+      </form>
+    </div>
 
-      <button type="submit" [disabled]="loginForm.invalid">Login</button>
-    </form>
-  </div>
 </div>

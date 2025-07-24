@@ -9,7 +9,7 @@ import { AdminDashboard } from './admin/dashboard/dashboard';
 import { Users } from './admin/users/users';
 import { Settings } from './components/settings/settings';
 import { AdminProfile } from './admin/admin-profile/admin-profile';
-import { Component } from '@angular/core';
+import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
     {
@@ -47,5 +47,22 @@ export const routes: Routes = [
     {
         path:"adminProfile",
         component: AdminProfile
-    }
+    },
+    {
+        path: 'login',
+        component: Login
+      },
+      {
+        path: 'admin',
+        component: AdminDashboard,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'ADMIN' }
+      },
+      {
+        path: 'employee',
+        component: EmployeeDashboard,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'JUNIOR' }
+      },
+      { path: '**', redirectTo: 'login' }
 ];

@@ -35,6 +35,20 @@ export class EmployeeList implements OnInit, OnChanges {
   activityValues: number[] = [0, 100];
   searchValue: string = '';
 
+  isSelected(customer: any): boolean {
+    return this.selectedCustomers.includes(customer);
+  }
+
+  toggleSelection(customer: any) {
+    const index = this.selectedCustomers.indexOf(customer);
+    if (index === -1) {
+      this.selectedCustomers.push(customer);
+    } else {
+      this.selectedCustomers.splice(index, 1);
+    }
+    this.selectionChange.emit(this.selectedCustomers);
+  }
+
   ngOnInit() {
     this.customers = [
       { 
