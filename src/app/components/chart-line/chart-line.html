@@ -1,9 +1,30 @@
+<div class="flex items-center mb-4">
+  <label for="rangeSelect" class="mr-2 font-medium">Show:</label>
+  <select
+    id="rangeSelect"
+    [(ngModel)]="selectedRange"
+    (ngModelChange)="onRangeChange()"
+    style="
+      width: 160px;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+      background: white;
+      color: black;
+    "
+  >
+    <option value="" disabled>Select a range</option>
+    <option *ngFor="let opt of rangeOptions" [value]="opt.value">
+      {{ opt.view }}
+    </option>
+  </select>
+</div>
+
 <div class="card">
-    <p-chart
-      type="line"
-      [data]="data"
-      [options]="options"
-      class="h-[30rem]"
-    ></p-chart>
-  </div>
-  
+  <p-chart
+    type="line"
+    [data]="data"
+    [options]="options"
+    style="height: 100%;"
+  ></p-chart>
+</div>

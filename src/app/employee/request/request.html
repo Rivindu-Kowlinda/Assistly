@@ -1,35 +1,42 @@
 <app-sidebar></app-sidebar>
 <div class="main-wrapper">
   <p-stepper [value]="active">
-    <!-- Step I -->
+  
+    <!-- STEP I: Enter Request -->
     <p-step-item [value]="0">
       <p-step>Enter Request</p-step>
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
-          <div class="flex flex-column h-12rem">
-            <div
-              class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
-            >
-              <textBox 
-                #requestTextBox
-                (contentChange)="onRequestContentChange($event)"
-                [value]="requestContent"
-              ></textBox>
-            </div>
+          <div class="flex flex-column gap-3">
+            <!-- Heading input -->
+            <input 
+              type="text" 
+              pInputText 
+              placeholder="Enter Request Heading" 
+              [(ngModel)]="requestHeading"
+              class="p-inputtext p-component"
+            />
+
+            <!-- Rich text input -->
+            <textBox 
+              #requestTextBox
+              (contentChange)="onRequestContentChange($event)"
+              [value]="requestContent"
+            ></textBox>
           </div>
+
           <div class="flex py-4">
-            <br>
-            <br>
             <p-button 
               label="Next" 
               (onClick)="goToNextStep(activateCallback, 1)"
+              [disabled]="!canGoToStep2()"
             ></p-button>
           </div>
         </ng-template>
       </p-step-panel>
     </p-step-item>
 
-    <!-- Step II -->
+    <!-- STEP II: Select User -->
     <p-step-item [value]="1">
       <p-step>Select User</p-step>
       <p-step-panel>
@@ -53,13 +60,14 @@
             <p-button 
               label="Next" 
               (onClick)="goToNextStep(activateCallback, 2)"
+              [disabled]="selectedEmployees.length === 0"
             ></p-button>
           </div>
         </ng-template>
       </p-step-panel>
     </p-step-item>
 
-    <!-- Step III -->
+    <!-- STEP III: Summary -->
     <p-step-item [value]="2">
       <p-step>Summary</p-step>
       <p-step-panel>
@@ -70,15 +78,19 @@
             >
               <div class="summary-container flex w-full">
                 <div class="summary-text flex-1">
+                  <h4>Request Heading:</h4>
+                  <p>{{ requestHeading }}</p>
+
                   <h4>Request Content:</h4>
-                  <div id = "requestSummaryText">
-                  <textBox 
-                    #summaryTextBox 
-                    [disabled]="true"
-                    [value]="requestContent"
-                  ></textBox>
+                  <div id="requestSummaryText">
+                    <textBox 
+                      #summaryTextBox 
+                      [disabled]="true"
+                      [value]="requestContent"
+                    ></textBox>
                   </div>
                 </div>
+
                 <div id="userSummary" class="flex-1">
                   <h4>Selected Users:</h4>
                   <employee-tabs 
@@ -89,6 +101,7 @@
               </div>
             </div>
           </div>
+
           <div class="flex py-4 gap-2">
             <p-button 
               label="Back" 
@@ -104,5 +117,6 @@
         </ng-template>
       </p-step-panel>
     </p-step-item>
+
   </p-stepper>
 </div>

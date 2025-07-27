@@ -27,7 +27,7 @@ export class Login {
         next: () => {
           const role = this.auth.getRole();
           if (role === 'ADMIN') this.router.navigate(['/admin']);
-          else this.router.navigate(['/employee']);
+          if (role === 'JUNIOR' || role === 'MID' || role === 'SENIOR') this.router.navigate(['/employee']);
         },
         error: () => alert('Invalid login')
       });

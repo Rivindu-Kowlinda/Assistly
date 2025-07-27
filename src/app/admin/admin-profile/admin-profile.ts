@@ -1,22 +1,28 @@
-import { Component } from '@angular/core';
-
-import { Sidebar } from '../../components/sidebar/sidebar';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AdminSidebar } from '../../components/admin-sidebar/admin-sidebar';
+import { UserService, UserProfile } from '../../services/user.admin.service';
 
 @Component({
   selector: 'admin-profile',
-  imports: [AdminSidebar],
+  standalone: true,
+  imports: [CommonModule, AdminSidebar],
   templateUrl: './admin-profile.html',
   styleUrl: './admin-profile.css'
 })
-export class AdminProfile {
-  user = {
-    username: 'rivindu_k',
-    role: 'admin apparently',
-    balancePoints: 1200,
-    monthlyAllocation: 500,
-    requestCount: 32,
-    helpPending: 4,
-    helpCompleted: 28,
-  };
+export class AdminProfile implements OnInit {
+  user: UserProfile | null = null;
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getProfile().subscribe({
+      next: (data) => this.user = data,
+      error: (err) => console.error('Error loading admin profile:', err)
+    });
+  }
+
+  isAdmin(): boolean {
+    return this.user?.role?.includes('ADMIN') ?? false;
+  }
 }

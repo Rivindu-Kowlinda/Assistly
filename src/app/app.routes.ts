@@ -53,16 +53,16 @@ export const routes: Routes = [
         component: Login
       },
       {
+        path: 'employee',
+        component: EmployeeDashboard,
+        canActivate: [RoleGuard],
+        data: { expectedRole: ['JUNIOR', 'MID', 'SENIOR'] }
+      },
+      {
         path: 'admin',
         component: AdminDashboard,
         canActivate: [RoleGuard],
         data: { expectedRole: 'ADMIN' }
-      },
-      {
-        path: 'employee',
-        component: EmployeeDashboard,
-        canActivate: [RoleGuard],
-        data: { expectedRole: 'JUNIOR' }
       },
       { path: '**', redirectTo: 'login' }
 ];

@@ -11,19 +11,24 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-
 import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { AvatarModule } from 'primeng/avatar';
 
+import { UserService, ApiUser } from '../../services/user.service';
+
 interface User {
-  id: number;
+  id: string;
   name: string;
   username: string;
-  role: string;
   password: string;
+  role: string;
   price: string;
+  monthlyAllocation: number;
+  requestCount?: number;
+  helpPendingCount?: number;
+  helpAcceptedCount?: number;
 }
 
 @Component({
@@ -58,72 +63,98 @@ export class TableFilterBasicDemo implements OnInit {
   selectedRole: any = null;
   searchTerm: string = '';
 
-  // Popup related properties
   displayUserDialog = false;
   selectedUser: User | null = null;
   editingUser: User | null = null;
   isEditingMode = false;
 
+
+
+  constructor(private userService: UserService) {}
+
+  displayCreateUserDialog = false;
+  newUser = {
+    username: '',
+    password: '',
+    role: '',               // will be one of this.roles[].value
+    balancePoints: 0,
+    monthlyAllocation: 0
+  };
+  
   ngOnInit() {
-    this.customers = [
-      {
-        id: 1,
-        name: 'John Doe',
-        username: 'johndoe',
-        role: 'Senior',
-        password: '********',
-        price: "5"
-      },
-      {
-        id: 2,
-        name: 'Jane Smith',
-        username: 'janesmith',
-        role: 'Mid',
-        password: '********',
-        price: "3"
-      },
-      {
-        id: 3,
-        name: 'Alice Johnson',
-        username: 'alicejohnson',
-        role: 'Admin',
-        password: '********',
-        price: "-"
-      },
-      {
-        id: 4,
-        name: 'Bob Wilson',
-        username: 'bobwilson',
-        role: 'Junior',
-        password: '********',
-        price: "2"
-      },
-      {
-        id: 5,
-        name: 'Sarah Connor',
-        username: 'sarahconnor',
-        role: 'Senior',
-        password: '********',
-        price: "5"
-      },
-      {
-        id: 6,
-        name: 'Mike Johnson',
-        username: 'mikejohnson',
-        role: 'Mid',
-        password: '********',
-        price: "3"
-      }
-    ];
-
     this.roles = [
-      { label: 'Junior', value: 'Junior' },
-      { label: 'Mid', value: 'Mid' },
-      { label: 'Senior', value: 'Senior' },
-      { label: 'Admin', value: 'Admin' }
+      { label: 'Junior', value: 'JUNIOR' },
+      { label: 'Mid',    value: 'MID'    },
+      { label: 'Senior', value: 'SENIOR' },
+      { label: 'Admin',  value: 'ADMIN'  }
     ];
+    this.loadUsersFromAPI();
+  }
 
-    this.loading = false;
+  openCreateUserDialog() {
+    this.newUser = {
+      username: '',
+      password: '',
+      role: this.roles[0].value,   // default to first role
+      balancePoints: 0,
+      monthlyAllocation: 0
+    };
+    this.displayCreateUserDialog = true;
+  }
+
+  saveNewUser() {
+    const payload = {
+      username: this.newUser.username,
+      password: this.newUser.password,
+      role: [ this.newUser.role ],
+      balancePoints: this.newUser.balancePoints,
+      monthlyAllocation: this.newUser.monthlyAllocation
+    };
+
+    this.userService.createUser(payload).subscribe({
+      next: created => {
+        // inject into your table with the shape you need
+        this.customers = [
+          ...this.customers,
+          {
+            id: created.id,
+            name: created.username,
+            username: created.username,
+            password: '••••••••',          // mask it
+            role: created.role[0],
+            price: created.balancePoints.toString(),
+            monthlyAllocation: created.monthlyAllocation
+          }
+        ];
+        this.displayCreateUserDialog = false;
+      },
+      error: err => console.error('Create user failed', err)
+    });
+  }
+
+  loadUsersFromAPI() {
+    this.loading = true;
+    this.userService.getUsers().subscribe({
+      next: (data: ApiUser[]) => {
+        this.customers = data.map(user => ({
+          id: user.id,
+          name: user.username,
+          username: user.username,
+          password: user.password,
+          role: user.role[0],
+          price: user.balancePoints.toString(),
+          monthlyAllocation: user.monthlyAllocation,
+          requestCount: user.requestCount,
+          helpPendingCount: user.helpPendingCount,
+          helpAcceptedCount: user.helpAcceptedCount
+        }));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch users:', err);
+        this.loading = false;
+      }
+    });
   }
 
   clear(table: any) {
@@ -131,26 +162,19 @@ export class TableFilterBasicDemo implements OnInit {
   }
 
   getRoleSeverity(role: string) {
-    switch (role) {
-      case 'Admin': return 'danger';
-      case 'Senior': return 'success';
-      case 'Mid': return 'warn';
-      case 'Junior': return 'info';
+    switch (role.toUpperCase()) {
+      case 'ADMIN': return 'danger';
+      case 'SENIOR': return 'success';
+      case 'MID': return 'warn';
+      case 'JUNIOR': return 'info';
+      default: return null;
     }
-    return null;
   }
 
   onRowClick(user: User, event: Event) {
-    // Prevent event bubbling and ensure clean state
     event.stopPropagation();
     event.preventDefault();
-    
-    // Close dialog first if it's open
-    if (this.displayUserDialog) {
-      this.displayUserDialog = false;
-    }
-    
-    // Use setTimeout to ensure clean state transition
+    if (this.displayUserDialog) this.displayUserDialog = false;
     setTimeout(() => {
       this.selectedUser = { ...user };
       this.editingUser = { ...user };
@@ -161,13 +185,7 @@ export class TableFilterBasicDemo implements OnInit {
 
   toggleEditMode() {
     this.isEditingMode = !this.isEditingMode;
-    if (!this.isEditingMode) {
-      // Save all changes when exiting edit mode
-      this.saveChanges();
-    } else if (this.editingUser) {
-      // Clear password field when starting to edit
-      this.editingUser.password = '';
-    }
+    if (!this.isEditingMode) this.saveChanges();
   }
 
   closeDialog() {
@@ -179,16 +197,31 @@ export class TableFilterBasicDemo implements OnInit {
 
   saveChanges() {
     if (this.editingUser && this.selectedUser) {
-      // Only update editable fields: username, password, role
-      this.selectedUser.username = this.editingUser.username;
-      this.selectedUser.role = this.editingUser.role;
-      
-      // Only update password if it's not empty
-      if (this.editingUser.password && this.editingUser.password.trim() !== '') {
-        this.selectedUser.password = this.editingUser.password;
-      }
-      
-      this.updateUserInList();
+      const updatedUser: ApiUser = {
+        id: this.selectedUser.id,
+        username: this.editingUser.username,
+        password: this.editingUser.password,
+        role: [this.editingUser.role],
+        balancePoints: parseInt(this.selectedUser.price),
+        monthlyAllocation: this.editingUser.monthlyAllocation,
+        requestCount: this.selectedUser.requestCount ?? 0,
+        helpPendingCount: this.selectedUser.helpPendingCount ?? 0,
+        helpAcceptedCount: this.selectedUser.helpAcceptedCount ?? 0
+      };
+
+      this.userService.updateUser(updatedUser).subscribe({
+        next: () => {
+          this.selectedUser!.username = updatedUser.username;
+          this.selectedUser!.password = updatedUser.password;
+          this.selectedUser!.role = updatedUser.role[0];
+          this.selectedUser!.monthlyAllocation = updatedUser.monthlyAllocation;
+          this.updateUserInList();
+          this.displayUserDialog = false;
+        },
+        error: (err) => {
+          console.error('Failed to update user:', err);
+        }
+      });
     }
   }
 

@@ -1,13 +1,24 @@
-<div>
-    <div class="main-wrapper">
-        <app-sidebar></app-sidebar>
-    <div id="help1">
-        <h1>Title: help with Docker</h1>
-        <p>description: help with Docker</p>
-        <p>price: 100</p>
-        <p>status: pending</p>
-        <p>recepient: Donald Duck</p>
+<div class="main-wrapper">
+    <app-sidebar></app-sidebar>
+  
+    <div *ngIf="requests.length > 0; else noData">
+      <div *ngFor="let req of requests" class="request-card">
+        <h2>Help Request</h2>
+        <p><strong>Title:</strong> {{ req.heading }}</p>
+        <p><strong>Date:</strong> {{ req.createdAt | date: 'dd MMM yyyy, h:mm a' }}</p>
+        <p><strong>Status:</strong> {{ req.status.toLowerCase() }}</p>
+        <p><strong>Recipient:</strong> {{ req.requestName }}</p>
         <popup></popup>
+      </div>
     </div>
+  
+    <ng-template #noData>
+      <p style="margin: 10px"> No help requests found.</p>
+    </ng-template>
+  
+    <!-- Debug -->
+    <div style="margin: 10px;">
+      <p><strong>Debug:</strong> Loaded {{ requests.length }} requests</p>
     </div>
-</div>>
+  </div>
+  

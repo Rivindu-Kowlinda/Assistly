@@ -1,43 +1,51 @@
+<!-- users.html -->
 <div class="card">
   <p-table
     #dt2
     [value]="customers"
     dataKey="id"
     [rows]="10"
-    [rowsPerPageOptions]="[10, 25, 50]"
+    [rowsPerPageOptions]="[10,25,50]"
     [loading]="loading"
     [paginator]="true"
-    [globalFilterFields]="['name', 'role']"
+    [globalFilterFields]="['name','role']"
     [tableStyle]="{ 'min-width': '50rem' }"
     selectionMode="single"
     styleClass="p-datatable-striped"
   >
+    <!-- Search + Create button -->
     <ng-template #caption>
-      <div class="flex">
-        <p-iconfield iconPosition="left" class="ml-auto">
-          <p-inputicon>
-            <i class="pi pi-search"></i>
-          </p-inputicon>
+      <div class="flex items-center justify-between">
+        <p-iconfield iconPosition="left">
+          <p-inputicon><i class="pi pi-search"></i></p-inputicon>
           <input
             pInputText
             type="text"
             [(ngModel)]="searchTerm"
-            (input)="dt2.filterGlobal(searchTerm, 'contains')"
+            (input)="dt2.filterGlobal(searchTerm,'contains')"
             placeholder="Search keyword"
           />
         </p-iconfield>
+        <p-button
+          icon="pi pi-plus"
+          styleClass="create-user-button"
+          (onClick)="openCreateUserDialog()"
+          tooltip="New User"
+          tooltipPosition="top"
+        ></p-button>
       </div>
     </ng-template>
 
+    <!-- Column headers & filters -->
     <ng-template #header>
       <tr>
         <th style="width:40%">Name</th>
         <th style="width:30%">Role</th>
-        <th style="width:30%">Price</th>
+        <th style="width:30%">Balance Points</th>
       </tr>
       <tr>
         <th>
-          <p-columnFilter type="text" field="name" placeholder="Type to search" ariaLabel="Filter Name" filterOn="input"></p-columnFilter>
+          <p-columnFilter type="text" field="name" placeholder="Type to search" filterOn="input"></p-columnFilter>
         </th>
         <th>
           <p-columnFilter field="role" matchMode="equals" [showMenu]="false">
@@ -50,96 +58,86 @@
                 [showClear]="true"
                 optionLabel="label"
                 optionValue="value"
-                style="min-width: 12rem"
+                style="min-width:12rem"
               >
                 <ng-template let-option #item>
-                  <p-tag [value]="option.value" [severity]="getRoleSeverity(option.value)" />
+                  <p-tag [value]="option.value" [severity]="getRoleSeverity(option.value)"></p-tag>
                 </ng-template>
               </p-select>
             </ng-template>
           </p-columnFilter>
         </th>
         <th>
-          <p-columnFilter type="numeric" field="price" placeholder="Enter price" ariaLabel="Filter Price"></p-columnFilter>
+          <p-columnFilter type="numeric" field="price" placeholder="Enter balance points"></p-columnFilter>
         </th>
       </tr>
     </ng-template>
 
+    <!-- Table rows -->
     <ng-template #body let-customer>
-      <tr (click)="onRowClick(customer, $event)" style="cursor: pointer" class="hover:bg-blue-50">
-        <td>{{ customer.name }}</td>
-        <td>
-          <p-tag [value]="customer.role" [severity]="getRoleSeverity(customer.role)" />
-        </td>
-        <td>
-          <span class="font-semibold">{{ customer.price}}</span>
-        </td>
+      <tr (click)="onRowClick(customer,$event)" class="hover:bg-blue-50" style="cursor:pointer">
+        <td>{{customer.name}}</td>
+        <td><p-tag [value]="customer.role" [severity]="getRoleSeverity(customer.role)"></p-tag></td>
+        <td><span class="font-semibold">{{customer.price}}</span></td>
       </tr>
     </ng-template>
 
+    <!-- Empty state -->
     <ng-template #emptymessage>
-      <tr>
-        <td colspan="3">No customers found.</td>
-      </tr>
+      <tr><td colspan="3">No customers found.</td></tr>
     </ng-template>
   </p-table>
 </div>
 
-<!-- User Details Popup -->
-<p-dialog 
-  [(visible)]="displayUserDialog" 
-  [modal]="true" 
-  [style]="{ width: '50vw' }" 
-  [draggable]="false" 
-  [resizable]="false"
-  styleClass="user-details-dialog"
+<!-- Edit User Dialog -->
+<p-dialog
+  [(visible)]="displayUserDialog"
   header="User Details"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
   (onHide)="closeDialog()"
+  styleClass="user-details-dialog"
 >
   <div class="user-details-content" *ngIf="selectedUser && editingUser">
-    <!-- User Avatar and Basic Info -->
+    <!-- Avatar + Summary -->
     <div class="flex items-center gap-4 mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
-      <p-avatar 
-        [label]="selectedUser.name.charAt(0)" 
-        size="xlarge" 
+      <p-avatar
+        [label]="selectedUser.name.charAt(0)"
+        size="xlarge"
         styleClass="bg-blue-500 text-white"
         shape="circle"
       ></p-avatar>
       <div>
         <h2 class="text-2xl font-bold text-gray-800 m-0">{{ selectedUser.name }}</h2>
         <p-tag [value]="selectedUser.role" [severity]="getRoleSeverity(selectedUser.role)" class="text-sm mt-2"></p-tag>
-        <p class="text-lg font-semibold text-green-600 m-0 mt-2">${{ selectedUser.price | number:'1.0-0' }}</p>
+        <p class="text-lg font-semibold text-green-600 m-0 mt-2">{{ selectedUser.price }} pts</p>
       </div>
     </div>
 
-    <!-- User Information Cards -->
+    <!-- Details section -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <!-- System Information -->
+      <!-- System Info -->
       <p-card header="System Information" styleClass="h-full">
         <div class="space-y-4">
           <div class="field">
-            <label class="block text-sm font-medium text-gray-700 mb-2">User ID</label>
-            <p class="text-gray-900 bg-gray-50 p-2 rounded">#{{ selectedUser.id }}</p>
-          </div>
-          
-          <div class="field">
             <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-            <input 
-              *ngIf="isEditingMode" 
-              type="text" 
-              pInputText 
-              [(ngModel)]="editingUser.username" 
+            <input
+              *ngIf="isEditingMode"
+              type="text"
+              pInputText
+              [(ngModel)]="editingUser.username"
               class="w-full"
               placeholder="Enter username"
             />
             <p *ngIf="!isEditingMode" class="text-gray-900 bg-gray-50 p-2 rounded">{{ selectedUser.username }}</p>
           </div>
-          
           <div class="field">
             <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-            <p-password 
-              *ngIf="isEditingMode" 
-              [(ngModel)]="editingUser.password" 
+            <p-password
+              *ngIf="isEditingMode"
+              [(ngModel)]="editingUser.password"
               [toggleMask]="true"
               placeholder="Enter new password"
               styleClass="w-full"
@@ -150,16 +148,16 @@
         </div>
       </p-card>
 
-      <!-- Role and Pricing Information -->
-      <p-card header="Role & Pricing" styleClass="h-full">
+      <!-- Role & Balance -->
+      <p-card header="Role & Balance" styleClass="h-full">
         <div class="space-y-4">
           <div class="field">
             <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
-            <p-select 
+            <p-select
               *ngIf="isEditingMode"
-              [(ngModel)]="editingUser.role" 
-              [options]="roles" 
-              optionLabel="label" 
+              [(ngModel)]="editingUser.role"
+              [options]="roles"
+              optionLabel="label"
               optionValue="value"
               placeholder="Select Role"
               class="w-full"
@@ -172,27 +170,39 @@
               <p-tag [value]="selectedUser.role" [severity]="getRoleSeverity(selectedUser.role)"></p-tag>
             </div>
           </div>
-
           <div class="field">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Price</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Balance Points</label>
             <p class="text-gray-900 bg-gray-50 p-2 rounded text-lg font-semibold text-green-600">{{ selectedUser.price }}</p>
-            <small class="text-gray-500">Price cannot be edited</small>
+            <small class="text-gray-500">Balance can't be edited from here</small>
+          </div>
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Allocation</label>
+            <input
+              *ngIf="isEditingMode"
+              type="number"
+              pInputText
+              [(ngModel)]="editingUser.monthlyAllocation"
+              class="w-full"
+              placeholder="Enter monthly allocation"
+              min="0"
+            />
+            <p *ngIf="!isEditingMode" class="text-gray-900 bg-gray-50 p-2 rounded">
+              {{ selectedUser.monthlyAllocation }}
+            </p>
           </div>
         </div>
       </p-card>
     </div>
 
+    <!-- Edit‐mode footer -->
     <p-divider></p-divider>
-
-    <!-- Edit Mode Toggle -->
     <div class="mt-4 mb-4 flex justify-between items-center">
       <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-        <i class="pi pi-cog text-blue-500"></i>
-        Account Settings
+        <i class="pi pi-cog text-blue-500"></i> Account Settings
       </h3>
-      <p-button 
-        [label]="isEditingMode ? 'Cancel Editing' : 'Edit User'" 
-        [icon]="isEditingMode ? 'pi pi-times' : 'pi pi-pencil'" 
+      <p-button
+        [label]="isEditingMode ? 'Cancel Editing' : 'Edit User'"
+        [icon]="isEditingMode ? 'pi pi-times' : 'pi pi-pencil'"
         (onClick)="toggleEditMode()"
         [severity]="isEditingMode ? 'secondary' : 'info'"
         size="small"
@@ -202,20 +212,66 @@
 
   <ng-template #footer>
     <div class="flex justify-end gap-2">
-      <p-button 
-        label="Close" 
-        icon="pi pi-times" 
-        (onClick)="closeDialog()" 
-        severity="secondary"
-        size="small"
-      ></p-button>
-      <p-button 
-        *ngIf="isEditingMode"
-        label="Save All Changes" 
-        icon="pi pi-check" 
-        (onClick)="saveChanges(); toggleEditMode()"
-        size="small"
-      ></p-button>
+      <p-button label="Close" icon="pi pi-times" (onClick)="closeDialog()" severity="secondary" size="small"></p-button>
+      <p-button *ngIf="isEditingMode" label="Save All Changes" icon="pi pi-check" (onClick)="saveChanges()" size="small"></p-button>
     </div>
   </ng-template>
+</p-dialog>
+
+<!-- Create User Dialog -->
+<p-dialog
+  [(visible)]="displayCreateUserDialog"
+  header="Create User"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="displayCreateUserDialog = false"
+  styleClass="user-details-dialog"
+>
+  <div class="user-details-content">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Account Details -->
+      <p-card header="Account Details" styleClass="h-full">
+        <div class="space-y-4">
+          <div class="field">
+            <label>Username</label>
+            <input pInputText [(ngModel)]="newUser.username" placeholder="Enter username" />
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <p-password [(ngModel)]="newUser.password" [toggleMask]="true" placeholder="Enter password"></p-password>
+          </div>
+        </div>
+      </p-card>
+      <!-- Role & Balance -->
+      <p-card header="Role & Balance" styleClass="h-full">
+        <div class="space-y-4">
+          <div class="field">
+            <label>Role</label>
+            <p-select
+              [(ngModel)]="newUser.role"
+              [options]="roles"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select Role"
+            ></p-select>
+          </div>
+          <div class="field">
+            <label>Balance Points</label>
+            <input type="number" pInputText [(ngModel)]="newUser.balancePoints" min="0" />
+          </div>
+          <div class="field">
+            <label>Monthly Allocation</label>
+            <input type="number" pInputText [(ngModel)]="newUser.monthlyAllocation" min="0" />
+          </div>
+        </div>
+      </p-card>
+    </div>
+    <p-divider></p-divider>
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancel" icon="pi pi-times" (onClick)="displayCreateUserDialog = false" severity="secondary" size="small"></p-button>
+      <p-button label="Create" icon="pi pi-check" (onClick)="saveNewUser()" severity="success" size="small"></p-button>
+    </div>
+  </div>
 </p-dialog>
