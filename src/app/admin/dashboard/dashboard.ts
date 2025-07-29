@@ -1,25 +1,30 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Table } from 'primeng/table';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputIconModule } from 'primeng/inputicon';
-import { SelectModule } from 'primeng/select';
-import { CommonModule } from '@angular/common';
-import { Sidebar } from "../../components/sidebar/sidebar";
-import { RouterOutlet } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
-import { ChartLine } from '../../components/chart-line/chart-line';
-import { Dial } from '../../components/dial/dial';
-import { Leaderboard } from '../../components/leaderboard/leaderboard';
-import { Popup } from '../../components/popup/popup'; // Import the Popup component
-import { AdminSidebar } from '../../components/admin-sidebar/admin-sidebar';
+import { Component, OnInit, ViewChild }  from '@angular/core';
+import { Table }                         from 'primeng/table';
+import { HttpClientModule }              from '@angular/common/http';
+import { CommonModule }                  from '@angular/common';
+import { FormsModule }                   from '@angular/forms';
+import { TableModule }                   from 'primeng/table';
+import { TagModule }                     from 'primeng/tag';
+import { IconFieldModule }               from 'primeng/iconfield';
+import { InputTextModule }               from 'primeng/inputtext';
+import { InputIconModule }               from 'primeng/inputicon';
+import { SelectModule }                  from 'primeng/select';
+import { ButtonModule }                  from 'primeng/button';
+import { RouterOutlet }                  from '@angular/router';
 
-export interface Request {
-  id: number;
+import {
+  AdminDashboardService,
+  AdminDashboardResponse,
+  AdminRequest
+} from '../../services/admin-dashboard.service';
+
+// import { Popup }         from '../../components/popup/popup';
+import { AdminSidebar }  from '../../components/admin-sidebar/admin-sidebar';
+
+interface TableRow {
+  id: string;
   requestName: string;
-  type: string;
+  type: string;        // 'Request' or 'Response'
   dateTime: Date;
   userName: string;
   status: string;
@@ -28,108 +33,91 @@ export interface Request {
 
 @Component({
   selector: 'admin-dashboard',
-  templateUrl: 'dashboard.html',
+  templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
   standalone: true,
   imports: [
+    HttpClientModule,
+    CommonModule,
+    FormsModule,
     TableModule,
     TagModule,
     IconFieldModule,
     InputTextModule,
     InputIconModule,
     SelectModule,
-    CommonModule,
-    Sidebar,
+    ButtonModule,
     RouterOutlet,
-    FormsModule,
-    Popup, // Add Popup to imports
-    AdminSidebar // Add AdminSidebar to imports
-]
+    AdminSidebar,
+  ]
 })
 export class AdminDashboard implements OnInit {
-  @ViewChild('popup') popup!: Popup;
+  // @ViewChild('popup') popup!: Popup;
 
-  requests: Request[] = [
-    {
-      id: 1,
-      requestName: 'Server Access',
-      type: 'IT',
-      dateTime: new Date('2025-07-15T09:30'),
-      userName: 'alice',
-      status: 'pending',
-      price: 0
-    },
-    {
-      id: 2,
-      requestName: 'Office Supplies',
-      type: 'Admin',
-      dateTime: new Date('2025-07-14T14:00'),
-      userName: 'bob',
-      status: 'completed',
-      price: 45.75
-    },
-    {
-      id: 3,
-      requestName: 'Bug Fix',
-      type: 'Dev',
-      dateTime: new Date('2025-07-13T11:15'),
-      userName: 'carol',
-      status: 'inProgress',
-      price: 0
-    },
-    {
-      id: 4,
-      requestName: 'New Laptop',
-      type: 'Procurement',
-      dateTime: new Date('2025-07-12T16:45'),
-      userName: 'dave',
-      status: 'cancelled',
-      price: 1200
-    }
-  ];
+  loading = true;
+  tableRows: TableRow[] = [];
 
   statuses = [
-    { label: 'Pending', value: 'pending' },
-    { label: 'In Progress', value: 'inProgress' },
-    { label: 'Completed', value: 'completed' },
-    { label: 'Cancelled', value: 'cancelled' }
+    { label: 'Pending',     value: 'pending'    },
+    { label: 'In Progress', value: 'inProgress'},
+    { label: 'Completed',   value: 'completed'  },
+    { label: 'Cancelled',   value: 'cancelled'  }
   ];
 
-  loading = false;
-  value: string | null = null;
-  
+  constructor(private service: AdminDashboardService) {}
+
   ngOnInit() {
-    // nothing needed—data is already there
+    this.service.getDashboard().subscribe((res: AdminDashboardResponse) => {
+      // merge requests + responses with a `type` flag
+      const reqRows: TableRow[] = res.requests.map(r => ({
+        id:          r.id,
+        requestName: r.heading,
+        recipientUsernames: r.recipientUsernames,
+        type:        'Request',
+        dateTime:    new Date(r.createdAt),
+        userName:    r.requestName,        // or map r.requesterId if you prefer
+        status:      r.status.toLowerCase(),
+        price:       r.cost
+      }));
+      const respRows: TableRow[] = res.responses.map(r => ({
+        id:          r.id,
+        requestName: r.heading,
+        recipientUsernames: r.recipientUsernames,
+        type:        'Response',
+        dateTime:    new Date(r.createdAt),
+        userName:    r.requestName,
+        status:      r.status.toLowerCase(),
+        price:       r.cost
+      }));
+      this.tableRows = [...reqRows, ...respRows];
+      this.loading   = false;
+    });
   }
 
   clear(table: Table) {
     table.clear();
   }
 
-  getSeverity(status: string): string | null {
+  getSeverity(status: string) {
     switch (status) {
-      case 'pending':
-        return 'warn';
-      case 'inProgress':
-        return 'info';
-      case 'completed':
-        return 'success';
-      case 'cancelled':
-        return 'danger';
-      default:
-        return null;
+      case 'pending':    return 'warn';
+      case 'inProgress': return 'info';
+      case 'completed':  return 'success';
+      case 'cancelled':  return 'danger';
+      default:           return null;
     }
   }
 
-  // New method to handle row clicks
-  onRowClick(request: Request, event: Event) {
-    // Prevent row click when clicking on interactive elements
-    const target = event.target as HTMLElement;
-    if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.closest('.p-select') || target.closest('.p-columnfilter')) {
+  onRowClick(row: TableRow, event: Event) {
+    const tgt = (event.target as HTMLElement);
+    if (
+      tgt.tagName === 'INPUT' ||
+      tgt.tagName === 'SELECT' ||
+      tgt.closest('.p-select') ||
+      tgt.closest('.p-columnfilter')
+    ) {
       return;
     }
-    
-    // Open the popup
-    this.popup.showDialog();
+    // this.popup.showDialog();  // still launches your chat or detail popup
   }
 }

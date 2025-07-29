@@ -122,4 +122,25 @@
     font-weight: 500;
     color: #555;
   }
+  .profile-card-modern {
+    position: relative;  /* needed for absolute child positioning */
+    display: flex;
+    flex-direction: row;
+    background: white;
+    border-radius: 1rem;
+    padding: 3rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+    width: 100%;
+    gap: 3rem;
+    align-items: center;
+  }
+  
+  /* Logout button in top‑right */
+  .logout-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+  }
   

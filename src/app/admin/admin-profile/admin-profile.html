@@ -3,6 +3,17 @@
 <div class="main-wrapper" *ngIf="user && isAdmin(); else loadingTemplate">
   <div class="profile-wrapper">
     <div class="profile-card-modern">
+      
+      <!-- Logout Button -->
+      <button
+        pButton
+        type="button"
+        icon="pi pi-sign-out"
+        label="Logout"
+        class="logout-btn"
+        (click)="logout()"
+      ></button>
+
       <div class="left-section">
         <img class="avatar" src="assets/default-avatar.png" alt="Profile" />
         <h2 class="username">{{ user.username }}</h2>

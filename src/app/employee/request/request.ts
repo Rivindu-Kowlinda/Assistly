@@ -1,36 +1,33 @@
+// src/app/components/request/request.ts
 import { Component, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { StepperModule } from 'primeng/stepper';
+import { FormsModule }          from '@angular/forms';
+import { InputTextModule }      from 'primeng/inputtext';
+import { ButtonModule }         from 'primeng/button';
+import { StepperModule }        from 'primeng/stepper';
 
-import { ChipBasicDemo } from '../../components/chip/chip';
-import { Sidebar } from '../../components/sidebar/sidebar';
-import { TextArea } from '../../components/text-box/text-box';
-import { EmployeeList } from '../../components/employee-list/employee-list';
-import { EmployeeTabs } from '../../components/scrollable-tabs/scrollable-tabs';
-import { RequestService } from '../../services/request.service';
+import { Sidebar }              from '../../components/sidebar/sidebar';
+import { TextArea }             from '../../components/text-box/text-box';
+import { EmployeeList }         from '../../components/employee-list/employee-list';
+import { EmployeeTabs }         from '../../components/scrollable-tabs/scrollable-tabs';
+import { RequestService }       from '../../services/request.service';
 
 @Component({
   selector: 'app-request',
   standalone: true,
-  templateUrl: './request.html',
-  styleUrls: ['./request.css'],
   imports: [
     FormsModule,
     InputTextModule,
     ButtonModule,
     StepperModule,
-    ChipBasicDemo,
     Sidebar,
     TextArea,
     EmployeeList,
     EmployeeTabs
-  ]
+  ],
+  templateUrl: './request.html',
+  styleUrls: ['./request.css']
 })
 export class Request {
-  constructor(private requestService: RequestService) {}
-
   @ViewChild('requestTextBox') requestTextBox!: TextArea;
   @ViewChild('summaryTextBox') summaryTextBox!: TextArea;
 
@@ -38,6 +35,8 @@ export class Request {
   requestHeading = '';
   requestContent = '';
   selectedEmployees: any[] = [];
+
+  constructor(private requestService: RequestService) {}
 
   onRequestContentChange(content: string) {
     this.requestContent = content;
@@ -82,30 +81,35 @@ export class Request {
     }
 
     const formData = new FormData();
+
+    // Build payload: IDs + usernames + cost
     const payload = {
       heading: this.requestHeading,
       description: this.requestContent,
-      recipientIds: this.selectedEmployees.map(emp => emp.id)
+      recipientIds: this.selectedEmployees.map(emp => emp.id),
+      recipientUsernames: this.selectedEmployees.map(emp => emp.name),
+      cost: this.selectedEmployees.reduce((total, emp) => total + (emp.price || 0), 0)
     };
     formData.append('data', JSON.stringify(payload));
 
+    // Extract any embedded images from the rich‑text box
     const container = this.requestTextBox?.getNativeElement() || document;
-    const imageElements: HTMLImageElement[] = Array.from(container.querySelectorAll('img'));
-
-    for (let i = 0; i < imageElements.length; i++) {
-      const base64 = imageElements[i].src;
-      if (base64.startsWith('data:image')) {
-        const file = this.base64ToFile(base64, `embedded-${i}.png`);
+    const images = Array.from(container.querySelectorAll('img')) as HTMLImageElement[];
+    images.forEach((img, i) => {
+      const src = img.src;
+      if (src.startsWith('data:image')) {
+        const file = this.base64ToFile(src, `embedded-${i}.png`);
         formData.append('images', file);
       }
-    }
+    });
 
+    // Send the multipart/form-data POST
     this.requestService.submitHelpRequest(formData).subscribe({
       next: () => {
         alert('Request submitted successfully!');
         this.resetForm();
       },
-      error: (err) => {
+      error: err => {
         console.error('Submit failed:', err);
         alert('Something went wrong during submission.');
       }
@@ -120,10 +124,10 @@ export class Request {
   }
 
   private base64ToFile(base64: string, filename: string): File {
-    const arr = base64.split(',');
-    const mime = arr[0].match(/:(.*?);/)![1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
+    const arr   = base64.split(',');
+    const mime  = arr[0].match(/:(.*?);/)![1];
+    const bstr  = atob(arr[1]);
+    let   n     = bstr.length;
     const u8arr = new Uint8Array(n);
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);

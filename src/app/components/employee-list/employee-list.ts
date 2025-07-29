@@ -1,22 +1,30 @@
+// src/app/components/employee-list/employee-list.ts
 import {
-  Component, OnInit, Input, Output,
-  EventEmitter, OnChanges, SimpleChanges
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { Tag } from 'primeng/tag';
-import { ButtonModule } from 'primeng/button';
-import { InputIcon } from 'primeng/inputicon';
-import { IconField } from 'primeng/iconfield';
-import { CommonModule } from '@angular/common';
+import { TableModule }       from 'primeng/table';
+import { ButtonModule }      from 'primeng/button';
+import { InputIcon }         from 'primeng/inputicon';
+import { IconField }         from 'primeng/iconfield';
+import { CommonModule }      from '@angular/common';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { InputTextModule } from 'primeng/inputtext';
-import { Slider } from 'primeng/slider';
-import { FormsModule } from '@angular/forms';
-import { ProgressBar } from 'primeng/progressbar';
+import { InputTextModule }   from 'primeng/inputtext';
+import { Slider }            from 'primeng/slider';
+import { FormsModule }       from '@angular/forms';
+import { ProgressBar }       from 'primeng/progressbar';
+import { forkJoin }          from 'rxjs';
 
-import { EmployeeService } from '../../services/employee.service';
-import { EmployeeResponse } from '../../services/employee.service';
-import { RolePrice } from '../../services/employee.service';
+import {
+  EmployeeService,
+  EmployeeResponse,
+  RolePrice
+} from '../../services/employee.service';
 
 @Component({
   selector: 'employee-list',
@@ -24,9 +32,14 @@ import { RolePrice } from '../../services/employee.service';
   styleUrls: ['./employee-list.css'],
   standalone: true,
   imports: [
-    TableModule, Tag, ButtonModule, IconField, InputIcon,
-    CommonModule, MultiSelectModule, InputTextModule,
-    Slider, ProgressBar, FormsModule
+    TableModule,
+    ButtonModule,
+    IconField,
+    InputIcon,
+    CommonModule,
+    MultiSelectModule,
+    InputTextModule,
+    FormsModule
   ]
 })
 export class EmployeeList implements OnInit, OnChanges {
@@ -35,34 +48,40 @@ export class EmployeeList implements OnInit, OnChanges {
 
   customers: any[] = [];
   selectedCustomers: any[] = [];
-  loading: boolean = true;
-  searchValue: string = '';
+  loading = true;
+  searchValue = '';
 
   constructor(private employeeService: EmployeeService) {}
 
   ngOnInit() {
-    this.employeeService.getEmployeeData().subscribe({
-      next: ([employees, prices]) => {
-        const roleCostMap = new Map<string, number>();
-        prices.forEach(p => roleCostMap.set(p.role.toUpperCase(), p.cost));
+    // load profile + employee data in parallel
+    forkJoin({
+      profile: this.employeeService.getProfile(),
+      data:    this.employeeService.getEmployeeData()
+    }).subscribe(({ profile, data: [employees, prices] }) => {
+      const currentUsername = profile.username;
 
-        this.customers = employees.map(emp => {
+      const roleCostMap = new Map<string, number>();
+      prices.forEach(p => roleCostMap.set(p.role.toUpperCase(), p.cost));
+
+      // filter out the current user, then map to table rows
+      this.customers = employees
+        .filter(emp => emp.username !== currentUsername)
+        .map((emp: EmployeeResponse) => {
           const role = emp.role[0]?.toUpperCase() || '';
           return {
-            id: emp.id,
+            id:   emp.id,
             name: emp.username,
             role,
             price: roleCostMap.get(role) ?? 0
           };
         });
 
-        this.selectedCustomers = [...this.selection];
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading employee list:', err);
-        this.loading = false;
-      }
+      this.selectedCustomers = [...this.selection];
+      this.loading = false;
+    }, err => {
+      console.error('Error loading employees or profile:', err);
+      this.loading = false;
     });
   }
 
@@ -91,11 +110,11 @@ export class EmployeeList implements OnInit, OnChanges {
   }
 
   toggleSelection(customer: any) {
-    const index = this.selectedCustomers.indexOf(customer);
-    if (index === -1) {
+    const idx = this.selectedCustomers.indexOf(customer);
+    if (idx === -1) {
       this.selectedCustomers.push(customer);
     } else {
-      this.selectedCustomers.splice(index, 1);
+      this.selectedCustomers.splice(idx, 1);
     }
     this.selectionChange.emit(this.selectedCustomers);
   }
@@ -103,11 +122,11 @@ export class EmployeeList implements OnInit, OnChanges {
   getSeverity(status: string) {
     switch (status) {
       case 'unqualified': return 'danger';
-      case 'qualified': return 'success';
-      case 'new': return 'info';
+      case 'qualified':   return 'success';
+      case 'new':         return 'info';
       case 'negotiation': return 'warn';
-      case 'renewal': return null;
-      default: return '';
+      case 'renewal':     return null;
+      default:            return '';
     }
   }
 }

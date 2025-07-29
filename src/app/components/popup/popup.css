@@ -229,12 +229,14 @@
   position: relative;
 }
 
-/* Accept Chat Interface */
+/* Accept Chat Interface - FIXED */
 .accept-chat-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 120px;
+  position: relative;  /* Added */
+  z-index: 3;          /* Added - higher than the ::before element */
 }
 
 .accept-chat-content {
@@ -251,6 +253,8 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   max-width: 400px;
   width: 100%;
+  position: relative;  /* Added */
+  z-index: 3;          /* Added for extra safety */
 }
 
 .accept-chat-icon {
@@ -434,4 +438,45 @@
   .message-input {
     color: #e2e8f0 !important;
   }
+  
+}
+/* Add this to your existing CSS to fix the input issue */
+
+/* Ensure the input container has higher z-index */
+.chat-input-container {
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 10; /* Increased from 2 to 10 */
+  position: relative;
+}
+
+/* Make sure the input itself is properly positioned */
+.message-input {
+  flex: 1;
+  border: none !important;
+  background: transparent !important;
+  padding: 0.75rem 0.5rem !important;
+  font-size: 0.95rem !important;
+  color: #1f2937 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  position: relative; /* Add this */
+  z-index: 11; /* Add this */
+  pointer-events: auto; /* Ensure it's clickable */
+}
+
+/* Also ensure the chat-input wrapper doesn't block interactions */
+.chat-input {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(249, 250, 251, 0.8);
+  border: 2px solid rgba(0, 0, 0, 0.06);
+  border-radius: 24px;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
+  position: relative; /* Add this */
+  z-index: 10; /* Add this */
 }

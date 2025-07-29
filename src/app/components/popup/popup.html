@@ -1,156 +1,128 @@
+<!-- src/app/components/popup/popup.html -->
 <div class="card flex justify-center">
-  <p-button (click)="showDialog()" label="Open Team Chat" icon="pi pi-comments" />
+  <p-button
+    styleClass="cursor-pointer"
+    label="Open Team Chat"
+    icon="pi pi-comments"
+    (onClick)="showDialog()"
+  ></p-button>
 
   <p-dialog
-    header="PrimeTek Team Chat"
-    [modal]="true"
+    [header]="request.heading || 'Help Request'"
     [(visible)]="visible"
+    [modal]="true"
     [style]="{ width: '60rem', height: '85vh' }"
     [breakpoints]="{ '1199px': '85vw', '575px': '95vw' }"
     [contentStyle]="{ padding: '0', height: 'calc(85vh - 60px)' }"
     [maximizable]="true"
   >
-    <div class="chat-container">
-      <!-- Chat Header -->
-      <div class="chat-header">
-        <div class="flex items-center gap-3">
-          <div class="relative">
-            <p-avatar icon="pi pi-users" styleClass="bg-primary text-white" size="large"></p-avatar>
-            <div class="online-indicator"></div>
-          </div>
-          <div class="flex flex-col">
-            <span class="font-semibold text-lg text-gray-900">PrimeTek Team</span>
-            <span class="text-sm text-green-600 flex items-center gap-1">
-              <i class="pi pi-circle-fill text-xs"></i>
-              4 members online
-            </span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <p-button icon="pi pi-video" [text]="true" [rounded]="true" severity="secondary" size="small"></p-button>
-          <p-button icon="pi pi-phone" [text]="true" [rounded]="true" severity="secondary" size="small"></p-button>
-          <p-button icon="pi pi-ellipsis-v" [text]="true" [rounded]="true" severity="secondary" size="small"></p-button>
+    <!-- request details -->
+    <div class="p-4 border-b">
+      <div class="mb-3">
+        <strong>Description:</strong> 
+        <p class="mt-1">{{ request.heading }}</p>
+      </div>
+      
+      <p><strong>Cost:</strong> ${{ request.cost.toFixed(2) }}</p>
+      <p><strong>Status:</strong> {{ request.status }}</p>
+    </div>
+
+    <div class="chat-container flex flex-col h-full">
+      <!-- accept prompt -->
+      <div
+        *ngIf="!chatAccepted && request.status === 'PENDING'"
+        class="accept-chat-container p-4 text-center"
+      >
+        <h3>Join Team Chat</h3>
+        <p>The team has invited you. Accept to start chatting.</p>
+        <p-button
+          styleClass="cursor-pointer"
+          label="Accept & Join Chat"
+          icon="pi pi-check"
+          (onClick)="acceptChat()"
+          [loading]="loading"
+        ></p-button>
+      </div>
+
+      <!-- error message -->
+      <div *ngIf="error" class="error-message p-4 bg-red-100 border border-red-400 text-red-700 rounded m-4">
+        <div class="flex justify-between items-center">
+          <span>{{ error }}</span>
+          <button (click)="clearError()" class="text-red-700 hover:text-red-900">×</button>
         </div>
       </div>
 
-      <!-- Message Feed -->
-      <div #chatScroll class="chat-messages">
+      <!-- loading indicator -->
+      <div *ngIf="loading && !messages.length" class="loading-container p-4 text-center">
+        <i class="pi pi-spinner pi-spin"></i>
+        <p class="mt-2">Loading chat...</p>
+      </div>
+
+      <!-- chat feed -->
+      <div #chatScroll class="chat-messages flex-1 overflow-auto p-4">
         <ng-container *ngFor="let msg of messages; trackBy: trackByMessageId">
-          <!-- System Messages -->
-          <div *ngIf="msg.type === 'system'" class="system-message">
-            <span>{{ msg.text }}</span>
+          <div
+            *ngIf="msg.type === 'system'"
+            class="text-center text-sm text-gray-500 my-2"
+          >
+            {{ msg.text }}
           </div>
-
-          <!-- Regular Messages -->
-          <div *ngIf="msg.type === 'text'" class="message-group" 
-               [class.own-message]="msg.sender === 'me'"
-               [class.other-message]="msg.sender === 'them'">
-            
-            <!-- Incoming Messages -->
-            <div *ngIf="msg.sender === 'them'" class="message-row incoming">
-              <p-avatar [image]="msg.avatar" size="large" class="message-avatar"></p-avatar>
-              <div class="message-content">
-                <div class="message-header">
-                  <span class="sender-name">{{ msg.senderName }}</span>
-                  <span class="message-time">{{ getMessageTime(msg.timestamp) }}</span>
-                </div>
-                <div class="message-bubble incoming-bubble">
-                  <p class="message-text">{{ msg.text }}</p>
+          <div
+            *ngIf="msg.type === 'text'"
+            class="my-2 flex"
+            [ngClass]="{ 'justify-end': msg.sender === 'me' }"
+          >
+            <div class="max-w-xs lg:max-w-md">
+              <div class="text-xs text-gray-600 mb-1">
+                {{ msg.senderName }} • {{ msg.timestamp | date: 'shortTime' }}
+              </div>
+              <div
+                class="p-3 rounded-lg break-words"
+                [ngClass]="{
+                  'bg-blue-500 text-white': msg.sender === 'me',
+                  'bg-gray-200 text-gray-800': msg.sender === 'them'
+                }"
+              >
+                <!-- Display text if exists -->
+                <div *ngIf="msg.text" class="mb-2">{{ msg.text }}</div>
+                
+                <!-- Display images if any -->
+                <div *ngIf="msg.images && msg.images.length > 0" class="images-container">
+                  <img 
+                    *ngFor="let imageUrl of msg.images" 
+                    [src]="imageUrl"
+                    alt="Message image"
+                    class="message-image"
+                    style="max-width: 200px; height: auto; display: block; margin: 5px 0; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"
+                  />
                 </div>
               </div>
-            </div>
-
-            <!-- Outgoing Messages -->
-            <div *ngIf="msg.sender === 'me'" class="message-row outgoing">
-              <div class="message-content">
-                <div class="message-header text-right">
-                  <span class="message-time">{{ getMessageTime(msg.timestamp) }}</span>
-                </div>
-                <div class="message-bubble outgoing-bubble">
-                  <p class="message-text">{{ msg.text }}</p>
-                </div>
-              </div>
-              <p-avatar [image]="msg.avatar" size="large" class="message-avatar"></p-avatar>
             </div>
           </div>
         </ng-container>
-
-        <!-- Typing Indicator -->
-        <div *ngIf="isTyping" class="message-row incoming">
-          <p-avatar image="https://i.pravatar.cc/40?u=typing" size="large" class="message-avatar"></p-avatar>
-          <div class="message-content">
-            <div class="message-bubble incoming-bubble typing-indicator">
-              <div class="typing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <!-- Chat Input -->
-      <div class="chat-input-container">
-        <!-- Accept Chat Button (shown when chat not accepted) -->
-        <div *ngIf="!chatAccepted" class="accept-chat-container">
-          <div class="accept-chat-content">
-            <div class="accept-chat-icon">
-              <i class="pi pi-users text-2xl text-blue-500"></i>
-            </div>
-            <div class="accept-chat-text">
-              <h3>Join Team Chat</h3>
-              <p>The PrimeTek team is inviting you to join their conversation</p>
-            </div>
-            <p-button 
-              label="Accept & Join Chat" 
-              icon="pi pi-check" 
-              (click)="acceptChat()"
-              class="accept-chat-btn"
-              size="large">
-            </p-button>
-          </div>
-        </div>
-
-        <!-- Regular Chat Input (shown when chat accepted) -->
-        <div *ngIf="chatAccepted" class="chat-input">
-          <p-button 
-            icon="pi pi-plus" 
-            [text]="true" 
-            [rounded]="true" 
-            severity="secondary" 
-            size="small"
-            class="attachment-btn">
-          </p-button>
-          
+      <!-- message input -->
+      <div
+        *ngIf="chatAccepted"
+        class="chat-input-container border-t p-4"
+      >
+        <div class="flex gap-2">
           <input
             type="text"
-            pInputText
             [(ngModel)]="newMessage"
             placeholder="Type a message..."
-            class="message-input"
             (keydown)="onInputKeydown($event)"
-            [disabled]="isTyping"
+            class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autocomplete="off"
+            [disabled]="loading"
           />
-          
           <p-button
-            icon="pi pi-face-smile"
-            [text]="true"
-            [rounded]="true"
-            severity="secondary"
-            size="small"
-            class="emoji-btn">
-          </p-button>
-          
-          <p-button
-            [icon]="newMessage.trim() ? 'pi pi-send' : 'pi pi-microphone'"
-            [rounded]="true"
-            [disabled]="isTyping"
-            severity="primary"
-            size="small"
-            class="send-btn"
-            (click)="sendMessage()">
-          </p-button>
+            styleClass="cursor-pointer"
+            icon="pi pi-send"
+            (onClick)="sendMessage()"
+            [disabled]="!newMessage.trim() || loading"
+          ></p-button>
         </div>
       </div>
     </div>

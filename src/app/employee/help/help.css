@@ -53,3 +53,12 @@ app-sidebar {
     margin-left: 0;
   }
 }
+/* src/app/components/help/help.css */
+.no-tasks {
+  margin: 2rem;
+  text-align: center;
+  color: #555;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+

@@ -1,3 +1,4 @@
+// src/app/services/employee.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
@@ -22,15 +23,21 @@ export interface RolePrice {
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  private employeeUrl = 'http://localhost:8080/api/employee/employees';
-  private pricesUrl = 'http://localhost:8080/api/employee/prices';
+  private employeesUrl = 'http://localhost:8080/api/employee/employees';
+  private pricesUrl    = 'http://localhost:8080/api/employee/prices';
+  private profileUrl   = 'http://localhost:8080/api/employee/profile';
 
   constructor(private http: HttpClient) {}
 
   getEmployeeData(): Observable<[EmployeeResponse[], RolePrice[]]> {
     return forkJoin([
-      this.http.get<EmployeeResponse[]>(this.employeeUrl),
+      this.http.get<EmployeeResponse[]>(this.employeesUrl),
       this.http.get<RolePrice[]>(this.pricesUrl)
     ]);
+  }
+
+  /** Fetch the currently logged‑in user */
+  getProfile(): Observable<EmployeeResponse> {
+    return this.http.get<EmployeeResponse>(this.profileUrl);
   }
 }

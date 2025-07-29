@@ -1,250 +1,272 @@
-import { Component, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { Dialog } from 'primeng/dialog';
+// src/app/components/popup/popup.component.ts
+import {
+  Component,
+  Input,
+  ViewChild,
+  ElementRef,
+  AfterViewChecked,
+  OnDestroy,
+  Injector
+} from '@angular/core';
+import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
 import { FormsModule } from '@angular/forms';
-import { DatePipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
-interface ChatMessage {
-  id: number;
+import { ChatService, ChatMessage } from '../../services/chat.service';
+import { HelpRequest } from '../../employee/models/help-request.model';
+import { HelpRequestService } from '../../services/help-request.service';
+
+interface UIMessage {
+  id: string;
+  type: 'text' | 'system';
   sender: 'me' | 'them' | 'system';
   senderName: string;
   avatar: string;
   text: string;
+  images?: string[];
   timestamp: Date;
-  type: 'text' | 'system';
 }
 
 @Component({
   selector: 'popup',
+  standalone: true,
   templateUrl: './popup.html',
   styleUrls: ['./popup.css'],
-  standalone: true,
-  imports: [Dialog, ButtonModule, InputTextModule, AvatarModule, FormsModule, DatePipe, CommonModule]
+  imports: [
+    DialogModule,
+    ButtonModule,
+    InputTextModule,
+    AvatarModule,
+    FormsModule,
+    CommonModule
+  ]
 })
-export class Popup implements AfterViewChecked {
+export class Popup implements AfterViewChecked, OnDestroy {
+  @Input() request!: HelpRequest;
   @ViewChild('chatScroll') chatScroll!: ElementRef;
-  
-  visible: boolean = false;
-  newMessage: string = '';
-  isTyping: boolean = false;
-  chatAccepted: boolean = false;
-  private shouldScrollToBottom = false;
 
-  // Realistic chat data
-  messages: ChatMessage[] = [
-    {
-      id: 1,
-      sender: 'system',
-      senderName: 'System',
-      avatar: '',
-      text: 'Welcome to PrimeTek Team Chat!',
-      timestamp: new Date(Date.now() - 3600000), // 1 hour ago
-      type: 'system'
-    },
-    {
-      id: 2,
-      sender: 'them',
-      senderName: 'Sarah Chen',
-      avatar: 'https://i.pravatar.cc/40?u=sarah',
-      text: 'Hey everyone! Just pushed the latest UI updates to the dev branch 🚀',
-      timestamp: new Date(Date.now() - 2700000), // 45 min ago
-      type: 'text'
-    },
-    {
-      id: 3,
-      sender: 'them',
-      senderName: 'Mike Rodriguez',
-      avatar: 'https://i.pravatar.cc/40?u=mike',
-      text: 'Awesome work Sarah! The new design looks incredible',
-      timestamp: new Date(Date.now() - 2640000), // 44 min ago
-      type: 'text'
-    },
-    {
-      id: 4,
-      sender: 'me',
-      senderName: 'You',
-      avatar: 'https://i.pravatar.cc/40?u=me',
-      text: 'I agree! The color scheme is much more modern. Great job! 👏',
-      timestamp: new Date(Date.now() - 2580000), // 43 min ago
-      type: 'text'
-    },
-    {
-      id: 5,
-      sender: 'them',
-      senderName: 'Alex Kim',
-      avatar: 'https://i.pravatar.cc/40?u=alex',
-      text: 'Should we schedule a review meeting for tomorrow?',
-      timestamp: new Date(Date.now() - 2400000), // 40 min ago
-      type: 'text'
-    },
-    {
-      id: 6,
-      sender: 'them',
-      senderName: 'Sarah Chen',
-      avatar: 'https://i.pravatar.cc/40?u=sarah',
-      text: 'That sounds perfect! I\'ll send out calendar invites',
-      timestamp: new Date(Date.now() - 2340000), // 39 min ago
-      type: 'text'
-    },
-    {
-      id: 7,
-      sender: 'me',
-      senderName: 'You',
-      avatar: 'https://i.pravatar.cc/40?u=me',
-      text: 'Count me in! What time works best for everyone?',
-      timestamp: new Date(Date.now() - 1800000), // 30 min ago
-      type: 'text'
-    },
-    {
-      id: 8,
-      sender: 'them',
-      senderName: 'Mike Rodriguez',
-      avatar: 'https://i.pravatar.cc/40?u=mike',
-      text: 'Morning works better for me, maybe 10 AM?',
-      timestamp: new Date(Date.now() - 1740000), // 29 min ago
-      type: 'text'
-    },
-    {
-      id: 9,
-      sender: 'them',
-      senderName: 'Alex Kim',
-      avatar: 'https://i.pravatar.cc/40?u=alex',
-      text: '10 AM works! Looking forward to seeing the updates in action',
-      timestamp: new Date(Date.now() - 900000), // 15 min ago
-      type: 'text'
-    }
-  ];
+  visible = false;
+  chatAccepted = false;
+  newMessage = '';
+  messages: UIMessage[] = [];
+  initialized = false;
+  loading = false;
+  error: string | null = null;
 
-  private teamMembers = [
-    { name: 'Sarah Chen', avatar: 'https://i.pravatar.cc/40?u=sarah' },
-    { name: 'Mike Rodriguez', avatar: 'https://i.pravatar.cc/40?u=mike' },
-    { name: 'Alex Kim', avatar: 'https://i.pravatar.cc/40?u=alex' },
-    { name: 'Emma Wilson', avatar: 'https://i.pravatar.cc/40?u=emma' }
-  ];
+  private sub?: Subscription;
+  private needScroll = false;
+  private currentUserId!: string;
 
-  showDialog() {
+  private chatService?: ChatService;
+  private reqService?: HelpRequestService;
+
+  constructor(private injector: Injector) {}
+
+  private getServices() {
+    if (!this.chatService) this.chatService = this.injector.get(ChatService);
+    if (!this.reqService) this.reqService = this.injector.get(HelpRequestService);
+  }
+
+  showDialog(): void {
     this.visible = true;
-    this.shouldScrollToBottom = true;
-  }
-
-  ngAfterViewChecked() {
-    if (this.shouldScrollToBottom) {
-      this.scrollToBottom();
-      this.shouldScrollToBottom = false;
+    if (!this.initialized) {
+      this.initialize();
+      this.initialized = true;
     }
   }
 
-  sendMessage() {
-    if (!this.newMessage.trim() || !this.chatAccepted) return;
-
-    const newMsg: ChatMessage = {
-      id: this.messages.length + 1,
-      sender: 'me',
-      senderName: 'You',
-      avatar: 'https://i.pravatar.cc/40?u=me',
-      text: this.newMessage.trim(),
-      timestamp: new Date(),
-      type: 'text'
-    };
-
-    this.messages.push(newMsg);
-    this.newMessage = '';
-    this.shouldScrollToBottom = true;
-
-    // Simulate random responses from team members
-    this.simulateResponse();
+  // Helper method to process message content and extract images
+  processMessageContent(content: string): { text: string; images: string[] } {
+    if (!content) return { text: '', images: [] };
+    
+    const imgRegex = /<img[^>]*src="([^"]*)"[^>]*>/g;
+    const images: string[] = [];
+    let match;
+    
+    // Extract all image URLs
+    while ((match = imgRegex.exec(content)) !== null) {
+      images.push(match[1]);
+    }
+    
+    // Remove HTML img tags and return clean text
+    const text = content.replace(/<img[^>]*>/g, '').trim();
+    
+    return { text, images };
   }
 
-  acceptChat() {
-    this.chatAccepted = true;
-    // Here you would typically make an API call to accept the chat
-    // Example: this.chatService.acceptChat().subscribe(...)
+  private async initialize() {
+    this.loading = true;
+    this.error = null;
     
-    // Add a system message to indicate chat was accepted
-    const acceptMessage: ChatMessage = {
-      id: this.messages.length + 1,
-      sender: 'system',
-      senderName: 'System',
-      avatar: '',
-      text: 'You joined the chat',
-      timestamp: new Date(),
-      type: 'system'
-    };
-    
-    this.messages.push(acceptMessage);
-    this.shouldScrollToBottom = true;
+    try {
+      this.getServices();
+      this.currentUserId = this.reqService!.currentUserId();
+      this.chatAccepted = this.request.status === 'IN_PROGRESS';
+
+      // Load chat history with improved error handling
+      const history = await this.reqService!.getChatHistory(this.request.id);
+      
+      console.log('Chat history loaded:', history);
+      
+      if (history && history.length > 0) {
+        this.messages = history.map(m => this.toUI(m));
+        this.scrollToBottom();
+      } else {
+        // Add a system message if no history exists
+        this.messages = [{
+          id: 'sys-init-' + Date.now(),
+          type: 'system',
+          sender: 'system',
+          senderName: 'System',
+          avatar: '',
+          text: 'Chat initialized',
+          timestamp: new Date()
+        }];
+      }
+
+      // Subscribe to new messages
+      this.sub = this.chatService!
+        .onMessage(this.request.id)
+        .subscribe({
+          next: (m) => {
+            console.log('New message received:', m);
+            this.messages.push(this.toUI(m));
+            this.scrollToBottom();
+          },
+          error: (error) => {
+            console.error('Error receiving messages:', error);
+            this.error = 'Failed to receive messages';
+          }
+        });
+
+    } catch (error) {
+      console.error('Failed to initialize chat:', error);
+      this.error = 'Failed to load chat history';
+      
+      // Still allow the chat to work with empty history
+      this.messages = [{
+        id: 'sys-error-' + Date.now(),
+        type: 'system',
+        sender: 'system',
+        senderName: 'System',
+        avatar: '',
+        text: 'Chat loaded (history unavailable)',
+        timestamp: new Date()
+      }];
+    } finally {
+      this.loading = false;
+    }
   }
 
-  private simulateResponse() {
-    // Only simulate responses if chat is accepted
-    if (!this.chatAccepted) return;
-    
-    // 30% chance of getting a response
-    if (Math.random() > 0.3) return;
+  async acceptChat(): Promise<void> {
+    try {
+      this.loading = true;
+      this.error = null;
+      
+      const updated = await this.reqService!.acceptRequest(this.request.id);
+      
+      this.chatAccepted = true;
+      this.request.status = updated.status;
+      
+      this.messages.push({
+        id: 'sys-' + Date.now(),
+        type: 'system',
+        sender: 'system',
+        senderName: 'System',
+        avatar: '',
+        text: 'You joined the chat',
+        timestamp: new Date()
+      });
+      
+      this.scrollToBottom();
+      
+    } catch (error) {
+      console.error('Failed to accept chat:', error);
+      this.error = 'Failed to accept chat request';
+    } finally {
+      this.loading = false;
+    }
+  }
 
-    this.isTyping = true;
-    
-    setTimeout(() => {
-      const randomMember = this.teamMembers[Math.floor(Math.random() * this.teamMembers.length)];
-      const responses = [
-        "That's a great point!",
-        "I totally agree with that approach",
-        "Thanks for the update! 👍",
-        "Sounds good to me",
-        "Let me know if you need any help with that",
-        "Perfect! I'll work on that",
-        "Great idea! Let's implement it",
-        "I was thinking the same thing",
-        "That should work well",
-        "Excellent work as always! 🎉"
-      ];
+  async sendMessage(): Promise<void> {
+    const txt = this.newMessage.trim();
+    if (!txt || !this.chatAccepted) return;
 
-      const responseMsg: ChatMessage = {
-        id: this.messages.length + 1,
-        sender: 'them',
-        senderName: randomMember.name,
-        avatar: randomMember.avatar,
-        text: responses[Math.floor(Math.random() * responses.length)],
-        timestamp: new Date(),
-        type: 'text'
+    try {
+      const msg: ChatMessage = {
+        requestId: this.request.id,
+        senderId: this.currentUserId,
+        content: txt,
+        timestamp: new Date().toISOString()
       };
 
-      this.messages.push(responseMsg);
-      this.isTyping = false;
-      this.shouldScrollToBottom = true;
-    }, 1500 + Math.random() * 2000); // Random delay between 1.5-3.5 seconds
-  }
-
-  private scrollToBottom() {
-    if (this.chatScroll?.nativeElement) {
-      this.chatScroll.nativeElement.scrollTop = this.chatScroll.nativeElement.scrollHeight;
+      await this.chatService!.sendMessage(msg);
+      this.newMessage = '';
+      this.error = null;
+      
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      this.error = 'Failed to send message';
     }
   }
 
-  onInputKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' && !event.shiftKey && this.chatAccepted) {
-      event.preventDefault();
+  private toUI(m: ChatMessage): UIMessage {
+    const me = m.senderId === this.currentUserId;
+    const processed = this.processMessageContent(m.content);
+    
+    return {
+      id: m.id ?? `msg-${Date.now()}-${Math.random()}`,
+      type: 'text',
+      sender: me ? 'me' : 'them',
+      senderName: me ? 'You' : 'Helper',
+      avatar: '',
+      text: processed.text,
+      images: processed.images,
+      timestamp: new Date(m.timestamp)
+    };
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.needScroll) {
+      this.scrollToBottom();
+      this.needScroll = false;
+    }
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.needScroll = true;
+      setTimeout(() => {
+        if (this.chatScroll?.nativeElement) {
+          const el = this.chatScroll.nativeElement;
+          el.scrollTop = el.scrollHeight;
+        }
+      }, 100);
+    } catch (error) {
+      console.warn('Failed to scroll to bottom:', error);
+    }
+  }
+
+  onInputKeydown(ev: KeyboardEvent): void {
+    if (ev.key === 'Enter' && !ev.shiftKey && this.chatAccepted) {
+      ev.preventDefault();
       this.sendMessage();
     }
   }
 
-  getMessageTime(timestamp: Date): string {
-    const now = new Date();
-    const diffMs = now.getTime() - timestamp.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return 'now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
-    
-    return timestamp.toLocaleDateString();
+  trackByMessageId(_: number, m: UIMessage): string {
+    return m.id;
   }
 
-  trackByMessageId(index: number, message: ChatMessage): number {
-    return message.id;
+  clearError(): void {
+    this.error = null;
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
   }
 }

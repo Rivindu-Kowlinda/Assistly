@@ -1,65 +1,65 @@
-import { Component, Input, OnInit }         from '@angular/core';
-import { ChartModule }                       from 'primeng/chart';
-import Chart                                 from 'chart.js/auto';
-import type { ChartData, ChartOptions, Plugin } from 'chart.js';
+// src/app/components/dial/dial.ts
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChartModule }                                  from 'primeng/chart';
+import type { ChartData, ChartOptions }                 from 'chart.js';
+import { PointsData }                                  from '../../services/dashboard.service';
 
 @Component({
   selector: 'dial',
   standalone: true,
   imports: [ChartModule],
   template: `
-    <div class="card flex justify-center p-4">
-      <p-chart
-        type="doughnut"
-        [data]="data"
-        [options]="options"
-        style="height:200px; width:200px;"
-      ></p-chart>
+    <div class="card flex justify-center p-4" style="height:200px; width:200px;">
+      <p-chart type="doughnut" [data]="data" [options]="options"></p-chart>
     </div>
   `
 })
-export class Dial implements OnInit {
-  /** now takes 3 segments (must sum to 100) */
-  @Input() segments: [number,number,number] = [30, 50, 20];
-  /** matching labels for tooltips/legend */
-  @Input() labels: [string,string,string] = ['Available Quota Points','Earned Points','Used Points'];
+export class Dial implements OnChanges {
+  /** now default to quota balance, earned, spent */
+  @Input() pointsData!: PointsData;
+  @Input() labels: [string,string,string] = ['Quota Balance','Earned','Spent'];
 
   data!: ChartData<'doughnut', number[], string>;
-  options!: ChartOptions<'doughnut'>;
+  options: ChartOptions<'doughnut'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '70%',
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  };
 
-  ngOnInit() {
-    // ensure we have three numbers
-    const seg = this.segments.map(n => Math.max(0, Math.min(n, 100)));
-    const total = seg.reduce((a,b) => a+b, 0) || 1;
+  ngOnChanges(_changes: SimpleChanges) {
+    if (!this.pointsData) return;
 
-    // build ChartData with three slices
+    // compute the three segments
+    const quotaBalance = this.pointsData.balance - this.pointsData.earned;
+    const earned       = this.pointsData.earned;
+    const spent        = this.pointsData.spent;
+
+    const seg = [quotaBalance, earned, spent];
+    const total = seg.reduce((a,b) => a + b, 0) || 1;
+
     this.data = {
-      labels: this.labels as string[],
+      labels: [...this.labels],
       datasets: [{
         data: seg,
-        backgroundColor: ['#1F2937','#3B82F6','#E5E7EB'], 
+        backgroundColor: ['#1F2937','#3B82F6','#E5E7EB'],
         hoverOffset: 20
       }]
     };
 
-    // center‑text plugin showing first slice’s percent
-
-
-    this.options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '70%',
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: ctx => {
-              const value = (ctx.dataset.data as number[])[ctx.dataIndex] || 0;
-              const pc = Math.round((value/total)*100);
-              return `${ctx.label}: ${value} (${pc}%)`;
-            }
+    // update tooltip to show "value (percent%)"
+    this.options.plugins = {
+      ...this.options.plugins,
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const v = (ctx.dataset.data as number[])[ctx.dataIndex] || 0;
+            const pc = Math.round((v/total)*100);
+            return `${ctx.label}: ${v} (${pc}%)`;
           }
-        },
-        legend: { position: 'bottom' }
+        }
       }
     };
   }

@@ -68,10 +68,6 @@ export class TableFilterBasicDemo implements OnInit {
   editingUser: User | null = null;
   isEditingMode = false;
 
-
-
-  constructor(private userService: UserService) {}
-
   displayCreateUserDialog = false;
   newUser = {
     username: '',
@@ -80,6 +76,8 @@ export class TableFilterBasicDemo implements OnInit {
     balancePoints: 0,
     monthlyAllocation: 0
   };
+
+  constructor(private userService: UserService) {}
   
   ngOnInit() {
     this.roles = [
@@ -89,6 +87,11 @@ export class TableFilterBasicDemo implements OnInit {
       { label: 'Admin',  value: 'ADMIN'  }
     ];
     this.loadUsersFromAPI();
+  }
+
+  // Helper method to check if we should hide the balance points column
+  isAdminOnlyView(): boolean {
+    return this.customers.length > 0 && this.customers.every(customer => customer.role === 'ADMIN');
   }
 
   openCreateUserDialog() {
@@ -107,8 +110,9 @@ export class TableFilterBasicDemo implements OnInit {
       username: this.newUser.username,
       password: this.newUser.password,
       role: [ this.newUser.role ],
-      balancePoints: this.newUser.balancePoints,
-      monthlyAllocation: this.newUser.monthlyAllocation
+      // Only include balance points and monthly allocation if not admin
+      balancePoints: this.newUser.role === 'ADMIN' ? 0 : this.newUser.balancePoints,
+      monthlyAllocation: this.newUser.role === 'ADMIN' ? 0 : this.newUser.monthlyAllocation
     };
 
     this.userService.createUser(payload).subscribe({
@@ -127,6 +131,15 @@ export class TableFilterBasicDemo implements OnInit {
           }
         ];
         this.displayCreateUserDialog = false;
+        
+        // Reset form
+        this.newUser = {
+          username: '',
+          password: '',
+          role: this.roles[0].value,
+          balancePoints: 0,
+          monthlyAllocation: 0
+        };
       },
       error: err => console.error('Create user failed', err)
     });
@@ -185,7 +198,12 @@ export class TableFilterBasicDemo implements OnInit {
 
   toggleEditMode() {
     this.isEditingMode = !this.isEditingMode;
-    if (!this.isEditingMode) this.saveChanges();
+    if (!this.isEditingMode) {
+      // Reset editing user to original values if canceling
+      if (this.selectedUser) {
+        this.editingUser = { ...this.selectedUser };
+      }
+    }
   }
 
   closeDialog() {
@@ -202,8 +220,9 @@ export class TableFilterBasicDemo implements OnInit {
         username: this.editingUser.username,
         password: this.editingUser.password,
         role: [this.editingUser.role],
-        balancePoints: parseInt(this.selectedUser.price),
-        monthlyAllocation: this.editingUser.monthlyAllocation,
+        // If role is admin, set balance points and monthly allocation to 0
+        balancePoints: this.editingUser.role === 'ADMIN' ? 0 : parseInt(this.selectedUser.price),
+        monthlyAllocation: this.editingUser.role === 'ADMIN' ? 0 : this.editingUser.monthlyAllocation,
         requestCount: this.selectedUser.requestCount ?? 0,
         helpPendingCount: this.selectedUser.helpPendingCount ?? 0,
         helpAcceptedCount: this.selectedUser.helpAcceptedCount ?? 0
@@ -215,8 +234,9 @@ export class TableFilterBasicDemo implements OnInit {
           this.selectedUser!.password = updatedUser.password;
           this.selectedUser!.role = updatedUser.role[0];
           this.selectedUser!.monthlyAllocation = updatedUser.monthlyAllocation;
+          this.selectedUser!.price = updatedUser.balancePoints.toString();
           this.updateUserInList();
-          this.displayUserDialog = false;
+          this.isEditingMode = false;
         },
         error: (err) => {
           console.error('Failed to update user:', err);
