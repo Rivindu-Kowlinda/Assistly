@@ -49,14 +49,17 @@ export class Popup implements AfterViewChecked, OnDestroy {
   // ✅ Add event emitter to notify parent about points changes
   @Output() requestCompleted = new EventEmitter<void>();
 
-  visible      = false;
+  visible = false;
   chatAccepted = false;
   messages: UIMessage[] = [];
+  
+  // ✅ Add loading state
+  isLoading = false;
 
   /** Complete / rating state */
   completed = false;
-  rating    = 0;
-  rated     = false;
+  rating = 0;
+  rated = false;
 
   // Computed properties for UI logic
   get isRequest(): boolean {
@@ -119,7 +122,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     return { text, images };
   }
 
-  /** Always re-initialize on each open */
+  /** ✅ Updated showDialog method - now async and with loading state */
   async showDialog(): Promise<void> {
     // Clean up any prior subscription / state
     this.sub?.unsubscribe();
@@ -128,11 +131,12 @@ export class Popup implements AfterViewChecked, OnDestroy {
     this.rated = false;
     this.rating = 0;
     
-    // ✅ Show loading state first
+    // ✅ Show dialog and loading state
     this.visible = true;
+    this.isLoading = true;
     
     try {
-      // ✅ Wait for initialization to complete before proceeding
+      // ✅ Wait for initialization to complete
       if (this.isCompletedHelp) {
         await this.loadCompletedHelpData();
       } else {
@@ -140,15 +144,18 @@ export class Popup implements AfterViewChecked, OnDestroy {
       }
     } catch (error) {
       console.error('Failed to initialize dialog:', error);
-      // Handle error state if needed
+      // You could add error handling UI here if needed
+    } finally {
+      // ✅ Hide loading state when done
+      this.isLoading = false;
     }
   }
 
-  /** Load data for completed helps (chat history only, no live updates) */
+  /** ✅ Updated to return Promise for completed helps */
   private async loadCompletedHelpData(): Promise<void> {
     this.getServices();
     this.currentUserId = this.reqSvc.currentUserId();
-  
+
     // Load existing chat history
     try {
       const hist = await this.reqSvc.getChatHistory(this.requestId);
@@ -162,15 +169,17 @@ export class Popup implements AfterViewChecked, OnDestroy {
     
     // No live subscription needed for completed helps
   }
+
   /** Tear down on hide */
   onDialogHide(): void {
     this.sub?.unsubscribe();
   }
 
+  /** ✅ Updated initialize method to return Promise */
   private async initialize(): Promise<void> {
     this.getServices();
     this.currentUserId = this.reqSvc.currentUserId();
-  
+
     // 1) Load request to see if it's already in‐progress
     try {
       const req = await this.reqSvc.getRequest(this.requestId);
@@ -185,7 +194,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     } catch {
       this.chatAccepted = false;
     }
-  
+
     // 2) Load existing chat history
     try {
       const hist = await this.reqSvc.getChatHistory(this.requestId);
@@ -196,7 +205,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     
     // ✅ Ensure scrolling happens after messages are loaded
     this.scrollToBottom();
-  
+
     // 3) Subscribe for live updates (only for requests)
     this.sub = this.chatSvc
       .onMessage(this.requestId)

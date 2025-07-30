@@ -1,223 +1,345 @@
-/* employee-tabs.component.css */
+/* employee-tabs.component.css - Aggressive Light Mode Fix */
 
 .employee-tabs-container {
-    margin-top: 2rem;
+  margin-top: 2rem;
+  background: #ffffff !important;
+}
+
+.employee-tabs-container * {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+.card {
+  background: #ffffff !important;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* AGGRESSIVE PRIMENG OVERRIDE - FORCE LIGHT MODE */
+::ng-deep .employee-tabs-container .p-tabs,
+::ng-deep .employee-tabs-container .p-tabs *,
+::ng-deep .employee-tabs-container .p-component,
+::ng-deep .employee-tabs-container .p-component * {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: #e5e7eb !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tablist {
+  background: #ffffff !important;
+  border: none !important;
+  border-bottom: 2px solid #f1f5f9 !important;
+  padding: 0.5rem 0 !important;
+  display: flex !important;
+  gap: 0.5rem !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tablist .p-tab {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tablist .p-tab .p-tab-header-action {
+  background: #ffffff !important;
+  color: #6b7280 !important;
+  border: none !important;
+  padding: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tablist .p-tab:hover {
+  background: #f9fafb !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tablist .p-tab:hover .p-tab-header-action {
+  background: #f9fafb !important;
+  color: #374151 !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tablist .p-tab.p-tab-active {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tablist .p-tab.p-tab-active .p-tab-header-action {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tabpanels {
+  background: #ffffff !important;
+  padding: 0 !important;
+}
+
+::ng-deep .employee-tabs-container .p-tabs .p-tabpanels .p-tabpanel {
+  background: #ffffff !important;
+  padding: 1.5rem 0 !important;
+}
+
+/* Tab Header Styling */
+.tab-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  max-width: 200px;
+  background: transparent !important;
+}
+
+.employee-avatar-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white !important;
+  font-size: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.tab-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: inherit !important;
+}
+
+.tab-close-btn {
+  background: none !important;
+  border: none !important;
+  color: inherit !important;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.tab-close-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  opacity: 1;
+}
+
+.tab-close-btn i {
+  font-size: 12px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280 !important;
+  background: #ffffff !important;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  color: #d1d5db !important;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  color: #374151 !important;
+  font-size: 1.25rem;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280 !important;
+}
+
+/* Employee Detail Card */
+.employee-detail-card {
+  padding: 1rem;
+  background: #ffffff !important;
+}
+
+.employee-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.employee-avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white !important;
+  font-size: 2rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.employee-basic-info {
+  flex: 1;
+}
+
+.employee-name {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937 !important;
+}
+
+.role-tag {
+  font-size: 0.875rem;
+}
+
+/* Details Grid */
+.employee-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.detail-item label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.detail-value {
+  font-size: 1rem;
+  color: #1f2937 !important;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detail-value.salary {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #059669 !important;
+}
+
+.detail-value i {
+  color: #6b7280 !important;
+  font-size: 0.875rem;
+}
+
+/* Actions */
+.employee-actions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* PrimeNG Tag Light Mode Colors */
+::ng-deep .employee-tabs-container .p-tag {
+  font-weight: 500 !important;
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+::ng-deep .employee-tabs-container .p-tag.p-tag-success {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #bbf7d0 !important;
+}
+
+::ng-deep .employee-tabs-container .p-tag.p-tag-info {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+::ng-deep .employee-tabs-container .p-tag.p-tag-warning {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fde68a !important;
+}
+
+::ng-deep .employee-tabs-container .p-tag.p-tag-danger {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #fecaca !important;
+}
+
+::ng-deep .employee-tabs-container .p-tag.p-tag-primary {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+::ng-deep .employee-tabs-container .p-tag.p-tag-secondary {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .employee-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
   }
   
-  .card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+  .employee-details-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
-  /* Tab Header Styling */
+  .employee-actions {
+    flex-direction: column;
+  }
+  
   .tab-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    max-width: 200px;
-  }
-  
-  .employee-avatar-small {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 10px;
-    font-weight: 600;
-    flex-shrink: 0;
+    max-width: 150px;
   }
   
   .tab-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-  
-  .tab-close-btn {
-    background: none;
-    border: none;
-    color: #6b7280;
-    cursor: pointer;
-    padding: 2px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-  
-  .tab-close-btn:hover {
-    background-color: #f3f4f6;
-    color: #ef4444;
-  }
-  
-  .tab-close-btn i {
-    font-size: 12px;
-  }
-  
-  /* Empty State */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: #6b7280;
-  }
-  
-  .empty-icon {
-    font-size: 4rem;
-    color: #d1d5db;
-    margin-bottom: 1rem;
-  }
-  
-  .empty-state h3 {
-    margin: 0 0 0.5rem 0;
-    color: #374151;
-    font-size: 1.25rem;
-  }
-  
-  .empty-state p {
-    margin: 0;
-    font-size: 0.875rem;
-  }
-  
-  /* Employee Detail Card */
-  .employee-detail-card {
-    padding: 1rem;
-  }
-  
-  .employee-header {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .employee-avatar-large {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 2rem;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  }
-  
-  .employee-basic-info {
-    flex: 1;
-  }
-  
-  .employee-name {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #1f2937;
-  }
-  
-  .role-tag {
-    font-size: 0.875rem;
-  }
-  
-  /* Details Grid */
-  .employee-details-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  
-  .detail-item label {
     font-size: 0.75rem;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
-  
-  .detail-value {
-    font-size: 1rem;
-    color: #1f2937;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .detail-value.salary {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #059669;
-  }
-  
-  .detail-value i {
-    color: #6b7280;
-    font-size: 0.875rem;
-  }
-  
-  /* Actions */
-  .employee-actions {
-    display: flex;
-    gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .employee-header {
-      flex-direction: column;
-      text-align: center;
-      gap: 1rem;
-    }
-    
-    .employee-details-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    
-    .employee-actions {
-      flex-direction: column;
-    }
-    
-    .tab-header {
-      max-width: 150px;
-    }
-    
-    .tab-name {
-      font-size: 0.75rem;
-    }
-  }
-  
-  /* PrimeNG Tab Customization */
-  ::ng-deep .p-tabs .p-tablist .p-tab {
-    margin-right: 0.25rem;
-  }
-  
-  ::ng-deep .p-tabs .p-tablist .p-tab .p-tab-header-action {
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-  }
-  
-  ::ng-deep .p-tabs .p-tabpanels .p-tabpanel {
-    padding: 1rem 0;
-  }
+}

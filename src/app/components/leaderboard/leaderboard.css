@@ -1,135 +1,134 @@
 :host {
-    display: block;
-  }
-  
-  /* Container */
-  .card.leaderboard {
-    background-color: white !important;
-    color: #333 !important;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Dropdown */
-  .card.leaderboard .toolbar select {
-    background-color: white !important;
-    color: #333 !important;
-    border: 1px solid #ccc !important;
-    border-radius: 4px;
-  }
-  .card.leaderboard .toolbar select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-  }
-  .card.leaderboard .toolbar select option {
-    background-color: white !important;
-    color: #333 !important;
-  }
-  
-  /* PrimeNG table overrides */
-  .card.leaderboard ::ng-deep .p-datatable,
-  .card.leaderboard ::ng-deep .p-datatable-wrapper {
-    background-color: white !important;
-    color: #333 !important;
-  }
-  .card.leaderboard ::ng-deep .p-datatable-thead > tr > th {
-    background-color: #f8f9fa !important;
-    color: #333 !important;
-    border: 1px solid #e0e0e0 !important;
-    font-weight: 600;
-  }
-  .card.leaderboard ::ng-deep .p-datatable-tbody > tr,
-  .card.leaderboard ::ng-deep .p-datatable-tbody > tr > td {
-    background-color: white !important;
-    color: #333 !important;
-    border: 1px solid #e0e0e0 !important;
-  }
-  .card.leaderboard ::ng-deep .p-datatable-tbody > tr:hover {
-    background-color: #f8f9fa !important;
-  }
-  .card.leaderboard ::ng-deep .p-datatable-emptymessage > td {
-    background-color: white !important;
-    color: #666 !important;
-    text-align: center;
-    font-style: italic;
-  }
-  
-  /* Sort icons & hover */
-  .card.leaderboard ::ng-deep .p-sortable-column-icon {
-    color: #666 !important;
-  }
-  .card.leaderboard ::ng-deep .p-sortable-column:hover {
-    background-color: #f0f0f0 !important;
-  }
-  
-  /* Paginator */
-  .card.leaderboard ::ng-deep .p-paginator {
-    background-color: white !important;
-    color: #333 !important;
-    border-top: 1px solid #e0e0e0 !important;
-  }
-  .card.leaderboard ::ng-deep .p-paginator .p-paginator-page,
-  .card.leaderboard ::ng-deep .p-paginator-first,
-  .card.leaderboard ::ng-deep .p-paginator-prev,
-  .card.leaderboard ::ng-deep .p-paginator-next,
-  .card.leaderboard ::ng-deep .p-paginator-last {
-    background-color: white !important;
-    color: #333 !important;
-    border: 1px solid #e0e0e0 !important;
-  }
-  .card.leaderboard ::ng-deep .p-paginator .p-paginator-page:hover,
-  .card.leaderboard ::ng-deep .p-paginator-first:hover,
-  .card.leaderboard ::ng-deep .p-paginator-prev:hover,
-  .card.leaderboard ::ng-deep .p-paginator-next:hover,
-  .card.leaderboard ::ng-deep .p-paginator-last:hover {
-    background-color: #f8f9fa !important;
-  }
-  .card.leaderboard ::ng-deep .p-paginator .p-dropdown,
-  .card.leaderboard ::ng-deep .p-paginator .p-dropdown:hover {
-    background-color: white !important;
-    color: #333 !important;
-    border: 1px solid #ccc !important;
-  }
-  /* give the table itself rounded corners */
+  display: block;
+}
+
+/* Container */
+.card.leaderboard {
+  background-color: white !important;
+  color: #333 !important;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dropdown */
+.card.leaderboard .toolbar select {
+  background-color: white !important;
+  color: #333 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px;
+}
+.card.leaderboard .toolbar select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+.card.leaderboard .toolbar select option {
+  background-color: white !important;
+  color: #333 !important;
+}
+
+/* PrimeNG table overrides */
+.card.leaderboard ::ng-deep .p-datatable,
 .card.leaderboard ::ng-deep .p-datatable-wrapper {
-    border-radius: 8px !important;
-    overflow: hidden;           /* ensures rows don’t bleed outside the corners */
-  }
-  
-  /* if you want the native <table> element rounded too */
-  .card.leaderboard ::ng-deep .p-datatable {
-    border-radius: 8px !important;
-  }
-  /* 1) Keep overall wrapper rounded and clip inside */
+  background-color: white !important;
+  color: #333 !important;
+}
+.card.leaderboard ::ng-deep .p-datatable-thead > tr > th {
+  background-color: #f8f9fa !important;
+  color: #333 !important;
+  border: 1px solid #e0e0e0 !important;
+  font-weight: 600;
+}
+.card.leaderboard ::ng-deep .p-datatable-tbody > tr,
+.card.leaderboard ::ng-deep .p-datatable-tbody > tr > td {
+  background-color: white !important;
+  color: #333 !important;
+  border: 1px solid #e0e0e0 !important;
+}
+.card.leaderboard ::ng-deep .p-datatable-tbody > tr:hover {
+  background-color: #f8f9fa !important;
+}
+.card.leaderboard ::ng-deep .p-datatable-emptymessage > td {
+  background-color: white !important;
+  color: #666 !important;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Sort icons & hover */
+.card.leaderboard ::ng-deep .p-sortable-column-icon {
+  color: #666 !important;
+}
+.card.leaderboard ::ng-deep .p-sortable-column:hover {
+  background-color: #f0f0f0 !important;
+}
+
+/* Paginator */
+.card.leaderboard ::ng-deep .p-paginator {
+  background-color: white !important;
+  color: #333 !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+.card.leaderboard ::ng-deep .p-paginator .p-paginator-page,
+.card.leaderboard ::ng-deep .p-paginator-first,
+.card.leaderboard ::ng-deep .p-paginator-prev,
+.card.leaderboard ::ng-deep .p-paginator-next,
+.card.leaderboard ::ng-deep .p-paginator-last {
+  background-color: white !important;
+  color: #333 !important;
+  border: 1px solid #e0e0e0 !important;
+}
+.card.leaderboard ::ng-deep .p-paginator .p-paginator-page:hover,
+.card.leaderboard ::ng-deep .p-paginator-first:hover,
+.card.leaderboard ::ng-deep .p-paginator-prev:hover,
+.card.leaderboard ::ng-deep .p-paginator-next:hover,
+.card.leaderboard ::ng-deep .p-paginator-last:hover {
+  background-color: #f8f9fa !important;
+}
+.card.leaderboard ::ng-deep .p-paginator .p-dropdown,
+.card.leaderboard ::ng-deep .p-paginator .p-dropdown:hover {
+  background-color: white !important;
+  color: #333 !important;
+  border: 1px solid #ccc !important;
+}
+/* give the table itself rounded corners */
 .card.leaderboard ::ng-deep .p-datatable-wrapper {
-    border-radius: 8px !important;
-    overflow: hidden;
-  }
-  
-  /* 2) Let the table respect corner radii */
-  .card.leaderboard ::ng-deep .p-datatable table {
-    border-collapse: separate !important;
-    border-spacing: 0;
-  }
-  
-  /* 3) Round top corners of header row only */
-  .card.leaderboard ::ng-deep .p-datatable thead tr:first-child th:first-child {
-    border-top-left-radius: 8px !important;
-  }
-  .card.leaderboard ::ng-deep .p-datatable thead tr:first-child th:last-child {
-    border-top-right-radius: 8px !important;
-  }
-  
-  /* 4) Round bottom corners of last body row only */
-  .card.leaderboard ::ng-deep .p-datatable tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 8px !important;
-  }
-  .card.leaderboard ::ng-deep .p-datatable tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 8px !important;
-  }
-  
-  /* ——— remove the old “::ng-deep * { color: #333 }” rule entirely ——— */
-  
+  border-radius: 8px !important;
+  overflow: hidden;           /* ensures rows don’t bleed outside the corners */
+}
+
+/* if you want the native <table> element rounded too */
+.card.leaderboard ::ng-deep .p-datatable {
+  border-radius: 8px !important;
+}
+/* 1) Keep overall wrapper rounded and clip inside */
+.card.leaderboard ::ng-deep .p-datatable-wrapper {
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+/* 2) Let the table respect corner radii */
+.card.leaderboard ::ng-deep .p-datatable table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+/* 3) Round top corners of header row only */
+.card.leaderboard ::ng-deep .p-datatable thead tr:first-child th:first-child {
+  border-top-left-radius: 8px !important;
+}
+.card.leaderboard ::ng-deep .p-datatable thead tr:first-child th:last-child {
+  border-top-right-radius: 8px !important;
+}
+
+/* 4) Round bottom corners of last body row only */
+.card.leaderboard ::ng-deep .p-datatable tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px !important;
+}
+.card.leaderboard ::ng-deep .p-datatable tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px !important;
+}
+
+/* ——— remove the old “::ng-deep * { color: #333 }” rule entirely ——— */

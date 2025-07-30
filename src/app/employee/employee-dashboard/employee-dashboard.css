@@ -1,3 +1,22 @@
+/* Override global page background to blue */
+body, html {
+  background-color: rgb(4, 12, 42) !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Dashboard Layout - Force blue background */
+.dashboard-layout {
+  background-color: rgb(4, 12, 42) !important;
+}
+
+/* Main wrapper - Force blue background, keep original positioning */
+.main-wrapper {
+  background-color: rgb(4, 12, 42) !important;
+}
+
+/* Keep all original CSS exactly as it was, just ensure backgrounds are correct */
+
 /* reset default padding on mobile */
 :host ::ng-deep .p-progressbar {
   height: 0.5rem;
@@ -16,7 +35,7 @@
     margin-top: 20px;
     background-color: white;
     max-width: 88%;
-    border-radius: 5px;
+    border-radius: 8px;
   }
 }
 
@@ -33,6 +52,8 @@ th, td {
   box-shadow: 0px 5px 5px #D8DADC;
   border-radius: 5px;
   padding: 3px;
+  margin-bottom: 30px;
+  margin-top: 30px;
 }
 
 /* History Card Container */
@@ -551,7 +572,6 @@ th, td {
   align-items: center;
 }
 
-
 /* existing mobile stack behavior (you already had this) */
 @media (max-width: 768px) {
   .cards-container {
@@ -563,8 +583,8 @@ th, td {
     flex: none;
   }
 }
-/* Add these styles to your existing employee-dashboard.css file */
 
+/* Add these styles to your existing employee-dashboard.css file */
 .clickable-row {
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -608,6 +628,7 @@ popup ::ng-deep .p-dialog p-button,
 popup ::ng-deep .p-dialog button {
   display: inline-flex !important;
 }
+
 popup ::ng-deep p-button button {
   display: none !important;
 }

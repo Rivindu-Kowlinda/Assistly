@@ -1,46 +1,229 @@
+/* src/app/components/help/help.css - Simplified Version */
+
+/* Basic layout */
 .dashboard-layout {
   display: flex;
 }
 
-.request-card {
-  background-color: #ececec;
-  padding: 5px;
-  border-radius: 5px;
-  margin: 5px;
-  box-shadow: 0px 5px 5px #D8DADC;
-  color: #121212;
-  max-width: 30%;
-}
-
-/* Sidebar */
+/* Sidebar - keep this simple */
 app-sidebar {
   position: fixed;
   top: 0;
   left: 0;
   width: 200px;
   height: 100vh;
-  background-color: #121212;
-  box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+  background-color: rgb(4, 12, 42);
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   overflow-y: auto;
 }
-
-/* Main content */
+/* Main wrapper - minimal styling */
 .main-wrapper {
   margin-left: 200px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  padding: 20px;
   background-color: white;
-  padding: 5px;
-  border-radius: 5px;
+  min-height: 100vh;
+  margin-top: 20px;
+  border-radius: 8px;
 }
 
-/* Responsive sidebar */
+/* Simple header */
+.help-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.help-header h1 {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.help-subtitle {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Simple container - centered */
+.requests-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Simple cards - bigger and centered */
+.request-card {
+  background-color: #f5f5f5;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  width: 350px;
+  /* CRITICAL: No transforms, no fancy effects that create stacking contexts */
+  position: static;
+}
+
+/* Simple card header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.request-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+/* Simple status badges with enum mapping */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.status-pending,
+.status-0 {
+  background: #f39c12;
+  color: white;
+}
+
+.status-in-progress,
+.status-in_progress,
+.status-1 {
+  background: #3498db;
+  color: white;
+}
+
+.status-completed,
+.status-2 {
+  background: #27ae60;
+  color: white;
+}
+
+.status-cancelled,
+.status-3 {
+  background: #e74c3c;
+  color: white;
+}
+
+.status-on-hold,
+.status-on_hold,
+.status-4 {
+  background: #95a5a6;
+  color: white;
+}
+
+/* Simple card content */
+.card-content {
+  margin-bottom: 15px;
+}
+
+.request-info {
+  margin-bottom: 15px;
+}
+
+.info-item {
+  margin-bottom: 8px;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #666;
+  display: inline-block;
+  width: 50px;
+}
+
+.info-value {
+  color: #333;
+}
+
+/* Simple actions - left aligned */
+.card-actions {
+  text-align: left;
+}
+
+/* Style the Open Request button */
+.card-actions button,
+.card-actions .open-request-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card-actions button:hover,
+.card-actions .open-request-btn:hover {
+  background-color: #5a6268;
+}
+
+/* POPUP FIX - Force dialogs to body level */
+:host ::ng-deep .p-dialog-mask {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 999999 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+:host ::ng-deep .p-dialog {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 1000000 !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+}
+
+/* Override any PrimeNG container issues */
+:host ::ng-deep .p-component-overlay {
+  z-index: 999998 !important;
+}
+
+/* Simple no tasks message */
+.no-tasks {
+  padding: 40px;
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.no-tasks-icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.no-tasks h3 {
+  color: #333;
+  margin: 10px 0;
+}
+
+.no-tasks p {
+  color: #666;
+  margin: 0;
+}
+
+/* Remove debug info styling - not needed anymore */
+
+/* Basic responsive */
 @media (max-width: 768px) {
   app-sidebar {
-    position: absolute;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
   }
@@ -51,14 +234,20 @@ app-sidebar {
 
   .main-wrapper {
     margin-left: 0;
+    padding: 15px;
+  }
+
+  .requests-container {
+    flex-direction: column;
+  }
+
+  .request-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .help-header h1 {
+    font-size: 1.5rem;
   }
 }
-/* src/app/components/help/help.css */
-.no-tasks {
-  margin: 2rem;
-  text-align: center;
-  color: #555;
-  font-style: italic;
-  font-size: 1.1rem;
-}
-

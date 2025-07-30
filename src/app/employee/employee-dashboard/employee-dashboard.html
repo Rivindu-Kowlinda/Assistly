@@ -3,6 +3,14 @@
 
   <div class="main-wrapper" *ngIf="!loading">
     <div id="mainPage">
+      <div class="cards-container">
+        <div class="leaderboardCard">
+          <leaderboard [helpers]="employeeStats"></leaderboard>
+        </div>
+        <div class="dialDiv">
+          <dial [pointsData]="points" [labels]="['Quota Balance','Earned','Spent']"></dial>
+        </div>
+      </div>
       <div class="chart">
         <chart-line [requests]="requests" [helps]="helpsProvided"></chart-line>
       </div>
@@ -90,17 +98,16 @@
         </p-table>
       </div>
 
-      <div class="cards-container">
-        <div class="leaderboardCard">
-          <leaderboard [helpers]="employeeStats"></leaderboard>
-        </div>
-        <div class="dialDiv">
-          <dial [pointsData]="points" [labels]="['Quota Balance','Earned','Spent']"></dial>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>
 
-<!-- wire up the popup with the selectedRequestId -->
-<popup #chatPopup [requestId]="selectedRequestId"></popup>
+<!-- ✅ Updated popup with proper event handling -->
+<popup 
+  #chatPopup 
+  [requestId]="selectedRequestId"
+  [itemType]="selectedItemType"
+  [existingRating]="selectedRating"
+  (requestCompleted)="onRequestCompleted()"
+></popup>

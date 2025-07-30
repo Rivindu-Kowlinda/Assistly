@@ -1,30 +1,40 @@
 :root {
-  --sidebar-width: 200px;
-  --sidebar-bg: #fff;
-  --sidebar-shadow: rgba(0, 0, 0, 0.05);
-  --link-color: #333;
-  --link-hover-bg: #f4f4f4;
+  --sidebar-width: 220px;
+  --sidebar-bg: rgb(4, 12, 42);
+  --sidebar-shadow: rgba(0, 0, 0, 0.25);
+  --link-hover-bg: rgba(255, 255, 255, 0.1);
   --link-active-bg: #ff6a00;
   --link-active-color: #fff;
   --transition-speed: 0.25s;
 }
 
-/* ——— Sidebar Container ——— */
+body, :host {
+  --sidebar-bg: rgb(4, 12, 42);
+}
+
+/* Force light mode rendering to avoid theme-based override */
+html {
+  color-scheme: light;
+}
+
+/* Sidebar container */
 .navbar {
   position: fixed;
-  top: 0; left: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: var(--sidebar-width);
-  background-color: var(--sidebar-bg);
+  background-color: var(--sidebar-bg) !important;
   box-shadow: 2px 0 6px var(--sidebar-shadow);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: 2rem 1rem;
   transition: transform var(--transition-speed) ease;
   z-index: 1000;
+  color: white;
 }
 
-/* off-canvas when closed on mobile */
+/* Mobile collapse */
 .navbar:not(.open) {
   transform: translateX(-100%);
 }
@@ -34,17 +44,30 @@
   }
 }
 
-/* ——— Navigation Links ——— */
-.nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* Logo section */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
 }
-.nav-list li + li {
-  margin-top: 0.5rem;
+.logo-container img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 
-/* Base link style */
+/* Nav links */
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.nav-list li + li {
+  margin-top: 0.75rem;
+}
 .navbar .nav-list a {
   display: block;
   padding: 0.75rem 1rem;
@@ -57,24 +80,20 @@
     transform var(--transition-speed) ease,
     color var(--transition-speed) ease;
 }
-
-/* Hover: light-gray bg + slight slide */
 .navbar .nav-list a:hover {
   background-color: var(--link-hover-bg);
   transform: translateX(5px);
 }
-
-/* Active: orange bg + white text, inset bar */
 .navbar .nav-list a.active {
   background-color: var(--link-active-bg);
   color: var(--link-active-color);
   box-shadow: inset 4px 0 0 var(--link-active-bg);
 }
 
-/* ——— Profile Section ——— */
+/* Profile section */
 .profile {
   margin-top: auto;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1rem;
 }
 .profile a {
@@ -84,21 +103,16 @@
   color: white;
   text-decoration: none;
   font-weight: 500;
-  transition:
-    background var(--transition-speed) ease,
-    color var(--transition-speed) ease;
+  transition: background var(--transition-speed) ease;
 }
 .profile a:hover {
   background-color: var(--link-hover-bg);
-  color: white;
 }
-/* If you want the bottom link to stay highlighted when active: */
 .profile a.active {
   background-color: var(--link-hover-bg);
-  color: white;
 }
 
-/* ——— Hamburger Toggle ——— */
+/* Hamburger toggle button */
 .toggle-button {
   position: absolute;
   top: 1rem;
@@ -106,25 +120,23 @@
   width: 2rem;
   height: 2rem;
   background: var(--sidebar-bg);
-  border: 1px solid #ddd;
+  border: 1px solid #666;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition:
-    background var(--transition-speed) ease,
-    border-color var(--transition-speed) ease;
+  transition: background var(--transition-speed) ease;
   z-index: 1100;
 }
 .toggle-button:hover {
   background: var(--link-hover-bg);
-  border-color: #ccc;
 }
 .toggle-button .bar {
   width: 1rem;
   height: 2px;
-  background: var(--link-color);
+  background: white;
+  margin: 2px 0;
   border-radius: 1px;
   transition:
     transform var(--transition-speed) ease,
@@ -140,7 +152,7 @@
   transform: translateY(-6px) rotate(-45deg);
 }
 
-/* ——— Main Content Adjustment ——— */
+/* Main layout adjustment */
 .dashboard-layout .main-wrapper {
   margin-left: var(--sidebar-width);
   transition: margin-left var(--transition-speed) ease;

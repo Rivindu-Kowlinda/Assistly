@@ -26,6 +26,7 @@ interface User {
   role: string;
   price: string;
   monthlyAllocation: number;
+  newPassword?: string; // For editing purposes only
   requestCount?: number;
   helpPendingCount?: number;
   helpAcceptedCount?: number;
@@ -124,10 +125,11 @@ export class TableFilterBasicDemo implements OnInit {
             id: created.id,
             name: created.username,
             username: created.username,
-            password: '••••••••',          // mask it
+            password: created.password, // Keep encrypted password from backend
             role: created.role[0],
             price: created.balancePoints.toString(),
-            monthlyAllocation: created.monthlyAllocation
+            monthlyAllocation: created.monthlyAllocation,
+            newPassword: '' // Initialize as empty
           }
         ];
         this.displayCreateUserDialog = false;
@@ -153,10 +155,11 @@ export class TableFilterBasicDemo implements OnInit {
           id: user.id,
           name: user.username,
           username: user.username,
-          password: user.password,
+          password: user.password, // Keep encrypted password from backend
           role: user.role[0],
           price: user.balancePoints.toString(),
           monthlyAllocation: user.monthlyAllocation,
+          newPassword: '', // Initialize as empty for editing
           requestCount: user.requestCount,
           helpPendingCount: user.helpPendingCount,
           helpAcceptedCount: user.helpAcceptedCount
@@ -190,7 +193,20 @@ export class TableFilterBasicDemo implements OnInit {
     if (this.displayUserDialog) this.displayUserDialog = false;
     setTimeout(() => {
       this.selectedUser = { ...user };
-      this.editingUser = { ...user };
+      // Create editing user without the encrypted password field at all
+      this.editingUser = { 
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        role: user.role,
+        price: user.price,
+        monthlyAllocation: user.monthlyAllocation,
+        requestCount: user.requestCount,
+        helpPendingCount: user.helpPendingCount,
+        helpAcceptedCount: user.helpAcceptedCount,
+        password: '', // Don't copy the encrypted password
+        newPassword: '' // Always empty for editing
+      };
       this.isEditingMode = false;
       this.displayUserDialog = true;
     }, 50);
@@ -199,9 +215,26 @@ export class TableFilterBasicDemo implements OnInit {
   toggleEditMode() {
     this.isEditingMode = !this.isEditingMode;
     if (!this.isEditingMode) {
-      // Reset editing user to original values if canceling
+      // Reset editing user to original values if canceling, but without encrypted password
       if (this.selectedUser) {
-        this.editingUser = { ...this.selectedUser };
+        this.editingUser = { 
+          id: this.selectedUser.id,
+          name: this.selectedUser.name,
+          username: this.selectedUser.username,
+          role: this.selectedUser.role,
+          price: this.selectedUser.price,
+          monthlyAllocation: this.selectedUser.monthlyAllocation,
+          requestCount: this.selectedUser.requestCount,
+          helpPendingCount: this.selectedUser.helpPendingCount,
+          helpAcceptedCount: this.selectedUser.helpAcceptedCount,
+          password: '', // Don't copy the encrypted password
+          newPassword: '' // Always reset to empty
+        };
+      }
+    } else {
+      // When entering edit mode, ensure newPassword is always empty
+      if (this.editingUser) {
+        this.editingUser.newPassword = '';
       }
     }
   }
@@ -215,10 +248,9 @@ export class TableFilterBasicDemo implements OnInit {
 
   saveChanges() {
     if (this.editingUser && this.selectedUser) {
-      const updatedUser: ApiUser = {
+      const updatedUser: any = {
         id: this.selectedUser.id,
         username: this.editingUser.username,
-        password: this.editingUser.password,
         role: [this.editingUser.role],
         // If role is admin, set balance points and monthly allocation to 0
         balancePoints: this.editingUser.role === 'ADMIN' ? 0 : parseInt(this.selectedUser.price),
@@ -228,13 +260,21 @@ export class TableFilterBasicDemo implements OnInit {
         helpAcceptedCount: this.selectedUser.helpAcceptedCount ?? 0
       };
 
+      // Only include password if it was actually changed (not empty and not just whitespace)
+      if (this.editingUser.newPassword && this.editingUser.newPassword.trim() !== '') {
+        updatedUser.password = this.editingUser.newPassword.trim();
+      }
+      // Important: Do NOT include password field at all if it's empty
+
+      console.log('Payload being sent:', updatedUser); // Debug log to verify
+
       this.userService.updateUser(updatedUser).subscribe({
         next: () => {
           this.selectedUser!.username = updatedUser.username;
-          this.selectedUser!.password = updatedUser.password;
           this.selectedUser!.role = updatedUser.role[0];
           this.selectedUser!.monthlyAllocation = updatedUser.monthlyAllocation;
           this.selectedUser!.price = updatedUser.balancePoints.toString();
+          // Don't update the stored password as it's encrypted on backend
           this.updateUserInList();
           this.isEditingMode = false;
         },

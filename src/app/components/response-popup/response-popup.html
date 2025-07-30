@@ -1,12 +1,20 @@
 <div class="card flex justify-center">
-    <p-dialog
-      [header]="isRequest ? 'Request Chat' : 'Help Review'"
-      [(visible)]="visible"
-      [modal]="true"
-      [style]="{ width: '50rem', height: '60vh' }"
-      [contentStyle]="{ padding: '0', height: 'calc(60vh - 60px)' }"
-      (onHide)="onDialogHide()"
-    >
+  <p-dialog
+    [header]="isRequest ? 'Request Chat' : 'Help Review'"
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '50rem', height: '60vh' }"
+    [contentStyle]="{ padding: '0', height: 'calc(60vh - 60px)' }"
+    (onHide)="onDialogHide()"
+  >
+    <!-- ✅ Loading state -->
+    <div *ngIf="isLoading" class="loading-container flex justify-center items-center h-full">
+      <i class="pi pi-spinner pi-spin text-2xl"></i>
+      <span class="ml-2">Loading...</span>
+    </div>
+
+    <!-- ✅ Content shown only when not loading -->
+    <div *ngIf="!isLoading">
       <!-- chat + messages container -->
       <div class="chat-container">
         <div
@@ -21,7 +29,7 @@
             >
               {{ msg.text }}
             </div>
-  
+
             <!-- text message -->
             <div
               *ngIf="msg.type === 'text'"
@@ -56,7 +64,7 @@
               </div>
             </div>
           </ng-container>
-  
+
           <!-- No messages placeholder -->
           <div *ngIf="messages.length === 0" class="text-center text-gray-500 mt-8">
             <i class="pi pi-comments text-4xl mb-2"></i>
@@ -64,7 +72,7 @@
           </div>
         </div>
       </div>
-  
+
       <!-- footer with Complete + Rating for Requests -->
       <div *ngIf="isRequest" class="complete-footer p-4 border-t border-gray-200">
         <div class="flex justify-between items-center">
@@ -74,7 +82,7 @@
             [disabled]="completed || !chatAccepted"
             (onClick)="onComplete()"
           ></p-button>
-  
+
           <!-- Interactive rating for requests -->
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-600">Rate this help:</span>
@@ -89,7 +97,7 @@
           </div>
         </div>
       </div>
-  
+
       <!-- footer with Read-only Rating for Completed Helps -->
       <div *ngIf="isCompletedHelp && shouldShowReadOnlyRating" class="rating-footer p-4 border-t border-gray-200">
         <div class="flex justify-center items-center gap-3">
@@ -101,12 +109,13 @@
           <span class="text-sm text-gray-600">({{ displayRating }}/5)</span>
         </div>
       </div>
-  
+
       <!-- Message when no rating is available for helps -->
       <div *ngIf="isCompletedHelp && !shouldShowReadOnlyRating" class="rating-footer p-4 border-t border-gray-200">
         <div class="flex justify-center items-center">
           <span class="text-sm text-gray-500">No rating available for this help</span>
         </div>
       </div>
-    </p-dialog>
-  </div>
+    </div>
+  </p-dialog>
+</div>

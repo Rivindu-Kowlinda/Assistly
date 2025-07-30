@@ -8,7 +8,8 @@ import { EmployeeStat }     from '../../services/dashboard.service';
   selector: 'leaderboard',
   standalone: true,
   imports: [CommonModule, TableModule, FormsModule],
-  templateUrl: './leaderboard.html'
+  templateUrl: './leaderboard.html',
+  styleUrl: './leaderboard.css'
 })
 export class Leaderboard {
   @Input() helpers: EmployeeStat[] = [];

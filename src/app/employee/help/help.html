@@ -2,24 +2,44 @@
 <div class="main-wrapper">
   <app-sidebar></app-sidebar>
 
-  <div *ngIf="requests.length > 0; else noData">
+  <div class="help-header">
+    <h1>Help Requests</h1>
+    <p class="help-subtitle">Manage and respond to help requests from your team</p>
+  </div>
+
+  <div *ngIf="requests.length > 0; else noData" class="requests-container">
     <div *ngFor="let req of requests" class="request-card">
-      <h2>Help Request</h2>
-      <p><strong>Title:</strong> {{ req.heading }}</p>
-      <p><strong>Date:</strong> {{ req.createdAt | date: 'dd MMM yyyy, h:mm a' }}</p>
-      <p><strong>Status:</strong> {{ req.status.toLowerCase() }}</p>
-      <p><strong>Recipient:</strong> {{ req.requestName }}</p>
-      <popup [request]="req"></popup>
+      <div class="card-header">
+        <h3 class="request-title">{{ req.heading }}</h3>
+        <span class="status-badge" [class]="'status-' + getStatusClass(req.status)">
+          {{ getStatusText(req.status) }}
+        </span>
+      </div>
+      
+      <div class="card-content">
+        <div class="request-info">
+          <div class="info-item">
+            <span class="info-label">Date:</span>
+            <span class="info-value">{{ req.createdAt | date: 'dd MMM yyyy, h:mm a' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">From:</span>
+            <span class="info-value">{{ req.requestName }}</span>
+          </div>
+        </div>
+        
+        <div class="card-actions">
+          <popup [request]="req"></popup>
+        </div>
+      </div>
     </div>
   </div>
 
   <ng-template #noData>
     <div class="no-tasks">
-      All caught up! No tasks require help right now.
+      <div class="no-tasks-icon">📋</div>
+      <h3>All caught up!</h3>
+      <p>No help requests require your attention right now.</p>
     </div>
   </ng-template>
-
-  <div style="margin:10px;">
-    <p><strong>Debug:</strong> Loaded {{ requests.length }} requests</p>
-  </div>
 </div>

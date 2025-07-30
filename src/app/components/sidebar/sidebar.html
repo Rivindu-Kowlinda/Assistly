@@ -1,4 +1,5 @@
 <div class="navbar" [class.open]="isOpen">
+  <!-- Hamburger for Mobile -->
   <button
     class="toggle-button"
     *ngIf="isMobile"
@@ -10,6 +11,12 @@
     <span class="bar"></span>
   </button>
 
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="logo.png" alt="Logo" />
+  </div>
+
+  <!-- Navigation -->
   <nav>
     <ul class="nav-list">
       <li>
@@ -28,11 +35,12 @@
         <a href="#" (click)="navigateTo('/help'); $event.preventDefault()"
            [class.active]="router.url === '/send-help'">
           Send Help
-        </a> 
+        </a>
       </li>
     </ul>
   </nav>
 
+  <!-- Profile -->
   <div class="profile">
     <a href="#" (click)="navigateTo('/profile'); $event.preventDefault()"
        [class.active]="router.url === '/profile'">
