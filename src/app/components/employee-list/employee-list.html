@@ -3,6 +3,52 @@
   <div class="table-header">
     <h2 class="table-title">Employee Management</h2>
     <p class="table-subtitle">Manage your team members and their information</p>
+    
+    <!-- Balance Points Display -->
+    <div class="balance-info">
+      <span class="balance-label">Available Points: </span>
+      <span class="balance-amount">{{ userBalancePoints }}</span>
+    </div>
+    
+    <!-- Insufficient Points Warning -->
+    <div class="insufficient-points-warning" *ngIf="!hasAffordableEmployees && !loading">
+      <i class="pi pi-exclamation-triangle warning-icon"></i>
+      <span>{{ insufficientPointsMessage }}</span>
+    </div>
+    
+    <!-- FIXED: Selected Cost Display - Shows potential costs since only accepting employee is charged -->
+    <div class="selected-cost-info" 
+         [class.cost-exceeded]="!canAffordSelection()"
+         *ngIf="selectedCustomers.length > 0">
+      
+      <!-- Cost explanation -->
+      <div class="cost-explanation-small">
+        <i class="pi pi-info-circle"></i>
+        <span class="cost-note-small">Only the employee who accepts your request will be charged.</span>
+      </div>
+      
+      <!-- Potential Costs Header -->
+      <div class="potential-costs-header">
+        <strong>Potential Costs:</strong>
+      </div>
+      
+      <!-- Best Case (Cheapest) -->
+      <div class="cost-range cost-best-case">
+        <span class="cost-label">Best Case (Cheapest):</span>
+        <span class="cost-amount">{{ getMinSelectedCost() }} points</span>
+      </div>
+      
+      <!-- Worst Case (Most Expensive) -->
+      <div class="cost-range cost-worst-case">
+        <span class="cost-label">Worst Case (Most Expensive):</span>
+        <span class="cost-amount">{{ getMaxSelectedCost() }} points</span>
+      </div>
+      
+      <!-- Warning if exceeds balance -->
+      <span class="cost-warning" *ngIf="!canAffordSelection()">
+        Exceeds available points ({{ userBalancePoints }} available)
+      </span>
+    </div>
   </div>
 
   <div class="table-card">
@@ -29,6 +75,9 @@
           <div class="selected-info">
             <span class="selected-count" *ngIf="selectedCustomers.length > 0">
               {{ selectedCustomers.length }} selected
+              <span *ngIf="selectedCustomers.length > 0" class="cost-preview">
+                ({{ getMaxSelectedCost() }} pts to pay)
+              </span>
             </span>
           </div>
           <div class="search-controls">
@@ -58,7 +107,7 @@
       <ng-template #header>
         <tr>
           <th style="width: 60px" class="checkbox-column">
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            <p-tableHeaderCheckbox [disabled]="!hasAffordableEmployees"></p-tableHeaderCheckbox>
           </th>
           <th pSortableColumn="name" class="name-column">
             <div class="column-header">
@@ -86,7 +135,7 @@
           </th>
           <th pSortableColumn="price" class="price-column">
             <div class="column-header">
-              <span>Price</span>
+              <span>Cost</span>
               <p-sortIcon field="price"></p-sortIcon>
             </div>
             <p-columnFilter
@@ -96,30 +145,62 @@
               class="column-filter"
             ></p-columnFilter>
           </th>
+          <th class="affordability-column">
+            <div class="column-header">
+              <span>Affordability</span>
+            </div>
+          </th>
         </tr>
       </ng-template>
 
       <!-- Body -->
       <ng-template #body let-customer>
-        <tr class="table-row">
+        <tr class="table-row" 
+            [class.row-disabled]="!customer.canAfford"
+            [class.row-affordable]="customer.canAfford"
+            [class.row-selected]="isSelected(customer)">
           <td class="checkbox-cell">
-            <p-tableCheckbox [value]="customer"></p-tableCheckbox>
+            <p-tableCheckbox 
+              [value]="customer" 
+              [disabled]="!customer.canAfford">
+            </p-tableCheckbox>
           </td>
           <td class="name-cell">
-            <div class="employee-info">
-              <div class="avatar">
+            <div class="employee-info" [class.employee-disabled]="!customer.canAfford">
+              <div class="avatar" [class.avatar-disabled]="!customer.canAfford">
                 {{ getInitials(customer.name) }}
               </div>
               <div class="employee-details">
-                <span class="employee-name">{{ customer.name }}</span>
+                <span class="employee-name" [class.name-disabled]="!customer.canAfford">
+                  {{ customer.name }}
+                </span>
               </div>
             </div>
           </td>
           <td class="role-cell">
-            <span class="role-badge">{{ customer.roleLabel }}</span>
+            <span class="role-badge" 
+                  [class.badge-disabled]="!customer.canAfford"
+                  [class.badge-selected]="isSelected(customer)">
+              {{ customer.roleLabel }}
+            </span>
           </td>
           <td class="price-cell">
-            <span class="price-amount">{{ customer.price | number }}</span>
+            <span class="price-amount" 
+                  [class.price-disabled]="!customer.canAfford"
+                  [class.price-selected]="isSelected(customer)">
+              {{ customer.price | number }} pts
+            </span>
+          </td>
+          <td class="affordability-cell">
+            <span class="affordability-status" 
+                  [class.status-affordable]="customer.canAfford"
+                  [class.status-unaffordable]="!customer.canAfford"
+                  [class.status-selected]="isSelected(customer)">
+              <i class="pi" 
+                 [class.pi-check]="customer.canAfford"
+                 [class.pi-times]="!customer.canAfford"></i>
+              {{ customer.canAfford ? 'Affordable' : 'Too Expensive' }}
+            </span>
           </td>
         </tr>
       </ng-template>
@@ -127,7 +208,7 @@
       <!-- Empty -->
       <ng-template #emptymessage>
         <tr>
-          <td colspan="4" class="empty-message">
+          <td colspan="5" class="empty-message">
             <div class="empty-state">
               <i class="pi pi-users empty-icon"></i>
               <h3>No employees found</h3>

@@ -136,6 +136,9 @@ export class EmployeeDashboard implements OnInit {
           }))
       ];
 
+      // Sort by date descending (newest first)
+      this.tableRows.sort((a, b) => b.dateTime.getTime() - a.dateTime.getTime());
+
       this.loading = false;
     });
   }

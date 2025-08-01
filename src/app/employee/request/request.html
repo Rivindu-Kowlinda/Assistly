@@ -46,11 +46,22 @@
               class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
             >
               <employee-list 
+                #employeeListRef
                 [selection]="selectedEmployees" 
                 (selectionChange)="onEmployeeSelectionChange($event)"
+                (balanceUpdated)="onBalanceUpdated($event)"
               ></employee-list>
             </div>
           </div>
+          
+          <!-- Step 2 Validation Messages -->
+          <div class="step-validation-messages" *ngIf="selectedEmployees.length === 0 || (employeeList && !employeeList.hasAffordableEmployees)">
+            <div class="validation-message error" *ngIf="selectedEmployees.length === 0">
+              <i class="pi pi-exclamation-triangle"></i>
+              <span>Please select at least one employee to continue.</span>
+            </div>
+          </div>
+
           <div class="flex py-4 gap-2">
             <p-button
               label="Back"
@@ -60,7 +71,8 @@
             <p-button 
               label="Next" 
               (onClick)="goToNextStep(activateCallback, 2)"
-              [disabled]="selectedEmployees.length === 0"
+              [disabled]="!canGoToStep3()"
+              [title]="!canGoToStep3() ? 'Please select affordable employees to continue' : ''"
             ></p-button>
           </div>
         </ng-template>
@@ -97,8 +109,54 @@
                     [selectedEmployees]="selectedEmployees"
                     (employeeRemoved)="onEmployeeRemoved($event)"
                   ></employee-tabs>
+                  
+                  <!-- Cost Summary -->
+                  <div class="cost-summary" *ngIf="selectedEmployees.length > 0">
+                    <div class="cost-explanation">
+                      <p class="cost-note">
+                        <i class="pi pi-info-circle"></i>
+                        Only the employee who accepts your request will be charged.
+                      </p>
+                    </div>
+                    
+                    <div class="cost-breakdown">
+                      <div class="cost-item">
+                        <span class="cost-label">Available Points:</span>
+                        <span class="cost-value">{{ getUserBalance() }} points</span>
+                      </div>
+                      
+                      <div class="cost-scenarios">
+                        <h5>Potential Costs:</h5>
+                        <div class="cost-item scenario best-case">
+                          <span class="cost-label">Best Case (Cheapest):</span>
+                          <span class="cost-value">{{ getMinPotentialCost() }} points</span>
+                        </div>
+                        <div class="cost-item scenario worst-case" 
+                             [class.insufficient]="!canAffordCurrentSelection()">
+                          <span class="cost-label">Worst Case (Most Expensive):</span>
+                          <span class="cost-value">{{ getMaxPotentialCost() }} points</span>
+                        </div>
+                      </div>
+                      
+                      <div class="cost-item remaining" 
+                           [class.insufficient]="!canAffordCurrentSelection()">
+                        <span class="cost-label">Minimum Remaining After:</span>
+                        <span class="cost-value">
+                          {{ getUserBalance() - getMaxPotentialCost() }} points
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Final Validation Messages -->
+          <div class="step-validation-messages" *ngIf="!canSubmit()">
+            <div class="validation-message error" *ngIf="!canAffordCurrentSelection()">
+              <i class="pi pi-wallet"></i>
+              <span>Insufficient points for the selected employees.</span>
             </div>
           </div>
 
@@ -109,9 +167,10 @@
               (onClick)="deactivateCallback()"
             ></p-button>
             <p-button 
-              label="Submit"
+              [label]="getSubmitButtonLabel()"
               [disabled]="!canSubmit()"
               (onClick)="onSubmit()"
+              [severity]="canSubmit() ? 'success' : 'danger'"
             ></p-button>
           </div>
         </ng-template>

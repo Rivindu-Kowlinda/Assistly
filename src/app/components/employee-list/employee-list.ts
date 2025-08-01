@@ -45,11 +45,15 @@ import {
 export class EmployeeList implements OnInit, OnChanges {
   @Input() selection: any[] = [];
   @Output() selectionChange = new EventEmitter<any[]>();
+  @Output() balanceUpdated = new EventEmitter<number>(); // Add this output
 
   customers: any[] = [];
   selectedCustomers: any[] = [];
   loading = true;
   searchValue = '';
+  userBalancePoints = 0;
+  hasAffordableEmployees = false;
+  insufficientPointsMessage = '';
 
   // Role mapping for display purposes
   roleLabelMap: { [key: string]: string } = {
@@ -67,6 +71,10 @@ export class EmployeeList implements OnInit, OnChanges {
     }).subscribe({
       next: ({ profile, data: [employees, prices] }) => {
         const currentUsername = profile.username;
+        this.userBalancePoints = profile.balancePoints || 0;
+        
+        // Emit the balance to parent component
+        this.balanceUpdated.emit(this.userBalancePoints);
 
         const roleCostMap = new Map<string, number>();
         prices.forEach(p => roleCostMap.set(p.role.toUpperCase(), p.cost));
@@ -75,16 +83,43 @@ export class EmployeeList implements OnInit, OnChanges {
           .filter(emp => emp.username !== currentUsername)
           .map((emp: EmployeeResponse) => {
             const role = emp.role[0]?.toUpperCase() || '';
+            const price = roleCostMap.get(role) ?? 0;
+            const canAfford = this.userBalancePoints >= price;
+            
             return {
               id:        emp.id,
               name:      emp.username,
               role,                                // raw role
               roleLabel: this.roleLabelMap[role] || role, // readable label
-              price:     roleCostMap.get(role) ?? 0
+              price:     price,
+              canAfford: canAfford,
+              disabled:  !canAfford
             };
           });
 
-        this.selectedCustomers = [...this.selection];
+        // Check if user can afford any employees
+        this.hasAffordableEmployees = this.customers.some(emp => emp.canAfford);
+        
+        if (!this.hasAffordableEmployees) {
+          const cheapestEmployee = this.customers.reduce((min, emp) => 
+            emp.price < min.price ? emp : min, this.customers[0]);
+          
+          this.insufficientPointsMessage = 
+            `Insufficient points. You have ${this.userBalancePoints} points. ` +
+            `Cheapest available help costs ${cheapestEmployee?.price || 0} points.`;
+        }
+
+        // Filter out selected employees that user can no longer afford
+        this.selectedCustomers = this.selection.filter(selected => {
+          const customer = this.customers.find(c => c.id === selected.id);
+          return customer?.canAfford || false;
+        });
+
+        // Emit the filtered selection if it changed
+        if (this.selectedCustomers.length !== this.selection.length) {
+          this.selectionChange.emit(this.selectedCustomers);
+        }
+
         this.loading = false;
       },
       error: err => {
@@ -96,12 +131,22 @@ export class EmployeeList implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selection'] && !changes['selection'].firstChange) {
-      this.selectedCustomers = [...this.selection];
+      // Filter selection to only include affordable employees
+      this.selectedCustomers = this.selection.filter(selected => {
+        const customer = this.customers.find(c => c.id === selected.id);
+        return customer?.canAfford || false;
+      });
     }
   }
 
   onSelectionChange(event: any) {
-    this.selectedCustomers = event;
+    // Only allow selection of affordable employees
+    const affordableSelection = event.filter((selected: any) => {
+      const customer = this.customers.find(c => c.id === selected.id);
+      return customer?.canAfford || false;
+    });
+    
+    this.selectedCustomers = affordableSelection;
     this.selectionChange.emit(this.selectedCustomers);
   }
 
@@ -115,17 +160,47 @@ export class EmployeeList implements OnInit, OnChanges {
   }
 
   isSelected(customer: any): boolean {
-    return this.selectedCustomers.includes(customer);
+    return this.selectedCustomers.some(selected => selected.id === customer.id);
+  }
+
+  isEmployeeAffordable(customer: any): boolean {
+    return customer.canAfford;
   }
 
   toggleSelection(customer: any) {
-    const idx = this.selectedCustomers.indexOf(customer);
+    // Prevent selection if employee is not affordable
+    if (!customer.canAfford) {
+      return;
+    }
+
+    const idx = this.selectedCustomers.findIndex(selected => selected.id === customer.id);
     if (idx === -1) {
       this.selectedCustomers.push(customer);
     } else {
       this.selectedCustomers.splice(idx, 1);
     }
     this.selectionChange.emit(this.selectedCustomers);
+  }
+
+  getTotalSelectedCost(): number {
+    return this.selectedCustomers.reduce((total, emp) => total + (emp.price || 0), 0);
+  }
+
+  // Get maximum cost among selected employees
+  getMaxSelectedCost(): number {
+    if (this.selectedCustomers.length === 0) return 0;
+    return Math.max(...this.selectedCustomers.map(emp => emp.price || 0));
+  }
+
+  // Get minimum cost among selected employees  
+  getMinSelectedCost(): number {
+    if (this.selectedCustomers.length === 0) return 0;
+    return Math.min(...this.selectedCustomers.map(emp => emp.price || 0));
+  }
+
+  canAffordSelection(): boolean {
+    // User should be able to afford the most expensive selected employee
+    return this.getMaxSelectedCost() <= this.userBalancePoints;
   }
 
   getSeverity(status: string) {

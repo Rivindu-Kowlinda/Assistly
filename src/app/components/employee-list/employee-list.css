@@ -25,8 +25,133 @@
 .table-subtitle {
   font-size: 16px;
   color: #666;
-  margin: 0;
+  margin: 0 0 16px 0;
   font-weight: 400;
+}
+
+/* Balance and Cost Information */
+.balance-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.balance-label {
+  font-weight: 600;
+  color: #1565c0;
+  margin-right: 8px;
+}
+
+.balance-amount {
+  font-weight: 700;
+  color: #0d47a1;
+  font-size: 16px;
+}
+
+.insufficient-points-warning {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 6px;
+  color: #c62828;
+  margin-bottom: 16px;
+}
+
+.warning-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* UPDATED: Enhanced Selected Cost Info */
+.selected-cost-info {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  border-left: 4px solid #2196f3;
+}
+
+.cost-explanation-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cost-explanation-small i {
+  color: #2196f3;
+  font-size: 14px;
+}
+
+.cost-note-small {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.cost-range {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.cost-range .cost-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.cost-range .cost-amount {
+  font-weight: 700;
+  color: #2e7d32;
+  font-size: 15px;
+}
+
+.cost-warning {
+  font-size: 13px;
+  color: #d32f2f;
+  font-weight: 600;
+  margin-top: 4px;
+  display: block;
+  font-style: italic;
+}
+
+/* Update selected-cost-info when cost is exceeded */
+.selected-cost-info.cost-exceeded {
+  background: #ffebee;
+  border-color: #ffcdd2;
+  border-left-color: #f44336;
+}
+
+.selected-cost-info.cost-exceeded .cost-range .cost-amount {
+  color: #d32f2f;
+}
+
+/* Old styles kept for backward compatibility */
+.cost-label {
+  font-weight: 600;
+  color: #2e7d32;
+  margin-right: 8px;
+}
+
+.cost-amount {
+  font-weight: 700;
+  color: #1b5e20;
+  font-size: 16px;
+}
+
+.cost-amount.cost-exceeded {
+  color: #c62828;
 }
 
 /* Table Card */
@@ -118,6 +243,21 @@
   background: #f8f9fa !important;
 }
 
+/* Row States for Affordability */
+:host ::ng-deep .custom-table .p-datatable-tbody > tr.row-disabled {
+  background: #f5f5f5 !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+:host ::ng-deep .custom-table .p-datatable-tbody > tr.row-disabled:hover {
+  background: #f5f5f5 !important;
+}
+
+:host ::ng-deep .custom-table .p-datatable-tbody > tr.row-affordable {
+  cursor: pointer;
+}
+
 :host ::ng-deep .custom-table .p-datatable-tbody > tr > td {
   background: white !important;
   color: #333 !important;
@@ -151,6 +291,10 @@
   min-width: 140px;
 }
 
+.affordability-column {
+  min-width: 160px;
+}
+
 /* Cell Styles */
 .checkbox-cell {
   text-align: center;
@@ -160,6 +304,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.employee-info.employee-disabled {
+  opacity: 0.7;
 }
 
 .avatar {
@@ -176,6 +324,11 @@
   letter-spacing: 0.5px;
 }
 
+.avatar.avatar-disabled {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  color: #e5e7eb;
+}
+
 .employee-details {
   display: flex;
   flex-direction: column;
@@ -186,6 +339,10 @@
   font-weight: 500;
   color: #1a1a1a;
   font-size: 14px;
+}
+
+.employee-name.name-disabled {
+  color: #9ca3af;
 }
 
 .employee-country {
@@ -203,10 +360,55 @@
   font-weight: 500;
 }
 
+.role-badge.badge-disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
 .price-amount {
   font-weight: 600;
   color: #059669;
   font-size: 14px;
+}
+
+.price-amount.price-disabled {
+  color: #9ca3af;
+}
+
+/* Affordability Status Styles */
+.affordability-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.status-affordable {
+  color: #059669;
+}
+
+.status-affordable .pi-check {
+  color: #10b981;
+}
+
+.status-unaffordable {
+  color: #dc2626;
+}
+
+.status-unaffordable .pi-times {
+  color: #ef4444;
+}
+
+/* Disabled Checkbox Styles */
+:host ::ng-deep .custom-table .p-checkbox-disabled .p-checkbox-box {
+  background: #f3f4f6 !important;
+  border-color: #d1d5db !important;
+  cursor: not-allowed !important;
+}
+
+:host ::ng-deep .custom-table .p-checkbox-disabled {
+  cursor: not-allowed !important;
 }
 
 /* Empty State */
@@ -257,8 +459,6 @@
   border-color: #d1d5db;
   color: #374151;
 }
-
-/* CHECKBOX STYLES REMOVED - Let PrimeNG handle default styling */
 
 /* Paginator Styles */
 :host ::ng-deep .p-paginator {
@@ -355,8 +555,35 @@
   }
   
   .role-column,
-  .price-column {
+  .price-column,
+  .affordability-column {
     min-width: 120px;
+  }
+
+  /* Mobile responsiveness for new elements */
+  .balance-info,
+  .selected-cost-info,
+  .insufficient-points-warning {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Enhanced mobile cost display */
+  .cost-explanation-small {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  
+  .cost-range {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  
+  .cost-warning {
+    text-align: center;
+    margin-top: 8px;
   }
 }
 
@@ -406,5 +633,9 @@
   
   .price-cell:before {
     content: "Salary";
+  }
+
+  .affordability-cell:before {
+    content: "Status";
   }
 }
