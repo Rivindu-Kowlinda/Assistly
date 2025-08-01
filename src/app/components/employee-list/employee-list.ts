@@ -51,37 +51,46 @@ export class EmployeeList implements OnInit, OnChanges {
   loading = true;
   searchValue = '';
 
+  // Role mapping for display purposes
+  roleLabelMap: { [key: string]: string } = {
+    JUNIOR: 'Junior',
+    MID: 'Mid',
+    SENIOR: 'Senior'
+  };
+
   constructor(private employeeService: EmployeeService) {}
 
   ngOnInit() {
-    // load profile + employee data in parallel
     forkJoin({
       profile: this.employeeService.getProfile(),
       data:    this.employeeService.getEmployeeData()
-    }).subscribe(({ profile, data: [employees, prices] }) => {
-      const currentUsername = profile.username;
+    }).subscribe({
+      next: ({ profile, data: [employees, prices] }) => {
+        const currentUsername = profile.username;
 
-      const roleCostMap = new Map<string, number>();
-      prices.forEach(p => roleCostMap.set(p.role.toUpperCase(), p.cost));
+        const roleCostMap = new Map<string, number>();
+        prices.forEach(p => roleCostMap.set(p.role.toUpperCase(), p.cost));
 
-      // filter out the current user, then map to table rows
-      this.customers = employees
-        .filter(emp => emp.username !== currentUsername)
-        .map((emp: EmployeeResponse) => {
-          const role = emp.role[0]?.toUpperCase() || '';
-          return {
-            id:   emp.id,
-            name: emp.username,
-            role,
-            price: roleCostMap.get(role) ?? 0
-          };
-        });
+        this.customers = employees
+          .filter(emp => emp.username !== currentUsername)
+          .map((emp: EmployeeResponse) => {
+            const role = emp.role[0]?.toUpperCase() || '';
+            return {
+              id:        emp.id,
+              name:      emp.username,
+              role,                                // raw role
+              roleLabel: this.roleLabelMap[role] || role, // readable label
+              price:     roleCostMap.get(role) ?? 0
+            };
+          });
 
-      this.selectedCustomers = [...this.selection];
-      this.loading = false;
-    }, err => {
-      console.error('Error loading employees or profile:', err);
-      this.loading = false;
+        this.selectedCustomers = [...this.selection];
+        this.loading = false;
+      },
+      error: err => {
+        console.error('Error loading employees or profile:', err);
+        this.loading = false;
+      }
     });
   }
 

@@ -3,19 +3,25 @@
 
   <div class="main-wrapper" *ngIf="!loading">
     <div id="mainPage">
+
       <div class="cards-container">
         <div class="leaderboardCard">
+          <h2 class="section-heading">Top Helpers</h2>
           <leaderboard [helpers]="employeeStats"></leaderboard>
         </div>
         <div class="dialDiv">
+          <h2 class="section-heading">Points Summary</h2>
           <dial [pointsData]="points" [labels]="['Quota Balance','Earned','Spent']"></dial>
         </div>
       </div>
+
       <div class="chart">
+        <h2 class="section-heading">Monthly Activity</h2>
         <chart-line [requests]="requests" [helps]="helpsProvided"></chart-line>
       </div>
 
       <div class="historyCard">
+        <h2 class="section-heading">Help Request History</h2>
         <p-table
           #dt2
           [value]="tableRows"
@@ -24,9 +30,9 @@
           [rowsPerPageOptions]="[10,25,50]"
           [loading]="loading"
           [paginator]="true"
-          [globalFilterFields]="['requestName','type','dateTime','userName','status','price']">
-          
-          <!-- global filter -->
+          [globalFilterFields]="['requestName','type','dateTime','userName','status','price']"
+        >
+          <!-- Global filter -->
           <ng-template #caption>
             <div class="flex">
               <p-iconfield iconPosition="left" class="ml-auto">
@@ -36,28 +42,35 @@
                   pInputText
                   type="text"
                   (input)="dt2.filterGlobal(gfilter.value, 'contains')"
-                  placeholder="Search requests or helps"/>
+                  placeholder="Search requests or helps"
+                />
               </p-iconfield>
             </div>
           </ng-template>
 
-          <!-- column headers -->
+          <!-- Column headers -->
           <ng-template #header>
-            <!-- first header row -->
             <tr>
-              <th style="width:20%">Request Name</th>
-              <th style="width:15%">Type</th>
-              <th style="width:20%">Date/Time</th>
-              <th style="width:20%">User Name</th>
-              <th style="width:15%">Status</th>
-              <th style="width:10%">Price</th>
+              <th style="width: 20%">Request Name</th>
+              <th style="width: 15%">Type</th>
+              <th style="width: 20%">Date/Time</th>
+              <th style="width: 20%">User Name</th>
+              <th style="width: 15%">Status</th>
+              <th style="width: 10%">Price</th>
             </tr>
-            <!-- filter row -->
             <tr>
-              <th><p-columnFilter type="text" field="requestName" filterOn="input"></p-columnFilter></th>
-              <th><p-columnFilter type="text" field="type"        filterOn="input"></p-columnFilter></th>
-              <th><p-columnFilter type="date" field="dateTime"    filterMatchMode="equals"></p-columnFilter></th>
-              <th><p-columnFilter type="text" field="userName"    filterOn="input"></p-columnFilter></th>
+              <th>
+                <p-columnFilter type="text" field="requestName" filterOn="input"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="type" filterOn="input"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="date" field="dateTime" filterMatchMode="equals"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="userName" filterOn="input"></p-columnFilter>
+              </th>
               <th>
                 <p-columnFilter field="status" matchMode="equals" [showMenu]="false">
                   <ng-template #filter let-value let-filter="filterCallback">
@@ -67,43 +80,53 @@
                       [options]="statuses"
                       placeholder="Select"
                       [showClear]="true"
-                      style="min-width:8rem">
+                      style="min-width: 8rem"
+                    >
                       <ng-template let-option #item>
-                        <p-tag [value]="option.value" [severity]="getSeverity(option.value)"></p-tag>
+                        <p-tag [value]="statusLabelMap[option.value]" [severity]="getSeverity(option.value)"></p-tag>
                       </ng-template>
                     </p-select>
                   </ng-template>
                 </p-columnFilter>
               </th>
-              <th><p-columnFilter type="numeric" field="price" filterMatchMode="gte"></p-columnFilter></th>
+              <th>
+                <p-columnFilter type="numeric" field="price" filterMatchMode="gte"></p-columnFilter>
+              </th>
             </tr>
           </ng-template>
 
-          <!-- body rows -->
+          <!-- Table body -->
           <ng-template #body let-row>
             <tr (click)="onRowClick(row, $event)" class="clickable-row">
               <td>{{ row.requestName }}</td>
               <td>{{ row.type }}</td>
-              <td>{{ row.dateTime | date:'short' }}</td>
+              <td>{{ row.dateTime | date: 'short' }}</td>
               <td>{{ row.userName }}</td>
-              <td><p-tag [value]="row.status" [severity]="getSeverity(row.status)"></p-tag></td>
+              <td>
+                <p-tag
+                  [value]="statusLabelMap[row.status] || row.status"
+                  [severity]="getSeverity(row.status)"
+                ></p-tag>
+              </td>
               <td>{{ row.price }}</td>
             </tr>
           </ng-template>
 
-          <!-- empty message -->
+          <!-- Empty message -->
           <ng-template #emptymessage>
-            <tr><td colspan="6">No records found.</td></tr>
+            <tr>
+              <td colspan="6">No records found.</td>
+            </tr>
           </ng-template>
+
         </p-table>
       </div>
-
 
     </div>
   </div>
 </div>
 
-<!-- ✅ Updated popup with proper event handling -->
+<!-- ✅ Popup remains unchanged -->
 <popup 
   #chatPopup 
   [requestId]="selectedRequestId"

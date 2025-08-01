@@ -1,82 +1,83 @@
-<div class="card flex justify-center">
+<div class="popup-wrapper">
   <p-dialog
     [header]="isRequest ? 'Request Chat' : 'Help Review'"
     [(visible)]="visible"
     [modal]="true"
-    [style]="{ width: '50rem', height: '60vh' }"
-    [contentStyle]="{ padding: '0', height: 'calc(60vh - 60px)' }"
+    [style]="{ width: '70rem', height: '90vh' }"
+    [breakpoints]="{ '1199px': '90vw', '575px': '95vw' }"
+    [contentStyle]="{ padding: '0', height: 'calc(90vh - 80px)', display: 'flex', flexDirection: 'column' }"
+    [maximizable]="true"
+    styleClass="chat-dialog"
     (onHide)="onDialogHide()"
   >
-    <!-- ✅ Loading state -->
-    <div *ngIf="isLoading" class="loading-container flex justify-center items-center h-full">
-      <i class="pi pi-spinner pi-spin text-2xl"></i>
-      <span class="ml-2">Loading...</span>
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="loading-section">
+      <div class="loading-spinner">
+        <i class="pi pi-spinner pi-spin"></i>
+        <p class="loading-text">Loading...</p>
+      </div>
     </div>
 
-    <!-- ✅ Content shown only when not loading -->
-    <div *ngIf="!isLoading">
-      <!-- chat + messages container -->
-      <div class="chat-container">
-        <div
-          #chatScroll
-          class="chat-messages flex flex-col overflow-auto p-4"
-        >
+    <!-- Content shown only when not loading -->
+    <div *ngIf="!isLoading" class="chat-container">
+      <!-- Chat Messages Area -->
+      <div #chatScroll class="chat-messages-area">
+        <div class="messages-container">
           <ng-container *ngFor="let msg of messages; trackBy: trackByMessageId">
-            <!-- system message -->
-            <div
-              *ngIf="msg.type === 'system'"
-              class="text-center text-sm text-gray-500 my-2"
-            >
-              {{ msg.text }}
+            
+            <!-- System Messages -->
+            <div *ngIf="msg.type === 'system'" class="system-message">
+              <div class="system-message-content">
+                <i class="pi pi-info-circle system-icon"></i>
+                <span>{{ msg.text }}</span>
+              </div>
             </div>
 
-            <!-- text message -->
-            <div
-              *ngIf="msg.type === 'text'"
-              class="flex my-2"
-              [ngClass]="{ 'justify-end': msg.sender === 'me' }"
-            >
-              <div>
-                <div class="text-xs text-gray-600 mb-1">
-                  {{ msg.senderName }} • {{ msg.timestamp | date: 'shortTime' }}
+            <!-- Chat Messages -->
+            <div *ngIf="msg.type === 'text'" class="message-wrapper" [class.own-message]="msg.sender === 'me'">
+              <div class="message-bubble" [class.own-bubble]="msg.sender === 'me'">
+                
+                <!-- Message Header -->
+                <div class="message-header">
+                  <span class="sender-name">{{ msg.senderName }}</span>
+                  <span class="message-time">{{ msg.timestamp | date: 'shortTime' }}</span>
                 </div>
-                <div
-                  class="p-2 rounded-lg max-w-lg"
-                  [ngClass]="{
-                    'bg-blue-100': msg.sender === 'me',
-                    'bg-gray-100': msg.sender === 'them'
-                  }"
-                >
-                  <!-- Display text if exists -->
-                  <div *ngIf="msg.text" class="mb-2">{{ msg.text }}</div>
+
+                <!-- Message Content -->
+                <div class="message-content">
+                  <!-- Text Content -->
+                  <div *ngIf="msg.text" class="message-text">{{ msg.text }}</div>
                   
-                  <!-- Display images if any -->
-                  <div *ngIf="msg.images && msg.images.length > 0" class="images-container">
+                  <!-- Images -->
+                  <div *ngIf="msg.images && msg.images.length > 0" class="message-images">
                     <img 
                       *ngFor="let imageUrl of msg.images" 
                       [src]="imageUrl"
                       alt="Message image"
                       class="message-image"
-                      style="max-width: 200px; height: auto; display: block; margin: 5px 0; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"
                     />
                   </div>
                 </div>
               </div>
             </div>
+
           </ng-container>
 
           <!-- No messages placeholder -->
-          <div *ngIf="messages.length === 0" class="text-center text-gray-500 mt-8">
-            <i class="pi pi-comments text-4xl mb-2"></i>
-            <p>{{ isRequest ? 'No messages yet' : 'No chat history available' }}</p>
+          <div *ngIf="messages.length === 0" class="no-messages-placeholder">
+            <div class="no-messages-content">
+              <i class="pi pi-comments no-messages-icon"></i>
+              <p class="no-messages-text">{{ isRequest ? 'No messages yet' : 'No chat history available' }}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- footer with Complete + Rating for Requests -->
-      <div *ngIf="isRequest" class="complete-footer p-4 border-t border-gray-200">
-        <div class="flex justify-between items-center">
+      <!-- Footer with Complete + Rating for Requests -->
+      <div *ngIf="isRequest" class="complete-footer">
+        <div class="footer-content">
           <p-button
+            styleClass="complete-button"
             label="Complete"
             icon="pi pi-check"
             [disabled]="completed || !chatAccepted"
@@ -84,36 +85,38 @@
           ></p-button>
 
           <!-- Interactive rating for requests -->
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-600">Rate this help:</span>
+          <div class="rating-section">
+            <span class="rating-label">Rate this help:</span>
             <p-rating
               [(ngModel)]="rating"
               [disabled]="!completed || rated"
               (onRate)="onRate()"
+              styleClass="custom-rating"
             ></p-rating>
-            <span *ngIf="rated" class="text-sm text-green-600">
+            <span *ngIf="rated" class="rated-indicator">
               <i class="pi pi-check"></i> Rated
             </span>
           </div>
         </div>
       </div>
 
-      <!-- footer with Read-only Rating for Completed Helps -->
-      <div *ngIf="isCompletedHelp && shouldShowReadOnlyRating" class="rating-footer p-4 border-t border-gray-200">
-        <div class="flex justify-center items-center gap-3">
-          <span class="text-sm text-gray-600">Your rating for this help:</span>
+      <!-- Footer with Read-only Rating for Completed Helps -->
+      <div *ngIf="isCompletedHelp && shouldShowReadOnlyRating" class="rating-footer">
+        <div class="readonly-rating-content">
+          <span class="rating-label">Your rating for this help:</span>
           <p-rating
             [ngModel]="displayRating"
             [readonly]="true"
+            styleClass="custom-rating readonly-rating"
           ></p-rating>
-          <span class="text-sm text-gray-600">({{ displayRating }}/5)</span>
+          <span class="rating-score">({{ displayRating }}/5)</span>
         </div>
       </div>
 
       <!-- Message when no rating is available for helps -->
-      <div *ngIf="isCompletedHelp && !shouldShowReadOnlyRating" class="rating-footer p-4 border-t border-gray-200">
-        <div class="flex justify-center items-center">
-          <span class="text-sm text-gray-500">No rating available for this help</span>
+      <div *ngIf="isCompletedHelp && !shouldShowReadOnlyRating" class="rating-footer">
+        <div class="no-rating-content">
+          <span class="no-rating-text">No rating available for this help</span>
         </div>
       </div>
     </div>

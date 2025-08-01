@@ -632,5 +632,13 @@ popup ::ng-deep .p-dialog button {
 popup ::ng-deep p-button button {
   display: none !important;
 }
+.section-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #040C2A;
+  text-align: center;           /* ✅ Center the heading */
+}
+
 
 /* Alternative approach - hide any visible buttons outside the dialog */

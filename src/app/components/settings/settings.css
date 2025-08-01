@@ -1,8 +1,9 @@
-/* settings.css */
+/* settings.css - Light Theme */
 
 /* Main container */
 .card {
     margin: 2rem;
+    background-color: #ffffff;
 }
 
 /* Settings Drawer Content */
@@ -12,6 +13,8 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    background-color: #ffffff;
+    color: #2c3e50;
 }
 
 .settings-section {
@@ -78,19 +81,12 @@
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
 }
 
-.role-badge.role-senior {
-    background: linear-gradient(45deg, #dc3545, #c82333);
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
-}
-
-.role-badge.role-mid {
-    background: linear-gradient(45deg, #fd7e14, #e8650e);
-    box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
-}
-
+/* All role badges are now blue */
+.role-badge.role-senior,
+.role-badge.role-mid,
 .role-badge.role-junior {
-    background: linear-gradient(45deg, #198754, #146c43);
-    box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
 }
 
 .points-display {
@@ -109,7 +105,7 @@
     border-top: 2px solid #e9ecef;
 }
 
-/* PrimeNG Custom Overrides */
+/* PrimeNG Custom Overrides - Light Theme */
 ::ng-deep .role-select-buttons .p-selectbutton {
     display: flex;
     flex-wrap: wrap;
@@ -120,9 +116,9 @@
 ::ng-deep .role-select-buttons .p-button {
     flex: 1;
     min-width: calc(50% - 0.25rem);
-    border: 2px solid #e9ecef;
-    background: white;
-    color: #495057;
+    border: 2px solid #e9ecef !important;
+    background: #ffffff !important;
+    color: #495057 !important;
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
     font-weight: 500;
@@ -132,33 +128,36 @@
 }
 
 ::ng-deep .role-select-buttons .p-button:hover {
-    border-color: #007bff;
-    color: #007bff;
+    border-color: #007bff !important;
+    color: #007bff !important;
+    background: #ffffff !important;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
-::ng-deep .role-select-buttons .p-button.p-highlight {
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    border-color: #007bff;
-    color: white;
+/* All selected role buttons are blue - Multiple selectors for override */
+::ng-deep .role-select-buttons .p-button.p-highlight,
+::ng-deep .role-select-buttons .p-button.p-highlight.role-senior,
+::ng-deep .role-select-buttons .p-button.p-highlight.role-mid,
+::ng-deep .role-select-buttons .p-button.p-highlight.role-junior,
+::ng-deep .p-selectbutton .p-button.p-highlight,
+::ng-deep .p-button.p-highlight {
+    background: #007bff !important;
+    background-color: #007bff !important;
+    background-image: linear-gradient(45deg, #007bff, #0056b3) !important;
+    border-color: #007bff !important;
+    color: white !important;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
 }
 
-::ng-deep .role-select-buttons .p-button.p-highlight.role-senior {
-    background: linear-gradient(45deg, #dc3545, #c82333);
-    border-color: #dc3545;
-}
-
-::ng-deep .role-select-buttons .p-button.p-highlight.role-mid {
-    background: linear-gradient(45deg, #fd7e14, #e8650e);
-    border-color: #fd7e14;
-}
-
-::ng-deep .role-select-buttons .p-button.p-highlight.role-junior {
-    background: linear-gradient(45deg, #198754, #146c43);
-    border-color: #198754;
+/* Extra specific override for any stubborn dark styling */
+::ng-deep .role-select-buttons .p-button[aria-pressed="true"],
+::ng-deep .p-selectbutton .p-button[aria-pressed="true"] {
+    background: #007bff !important;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
 }
 
 ::ng-deep .points-input .p-inputnumber-input {
@@ -169,6 +168,8 @@
     font-weight: 500;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    color: #2c3e50;
 }
 
 ::ng-deep .points-input .p-inputnumber-input:focus {
@@ -176,43 +177,35 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     outline: none;
     transform: translateY(-1px);
+    background-color: #ffffff;
 }
 
-/* Button Styling */
-::ng-deep .save-button .p-button {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    border: none;
-    padding: 0.8rem 2rem;
-    font-weight: 600;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-::ng-deep .save-button .p-button:hover {
-    background: linear-gradient(45deg, #218838, #1abc9c);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
-}
-
+/* All buttons are blue */
+::ng-deep .save-button .p-button,
 ::ng-deep .cancel-button .p-button {
-    background: transparent;
-    border: 2px solid #6c757d;
-    color: #6c757d;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: 2px solid #007bff;
+    color: white;
     padding: 0.8rem 2rem;
     font-weight: 600;
     border-radius: 10px;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
+::ng-deep .save-button .p-button:hover,
 ::ng-deep .cancel-button .p-button:hover {
-    background: #6c757d;
-    color: white;
+    background: linear-gradient(45deg, #0056b3, #004085);
+    border-color: #0056b3;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
 }
 
-/* Drawer Header Styling */
+/* Drawer Header Styling - Light Theme */
+::ng-deep .p-drawer {
+    background-color: #ffffff;
+}
+
 ::ng-deep .p-drawer .p-drawer-header {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-bottom: 3px solid #007bff;
@@ -227,19 +220,39 @@
 }
 
 ::ng-deep .p-drawer .p-drawer-header-icons button {
-    color: #6c757d;
+    color: #2c3e50 !important;
+    background: rgba(108, 117, 125, 0.1) !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
     transition: all 0.3s ease;
 }
 
 ::ng-deep .p-drawer .p-drawer-header-icons button:hover {
-    color: #dc3545;
+    color: #ffffff !important;
+    background: #007bff !important;
+    border-color: #007bff !important;
     transform: scale(1.1);
 }
 
-/* Main trigger button styling */
+::ng-deep .p-drawer .p-drawer-header-icons button .pi {
+    color: inherit !important;
+}
+
+::ng-deep .p-drawer .p-drawer-header-icons .p-button-icon {
+    color: inherit !important;
+}
+
+::ng-deep .p-drawer .p-drawer-content {
+    background-color: #ffffff;
+}
+
+/* Main trigger button styling - Blue */
 ::ng-deep .card .p-button {
     background: linear-gradient(45deg, #007bff, #0056b3);
     border: none;
+    color: white;
     padding: 1rem 2rem;
     font-weight: 600;
     border-radius: 10px;
@@ -257,10 +270,12 @@
 @media (max-width: 768px) {
     .card {
         margin: 1rem;
+        background-color: #ffffff;
     }
     
     .settings-content {
         padding: 1rem;
+        background-color: #ffffff;
     }
     
     .settings-actions {
@@ -270,6 +285,7 @@
     
     ::ng-deep .p-drawer {
         width: 90% !important;
+        background-color: #ffffff;
     }
     
     .role-summary {
@@ -301,4 +317,38 @@
 
 .settings-content {
     animation: fadeInUp 0.4s ease-out;
+}
+
+/* Ensure all text elements are dark for light theme */
+::ng-deep .p-drawer * {
+    color: #2c3e50;
+}
+
+::ng-deep .p-selectbutton .p-button {
+    color: #495057 !important;
+}
+
+::ng-deep .p-selectbutton .p-button.p-highlight {
+    color: white !important;
+}
+
+/* Force light backgrounds and fix role buttons */
+::ng-deep .p-component {
+    background-color: #ffffff;
+}
+
+::ng-deep .p-inputnumber {
+    background-color: #ffffff;
+}
+
+/* Fix select button styling */
+::ng-deep .p-selectbutton .p-button {
+    background-color: #ffffff !important;
+    border-color: #e9ecef !important;
+}
+
+::ng-deep .p-selectbutton .p-button:not(.p-highlight):not(.p-disabled):hover {
+    background-color: #f8f9fa !important;
+    border-color: #007bff !important;
+    color: #007bff !important;
 }

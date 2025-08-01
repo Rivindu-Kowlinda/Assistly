@@ -4,6 +4,15 @@
   <div class="profile-wrapper">
     <div class="profile-card-modern">
       
+      <div>
+        <div class="avatar">{{ user.username.charAt(0) }}</div>
+        <h2 class="username">{{ user.username }}</h2>
+        <p-tag
+          [value]="getRoleLabel(user.role[0])"
+          [severity]="getRoleSeverity(user.role[0])"
+        ></p-tag>
+      </div>
+
       <!-- Logout Button -->
       <button
         pButton
@@ -14,13 +23,6 @@
         (click)="logout()"
       ></button>
 
-      <div class="left-section">
-        <img class="avatar" src="assets/default-avatar.png" alt="Profile" />
-        <h2 class="username">{{ user.username }}</h2>
-        <p class="role">{{ user.role[0] }}</p>
-      </div>
-
-      <!-- Right section removed for admin, since only username + role shown -->
     </div>
   </div>
 </div>

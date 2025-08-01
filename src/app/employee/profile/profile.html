@@ -1,29 +1,29 @@
+<!-- profile.html -->
 <app-sidebar></app-sidebar>
 <div class="main-wrapper">
   <div class="profile-wrapper">
     <div class="profile-card-modern">
-      
-      <!-- Logout Button -->
-      <button
-        pButton
-        type="button"
-        icon="pi pi-sign-out"
-        label="Logout"
-        class="logout-btn"
-        (click)="logout()"
-      ></button>
-
       <div class="left-section">
-        <img
-          class="avatar"
-          src="https://example.com/default-avatar.png"
-          alt="Profile"
-        />
+        <div class="avatar">
+          {{ getFirstLetter(user.username) }}
+        </div>
         <h2 class="username">{{ user.username }}</h2>
         <p class="role">{{ user.role }}</p>
+        
+        <!-- Logout Button positioned under role -->
+        <button 
+          pButton 
+          type="button"
+          icon="pi pi-sign-out"
+          label="Logout"
+          class="logout-btn"
+          (click)="logout()"
+        ></button>
       </div>
 
       <div class="right-section">
+        <h3 class="stats-title">Account Overview</h3>
+        
         <div class="stat">
           <label>Balance</label>
           <span>{{ user.balancePoints }} pts</span>

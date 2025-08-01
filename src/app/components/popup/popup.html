@@ -27,8 +27,8 @@
         
         <div class="request-detail-item">
           <span class="detail-label">Status:</span>
-          <span class="detail-value status-value" [class]="'status-' + request.status.toLowerCase()">
-            {{ request.status }}
+          <span class="detail-value status-value" [ngClass]="statusCssClass">
+            {{ displayStatus }}
           </span>
         </div>
       </div>

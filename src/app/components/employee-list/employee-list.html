@@ -23,7 +23,7 @@
       [globalFilterFields]="['name','role','price']"
       styleClass="custom-table"
     >
-      <!-- Caption with clear & search -->
+      <!-- Caption -->
       <ng-template #caption>
         <div class="table-controls">
           <div class="selected-info">
@@ -54,7 +54,7 @@
         </div>
       </ng-template>
 
-      <!-- Header row -->
+      <!-- Header -->
       <ng-template #header>
         <tr>
           <th style="width: 60px" class="checkbox-column">
@@ -99,7 +99,7 @@
         </tr>
       </ng-template>
 
-      <!-- Body rows -->
+      <!-- Body -->
       <ng-template #body let-customer>
         <tr class="table-row">
           <td class="checkbox-cell">
@@ -116,7 +116,7 @@
             </div>
           </td>
           <td class="role-cell">
-            <span class="role-badge">{{ customer.role }}</span>
+            <span class="role-badge">{{ customer.roleLabel }}</span>
           </td>
           <td class="price-cell">
             <span class="price-amount">{{ customer.price | number }}</span>
@@ -124,7 +124,7 @@
         </tr>
       </ng-template>
 
-      <!-- Empty message -->
+      <!-- Empty -->
       <ng-template #emptymessage>
         <tr>
           <td colspan="4" class="empty-message">

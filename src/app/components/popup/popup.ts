@@ -64,11 +64,27 @@ export class Popup implements AfterViewChecked, OnDestroy {
   private chatService?: ChatService;
   private reqService?: HelpRequestService;
 
+  // Status mapping for better display
+  private readonly statusMap: { [key: string]: string } = {
+    'PENDING': 'Pending',
+    'IN_PROGRESS': 'In Progress'
+  };
+
   constructor(private injector: Injector) {}
 
   private getServices() {
     if (!this.chatService) this.chatService = this.injector.get(ChatService);
     if (!this.reqService) this.reqService = this.injector.get(HelpRequestService);
+  }
+
+  // Public getter methods for template access
+  get displayStatus(): string {
+    return this.statusMap[this.request?.status] || this.request?.status || 'Unknown';
+  }
+
+  // Get CSS class for status styling
+  get statusCssClass(): string {
+    return 'status-' + (this.request?.status?.toLowerCase() || 'unknown');
   }
 
   showDialog(): void {

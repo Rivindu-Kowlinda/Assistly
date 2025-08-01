@@ -13,6 +13,8 @@ import { AuthService } from '../services/auth.service';
 })
 export class Login {
   loginForm: FormGroup;
+  isLoading = false;
+  errorMessage = '';
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -23,14 +25,40 @@ export class Login {
 
   onLogin(): void {
     if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.errorMessage = '';
+      
+      console.log('Login attempt started');
+      
       this.auth.login(this.loginForm.value).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Login successful:', response);
+          this.isLoading = false;
+          
           const role = this.auth.getRole();
-          if (role === 'ADMIN') this.router.navigate(['/admin']);
-          if (role === 'JUNIOR' || role === 'MID' || role === 'SENIOR') this.router.navigate(['/employee']);
+          console.log('User role:', role);
+          
+          // Navigate to the correct routes based on your routing configuration
+          if (role === 'ADMIN') {
+            console.log('Navigating to adminDashboard');
+            this.router.navigate(['/adminDashboard']);
+          } else if (role === 'JUNIOR' || role === 'MID' || role === 'SENIOR') {
+            console.log('Navigating to employeeDashboard');
+            this.router.navigate(['/employeeDashboard']);
+          } else {
+            console.warn('Unknown role:', role);
+            this.errorMessage = 'Invalid role received';
+          }
         },
-        error: () => alert('Invalid login')
+        error: (error) => {
+          console.error('Login failed:', error);
+          this.isLoading = false;
+          this.errorMessage = 'Invalid login credentials';
+        }
       });
+    } else {
+      console.log('Form is invalid');
+      this.errorMessage = 'Please fill in all required fields';
     }
   }
 }

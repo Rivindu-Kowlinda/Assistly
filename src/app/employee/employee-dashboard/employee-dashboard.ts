@@ -89,16 +89,21 @@ export class EmployeeDashboard implements OnInit {
     { label: 'Completed',   value: 'completed'  }
   ];
 
+  statusLabelMap: { [key: string]: string } = {
+    pending: 'Pending',
+    inProgress: 'In Progress',
+    completed: 'Completed'
+  };
+
   constructor(private svc: DashboardService, private router: Router) {}
 
   ngOnInit() {
     this.loadDashboardData();
   }
 
-  /** ✅ Extract dashboard loading into separate method for reuse */
   private loadDashboardData() {
     this.loading = true;
-    
+
     this.svc.getDashboard().subscribe(res => {
       this.dashboard = res;
       this.employeeStats = res.employeeStats;
@@ -135,16 +140,14 @@ export class EmployeeDashboard implements OnInit {
     });
   }
 
-  /** ✅ Handle request completion event from popup */
   onRequestCompleted() {
-    // Refresh the dashboard data to reflect updated points balance
     this.loadDashboardData();
   }
 
   mapStatus(raw: string): string {
     switch (raw.toLowerCase()) {
       case 'pending': return 'pending';
-      case 'in_progress': return 'inProgress';
+      case 'in_progress':
       case 'inprogress': return 'inProgress';
       case 'completed': return 'completed';
       default: return raw.toLowerCase();
@@ -164,11 +167,9 @@ export class EmployeeDashboard implements OnInit {
     }
   }
 
-  /** ✅ Updated onRowClick method with async/await and proper property setting */
   async onRowClick(row: TableRow, event: Event) {
-    const tgt = (event.target as HTMLElement);
+    const tgt = event.target as HTMLElement;
 
-    // Prevent click when interacting with filter controls
     if (
       tgt.tagName === 'INPUT' ||
       tgt.tagName === 'SELECT' ||
@@ -178,37 +179,14 @@ export class EmployeeDashboard implements OnInit {
       return;
     }
 
-    // Handle Request rows
-    if (row.type === 'Request') {
-      // ✅ Set all properties before showing dialog
-      this.selectedRequestId = row.id;
-      this.selectedItemType = 'Request';
-      this.selectedRating = row.rating || 0;
-      
-      // ✅ Set properties on popup component directly
-      this.chatPopup.requestId = this.selectedRequestId;
-      this.chatPopup.itemType = this.selectedItemType;
-      this.chatPopup.existingRating = this.selectedRating;
-      
-      // ✅ Wait for dialog initialization to complete
-      await this.chatPopup.showDialog();
-      return;
-    }
+    this.selectedRequestId = row.id;
+    this.selectedItemType = row.type === 'Request' ? 'Request' : 'Help';
+    this.selectedRating = row.rating || 0;
 
-    // Handle completed Help rows
-    if (row.type === 'Help' && row.status === 'completed') {
-      // ✅ Set all properties before showing dialog
-      this.selectedRequestId = row.id;
-      this.selectedItemType = 'Help';
-      this.selectedRating = row.rating || 0;
-      
-      // ✅ Set properties on popup component directly
-      this.chatPopup.requestId = this.selectedRequestId;
-      this.chatPopup.itemType = this.selectedItemType;
-      this.chatPopup.existingRating = this.selectedRating;
-      
-      // ✅ Wait for dialog initialization to complete
-      await this.chatPopup.showDialog();
-    }
+    this.chatPopup.requestId = this.selectedRequestId;
+    this.chatPopup.itemType = this.selectedItemType;
+    this.chatPopup.existingRating = this.selectedRating;
+
+    await this.chatPopup.showDialog();
   }
 }

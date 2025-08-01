@@ -4,7 +4,9 @@
     background-color: #D8DADC;
     padding-left: 0;
   }
-  
+  #mainPage{
+    min-height: 100%;
+  }
   @media (min-width: 768px) {
     /* once viewport ≥768px, apply 270px left padding */
     :host ::ng-deep .p-progressbar {
@@ -17,6 +19,7 @@
       background-color: white;
       max-width: 88%;
       border-radius: 5px;
+      min-height: 95vh;
     }
   }
   

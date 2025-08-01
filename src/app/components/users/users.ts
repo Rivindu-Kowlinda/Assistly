@@ -26,7 +26,7 @@ interface User {
   role: string;
   price: string;
   monthlyAllocation: number;
-  newPassword?: string; // For editing purposes only
+  newPassword?: string;
   requestCount?: number;
   helpPendingCount?: number;
   helpAcceptedCount?: number;
@@ -73,13 +73,21 @@ export class TableFilterBasicDemo implements OnInit {
   newUser = {
     username: '',
     password: '',
-    role: '',               // will be one of this.roles[].value
+    role: '',
     balancePoints: 0,
     monthlyAllocation: 0
   };
 
+  // Role label map
+  roleLabelMap: { [key: string]: string } = {
+    JUNIOR: 'Junior',
+    MID: 'Mid',
+    SENIOR: 'Senior',
+    ADMIN: 'Admin'
+  };
+
   constructor(private userService: UserService) {}
-  
+
   ngOnInit() {
     this.roles = [
       { label: 'Junior', value: 'JUNIOR' },
@@ -90,7 +98,6 @@ export class TableFilterBasicDemo implements OnInit {
     this.loadUsersFromAPI();
   }
 
-  // Helper method to check if we should hide the balance points column
   isAdminOnlyView(): boolean {
     return this.customers.length > 0 && this.customers.every(customer => customer.role === 'ADMIN');
   }
@@ -99,7 +106,7 @@ export class TableFilterBasicDemo implements OnInit {
     this.newUser = {
       username: '',
       password: '',
-      role: this.roles[0].value,   // default to first role
+      role: this.roles[0].value,
       balancePoints: 0,
       monthlyAllocation: 0
     };
@@ -111,30 +118,26 @@ export class TableFilterBasicDemo implements OnInit {
       username: this.newUser.username,
       password: this.newUser.password,
       role: [ this.newUser.role ],
-      // Only include balance points and monthly allocation if not admin
       balancePoints: this.newUser.role === 'ADMIN' ? 0 : this.newUser.balancePoints,
       monthlyAllocation: this.newUser.role === 'ADMIN' ? 0 : this.newUser.monthlyAllocation
     };
 
     this.userService.createUser(payload).subscribe({
       next: created => {
-        // inject into your table with the shape you need
         this.customers = [
           ...this.customers,
           {
             id: created.id,
             name: created.username,
             username: created.username,
-            password: created.password, // Keep encrypted password from backend
+            password: created.password,
             role: created.role[0],
             price: created.balancePoints.toString(),
             monthlyAllocation: created.monthlyAllocation,
-            newPassword: '' // Initialize as empty
+            newPassword: ''
           }
         ];
         this.displayCreateUserDialog = false;
-        
-        // Reset form
         this.newUser = {
           username: '',
           password: '',
@@ -155,11 +158,11 @@ export class TableFilterBasicDemo implements OnInit {
           id: user.id,
           name: user.username,
           username: user.username,
-          password: user.password, // Keep encrypted password from backend
+          password: user.password,
           role: user.role[0],
           price: user.balancePoints.toString(),
           monthlyAllocation: user.monthlyAllocation,
-          newPassword: '', // Initialize as empty for editing
+          newPassword: '',
           requestCount: user.requestCount,
           helpPendingCount: user.helpPendingCount,
           helpAcceptedCount: user.helpAcceptedCount
@@ -193,8 +196,7 @@ export class TableFilterBasicDemo implements OnInit {
     if (this.displayUserDialog) this.displayUserDialog = false;
     setTimeout(() => {
       this.selectedUser = { ...user };
-      // Create editing user without the encrypted password field at all
-      this.editingUser = { 
+      this.editingUser = {
         id: user.id,
         name: user.name,
         username: user.username,
@@ -204,8 +206,8 @@ export class TableFilterBasicDemo implements OnInit {
         requestCount: user.requestCount,
         helpPendingCount: user.helpPendingCount,
         helpAcceptedCount: user.helpAcceptedCount,
-        password: '', // Don't copy the encrypted password
-        newPassword: '' // Always empty for editing
+        password: '',
+        newPassword: ''
       };
       this.isEditingMode = false;
       this.displayUserDialog = true;
@@ -214,28 +216,22 @@ export class TableFilterBasicDemo implements OnInit {
 
   toggleEditMode() {
     this.isEditingMode = !this.isEditingMode;
-    if (!this.isEditingMode) {
-      // Reset editing user to original values if canceling, but without encrypted password
-      if (this.selectedUser) {
-        this.editingUser = { 
-          id: this.selectedUser.id,
-          name: this.selectedUser.name,
-          username: this.selectedUser.username,
-          role: this.selectedUser.role,
-          price: this.selectedUser.price,
-          monthlyAllocation: this.selectedUser.monthlyAllocation,
-          requestCount: this.selectedUser.requestCount,
-          helpPendingCount: this.selectedUser.helpPendingCount,
-          helpAcceptedCount: this.selectedUser.helpAcceptedCount,
-          password: '', // Don't copy the encrypted password
-          newPassword: '' // Always reset to empty
-        };
-      }
-    } else {
-      // When entering edit mode, ensure newPassword is always empty
-      if (this.editingUser) {
-        this.editingUser.newPassword = '';
-      }
+    if (!this.isEditingMode && this.selectedUser) {
+      this.editingUser = {
+        id: this.selectedUser.id,
+        name: this.selectedUser.name,
+        username: this.selectedUser.username,
+        role: this.selectedUser.role,
+        price: this.selectedUser.price,
+        monthlyAllocation: this.selectedUser.monthlyAllocation,
+        requestCount: this.selectedUser.requestCount,
+        helpPendingCount: this.selectedUser.helpPendingCount,
+        helpAcceptedCount: this.selectedUser.helpAcceptedCount,
+        password: '',
+        newPassword: ''
+      };
+    } else if (this.editingUser) {
+      this.editingUser.newPassword = '';
     }
   }
 
@@ -252,7 +248,6 @@ export class TableFilterBasicDemo implements OnInit {
         id: this.selectedUser.id,
         username: this.editingUser.username,
         role: [this.editingUser.role],
-        // If role is admin, set balance points and monthly allocation to 0
         balancePoints: this.editingUser.role === 'ADMIN' ? 0 : parseInt(this.selectedUser.price),
         monthlyAllocation: this.editingUser.role === 'ADMIN' ? 0 : this.editingUser.monthlyAllocation,
         requestCount: this.selectedUser.requestCount ?? 0,
@@ -260,13 +255,9 @@ export class TableFilterBasicDemo implements OnInit {
         helpAcceptedCount: this.selectedUser.helpAcceptedCount ?? 0
       };
 
-      // Only include password if it was actually changed (not empty and not just whitespace)
-      if (this.editingUser.newPassword && this.editingUser.newPassword.trim() !== '') {
+      if (this.editingUser.newPassword?.trim()) {
         updatedUser.password = this.editingUser.newPassword.trim();
       }
-      // Important: Do NOT include password field at all if it's empty
-
-      console.log('Payload being sent:', updatedUser); // Debug log to verify
 
       this.userService.updateUser(updatedUser).subscribe({
         next: () => {
@@ -274,13 +265,10 @@ export class TableFilterBasicDemo implements OnInit {
           this.selectedUser!.role = updatedUser.role[0];
           this.selectedUser!.monthlyAllocation = updatedUser.monthlyAllocation;
           this.selectedUser!.price = updatedUser.balancePoints.toString();
-          // Don't update the stored password as it's encrypted on backend
           this.updateUserInList();
           this.isEditingMode = false;
         },
-        error: (err) => {
-          console.error('Failed to update user:', err);
-        }
+        error: err => console.error('Failed to update user:', err)
       });
     }
   }

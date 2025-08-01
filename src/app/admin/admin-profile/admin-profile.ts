@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule }      from '@angular/common';
 import { AdminSidebar }      from '../../components/admin-sidebar/admin-sidebar';
 import { ButtonModule }      from 'primeng/button';
+import { TagModule }         from 'primeng/tag';
 import { Router }            from '@angular/router';
 
 import { UserService, UserProfile } from '../../services/user.admin.service';
@@ -9,12 +10,20 @@ import { UserService, UserProfile } from '../../services/user.admin.service';
 @Component({
   selector: 'admin-profile',
   standalone: true,
-  imports: [CommonModule, AdminSidebar, ButtonModule],
+  imports: [CommonModule, AdminSidebar, ButtonModule, TagModule],
   templateUrl: './admin-profile.html',
   styleUrls: ['./admin-profile.css']
 })
 export class AdminProfile implements OnInit {
   user: UserProfile | null = null;
+
+  // role label map for display
+  roleLabelMap: Record<string, string> = {
+    'ADMIN':  'Admin',
+    'JUNIOR': 'Junior',
+    'MID':    'Mid-Level',
+    'SENIOR': 'Senior'
+  };
 
   constructor(
     private userService: UserService,
@@ -32,11 +41,23 @@ export class AdminProfile implements OnInit {
     return this.user?.role?.includes('ADMIN') ?? false;
   }
 
+  getRoleLabel(role: string): string {
+    return this.roleLabelMap[role] || role;
+  }
+
+  getRoleSeverity(role: string): string {
+    switch (role) {
+      case 'JUNIOR': return 'info';
+      case 'MID':    return 'warning';
+      case 'SENIOR': return 'success';
+      case 'ADMIN':  return 'danger';
+      default:       return 'secondary';
+    }
+  }
+
   logout() {
-    // clear JWT/token
     localStorage.removeItem('token');
     localStorage.removeItem('jwt');
-    // navigate to login
     this.router.navigate(['/login']);
   }
 }

@@ -258,54 +258,7 @@
   color: #374151;
 }
 
-/* Fixed Checkbox Styles */
-:host ::ng-deep .p-checkbox .p-checkbox-box {
-  background: white !important;
-  border: 1px solid #ccc !important;
-  border-radius: 4px;
-  width: 18px;
-  height: 18px;
-  position: relative;
-}
-
-:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
-  background: #007bff !important;
-  border-color: #007bff !important;
-}
-
-/* Fixed checkbox icon visibility */
-:host ::ng-deep .p-checkbox .p-checkbox-box .p-checkbox-icon {
-  font-size: 12px;
-  color: white !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: 100% !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* Fallback checkmark if PrimeIcons don't work */
-:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-  pointer-events: none;
-}
-
-:host ::ng-deep .p-checkbox .p-checkbox-box:focus {
-  outline: none;
-  border-color: #007bff !important;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
+/* CHECKBOX STYLES REMOVED - Let PrimeNG handle default styling */
 
 /* Paginator Styles */
 :host ::ng-deep .p-paginator {

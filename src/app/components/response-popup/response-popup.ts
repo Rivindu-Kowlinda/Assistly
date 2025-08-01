@@ -216,14 +216,47 @@ export class Popup implements AfterViewChecked, OnDestroy {
   }
 
   private toUI(m: ChatMessage): UIMessage {
-    const me = m.senderId === this.currentUserId;
+    let sender: 'me' | 'them' | 'system';
+    let senderName: string;
+    
+    if (m.senderId === 'system') {
+      sender = 'system';
+      senderName = 'System';
+    } else if (this.isRequest) {
+      // For REQUESTS: Logic based on senderId presence
+      if (m.senderId && m.senderId.trim() !== '') {
+        // Has senderId → message from helper
+        sender = 'me';
+        senderName = 'You';
+      } else {
+        // No senderId or empty → message from requester (but show as Helper in UI)
+        sender = 'them';
+        senderName = 'Helper';
+      }
+    } else {
+      // For HELPS: Original logic comparing senderId with currentUserId
+      const me = m.senderId === this.currentUserId;
+      sender = me ? 'me' : 'them';
+      senderName = me ? 'You' : 'Requester';
+    }
+    
     const processed = this.processMessageContent(m.content);
+    
+    // Debug logging to understand the message mapping
+    console.log('Message Debug:', {
+      messageContent: m.content,
+      senderId: m.senderId,
+      currentUserId: this.currentUserId,
+      itemType: this.itemType,
+      determinedSender: sender,
+      senderName: senderName
+    });
     
     return {
       id:         m.id ?? `msg-${Date.now()}-${Math.random()}`,
-      type:       'text',
-      sender:     me ? 'me' : 'them',
-      senderName: me ? 'You' : (this.isRequest ? 'Helper' : 'Requester'),
+      type:       m.senderId === 'system' ? 'system' : 'text',
+      sender:     sender,
+      senderName: senderName,
       text:       processed.text,
       images:     processed.images,
       timestamp:  new Date(m.timestamp)
