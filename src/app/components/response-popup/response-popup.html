@@ -1,3 +1,4 @@
+<!-- src/app/components/response-popup/response-popup.html -->
 <div class="popup-wrapper">
   <p-dialog
     [header]="isRequest ? 'Request Chat' : 'Help Review'"
@@ -20,6 +21,18 @@
 
     <!-- Content shown only when not loading -->
     <div *ngIf="!isLoading" class="chat-container">
+      
+      <!-- Error Message -->
+      <div *ngIf="error" class="error-banner">
+        <div class="error-content">
+          <i class="pi pi-exclamation-triangle error-icon"></i>
+          <span class="error-text">{{ error }}</span>
+          <button (click)="clearError()" class="error-close">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      </div>
+
       <!-- Chat Messages Area -->
       <div #chatScroll class="chat-messages-area">
         <div class="messages-container">
@@ -73,6 +86,30 @@
         </div>
       </div>
 
+      <!-- ✅ Chat Input Section (NEW) -->
+      <div *ngIf="shouldShowChatInput" class="chat-input-section">
+        <div class="input-container">
+          <div class="input-wrapper">
+            <input
+              type="text"
+              [(ngModel)]="newMessage"
+              placeholder="Type your message..."
+              (keydown)="onInputKeydown($event)"
+              class="message-input"
+              autocomplete="off"
+              [disabled]="sendingMessage"
+            />
+            <p-button
+              styleClass="send-button"
+              icon="pi pi-paper-plane"
+              (onClick)="sendMessage()"
+              [disabled]="!newMessage.trim() || sendingMessage"
+              [loading]="sendingMessage"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+
       <!-- Footer with Complete + Rating for Requests -->
       <div *ngIf="isRequest" class="complete-footer">
         <div class="footer-content">
@@ -120,5 +157,6 @@
         </div>
       </div>
     </div>
+    
   </p-dialog>
 </div>

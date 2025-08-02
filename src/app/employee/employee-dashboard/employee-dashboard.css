@@ -268,11 +268,6 @@ th, td {
   margin-top: 2px !important;
 }
 
-/* Status Tags - Keep Original Colors */
-.historyCard ::ng-deep .p-tag {
-  /* Don't override tag colors - let them keep their original styling */
-}
-
 /* Paginator Styling - ensure white background */
 .historyCard ::ng-deep .p-paginator {
   background-color: #fff !important;
@@ -491,9 +486,7 @@ th, td {
 }
 
 /* Additional overrides to ensure no black backgrounds anywhere */
-.historyCard ::ng-deep * {
-  /* Override any inherited black backgrounds */
-}
+
 
 .historyCard ::ng-deep .p-datatable-header-cell,
 .historyCard ::ng-deep .p-datatable-filter-container,

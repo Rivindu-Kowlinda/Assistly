@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { DialogModule }   from 'primeng/dialog';
 import { ButtonModule }   from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule }   from 'primeng/avatar';
 import { RatingModule }   from 'primeng/rating';
 import { CommonModule }   from '@angular/common';
@@ -32,6 +33,7 @@ interface UIMessage {
   imports: [
     DialogModule,
     ButtonModule,
+    InputTextModule,
     AvatarModule,
     RatingModule,
     CommonModule,
@@ -55,6 +57,11 @@ export class Popup implements AfterViewChecked, OnDestroy {
   
   // ✅ Add loading state
   isLoading = false;
+
+  // ✅ Add chat input state
+  newMessage = '';
+  sendingMessage = false;
+  error: string | null = null;
 
   /** Complete / rating state */
   completed = false;
@@ -89,6 +96,13 @@ export class Popup implements AfterViewChecked, OnDestroy {
     return this.rating;
   }
 
+  // ✅ Chat input visibility logic
+  get shouldShowChatInput(): boolean {
+    // Show chat input for active requests, or for helps (to allow helper to respond)
+    return (this.isRequest && this.chatAccepted && !this.completed) || 
+           (this.itemType === 'Help' && this.chatAccepted);
+  }
+
   private sub?: Subscription;
   private needScroll = false;
 
@@ -101,6 +115,62 @@ export class Popup implements AfterViewChecked, OnDestroy {
   private getServices() {
     if (!this.chatSvc) this.chatSvc = this.injector.get(ChatService);
     if (!this.reqSvc)  this.reqSvc  = this.injector.get(HelpRequestService);
+  }
+
+  // ✅ Helper method to get current user ID with fallback strategies
+  private getCurrentUserId(): string {
+    // Strategy 1: Try the service method
+    try {
+      if (this.reqSvc) {
+        const serviceUserId = this.reqSvc.currentUserId();
+        if (serviceUserId && serviceUserId.trim() !== '') {
+          console.log('Got user ID from service:', serviceUserId);
+          return serviceUserId;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from service:', error);
+    }
+
+    // Strategy 2: Try localStorage
+    try {
+      const storedUserId = localStorage.getItem('userId') || localStorage.getItem('currentUserId') || localStorage.getItem('user_id');
+      if (storedUserId && storedUserId.trim() !== '') {
+        console.log('Got user ID from localStorage:', storedUserId);
+        return storedUserId;
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from localStorage:', error);
+    }
+
+    // Strategy 3: Try sessionStorage
+    try {
+      const sessionUserId = sessionStorage.getItem('userId') || sessionStorage.getItem('currentUserId') || sessionStorage.getItem('user_id');
+      if (sessionUserId && sessionUserId.trim() !== '') {
+        console.log('Got user ID from sessionStorage:', sessionUserId);
+        return sessionUserId;
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from sessionStorage:', error);
+    }
+
+    // Strategy 4: Try to extract from JWT token
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('jwt');
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const tokenUserId = payload.userId || payload.sub || payload.id || payload.user_id;
+        if (tokenUserId && tokenUserId.trim() !== '') {
+          console.log('Got user ID from JWT token:', tokenUserId);
+          return tokenUserId;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from JWT token:', error);
+    }
+
+    console.error('Could not determine current user ID using any strategy');
+    return '';
   }
 
   // Helper method to process message content and extract images
@@ -130,6 +200,8 @@ export class Popup implements AfterViewChecked, OnDestroy {
     this.completed = false;
     this.rated = false;
     this.rating = 0;
+    this.newMessage = '';
+    this.error = null;
     
     // ✅ Show dialog and loading state
     this.visible = true;
@@ -144,7 +216,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
       }
     } catch (error) {
       console.error('Failed to initialize dialog:', error);
-      // You could add error handling UI here if needed
+      this.error = 'Failed to load chat data';
     } finally {
       // ✅ Hide loading state when done
       this.isLoading = false;
@@ -154,7 +226,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
   /** ✅ Updated to return Promise for completed helps */
   private async loadCompletedHelpData(): Promise<void> {
     this.getServices();
-    this.currentUserId = this.reqSvc.currentUserId();
+    this.currentUserId = this.getCurrentUserId();
 
     // Load existing chat history
     try {
@@ -167,18 +239,39 @@ export class Popup implements AfterViewChecked, OnDestroy {
     // ✅ Ensure scrolling happens after messages are loaded
     this.scrollToBottom();
     
-    // No live subscription needed for completed helps
+    // ✅ Subscribe for live updates even for completed helps (in case there are late messages)
+    this.sub = this.chatSvc
+      .onMessage(this.requestId)
+      .subscribe(m => {
+        this.messages.push(this.toUI(m));
+        this.scrollToBottom();
+      });
   }
 
   /** Tear down on hide */
   onDialogHide(): void {
     this.sub?.unsubscribe();
+    this.newMessage = '';
+    this.error = null;
   }
 
   /** ✅ Updated initialize method to return Promise */
   private async initialize(): Promise<void> {
     this.getServices();
-    this.currentUserId = this.reqSvc.currentUserId();
+    this.currentUserId = this.getCurrentUserId();
+
+    console.log('=== USER ID DEBUG ===');
+    console.log('Final currentUserId:', `"${this.currentUserId}"`);
+    console.log('currentUserId length:', this.currentUserId.length);
+    console.log('currentUserId type:', typeof this.currentUserId);
+    console.log('isEmpty:', this.currentUserId === '');
+    console.log('====================');
+
+    if (!this.currentUserId || this.currentUserId.trim() === '') {
+      this.error = 'Unable to identify current user. Please log in again.';
+      console.error('CRITICAL: currentUserId is empty after all strategies');
+      return;
+    }
 
     // 1) Load request to see if it's already in‐progress
     try {
@@ -206,7 +299,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     // ✅ Ensure scrolling happens after messages are loaded
     this.scrollToBottom();
 
-    // 3) Subscribe for live updates (only for requests)
+    // 3) Subscribe for live updates
     this.sub = this.chatSvc
       .onMessage(this.requestId)
       .subscribe(m => {
@@ -215,6 +308,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
       });
   }
 
+  // ✅ FIXED: Simplified toUI method using direct comparison like the working popup component
   private toUI(m: ChatMessage): UIMessage {
     let sender: 'me' | 'them' | 'system';
     let senderName: string;
@@ -222,32 +316,30 @@ export class Popup implements AfterViewChecked, OnDestroy {
     if (m.senderId === 'system') {
       sender = 'system';
       senderName = 'System';
-    } else if (this.isRequest) {
-      // For REQUESTS: Logic based on senderId presence
-      if (m.senderId && m.senderId.trim() !== '') {
-        // Has senderId → message from helper
-        sender = 'me';
-        senderName = 'You';
-      } else {
-        // No senderId or empty → message from requester (but show as Helper in UI)
-        sender = 'them';
-        senderName = 'Helper';
-      }
     } else {
-      // For HELPS: Original logic comparing senderId with currentUserId
-      const me = m.senderId === this.currentUserId;
-      sender = me ? 'me' : 'them';
-      senderName = me ? 'You' : 'Requester';
+      // ✅ Fixed: Simple direct comparison like the working popup component
+      const isMyMessage = m.senderId === this.currentUserId;
+      
+      if (this.isRequest) {
+        // For requests (recipient's perspective)
+        sender = isMyMessage ? 'me' : 'them';
+        senderName = isMyMessage ? 'You' : 'Helper';
+      } else {
+        // For helps (helper's perspective) 
+        sender = isMyMessage ? 'me' : 'them';
+        senderName = isMyMessage ? 'You' : 'Requester';
+      }
     }
     
     const processed = this.processMessageContent(m.content);
     
-    // Debug logging to understand the message mapping
+    // Enhanced debug logging
     console.log('Message Debug:', {
       messageContent: m.content,
       senderId: m.senderId,
       currentUserId: this.currentUserId,
       itemType: this.itemType,
+      isMyMessage: m.senderId === this.currentUserId,
       determinedSender: sender,
       senderName: senderName
     });
@@ -261,6 +353,68 @@ export class Popup implements AfterViewChecked, OnDestroy {
       images:     processed.images,
       timestamp:  new Date(m.timestamp)
     };
+  }
+
+  // ✅ Add sendMessage functionality
+  async sendMessage(): Promise<void> {
+    const txt = this.newMessage.trim();
+    if (!txt || this.sendingMessage) return;
+
+    // Validate user ID before sending
+    if (!this.currentUserId || this.currentUserId.trim() === '') {
+      console.error('SEND MESSAGE ERROR: currentUserId is empty');
+      console.log('Attempting to re-fetch user ID...');
+      
+      this.currentUserId = this.getCurrentUserId();
+      
+      if (!this.currentUserId || this.currentUserId.trim() === '') {
+        this.error = 'Unable to identify current user. Please refresh the page and try again.';
+        console.error('CRITICAL: Still no user ID after re-fetch attempt');
+        return;
+      }
+    }
+
+    this.sendingMessage = true;
+    this.error = null;
+
+    try {
+      console.log('=== SENDING MESSAGE DEBUG ===');
+      console.log('senderId:', `"${this.currentUserId}"`);
+      console.log('requestId:', this.requestId);
+      console.log('content:', txt);
+      console.log('============================');
+
+      const msg: ChatMessage = {
+        requestId: this.requestId,
+        senderId: this.currentUserId,
+        content: txt,
+        timestamp: new Date().toISOString()
+      };
+
+      console.log('Complete message object:', msg);
+
+      await this.chatSvc.sendMessage(msg);
+      this.newMessage = '';
+      
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      this.error = 'Failed to send message';
+    } finally {
+      this.sendingMessage = false;
+    }
+  }
+
+  // ✅ Add keyboard handler for Enter key
+  onInputKeydown(ev: KeyboardEvent): void {
+    if (ev.key === 'Enter' && !ev.shiftKey && this.shouldShowChatInput) {
+      ev.preventDefault();
+      this.sendMessage();
+    }
+  }
+
+  // ✅ Add error clearing
+  clearError(): void {
+    this.error = null;
   }
 
   /** Mark the help as completed, enables rating (only for requests) */

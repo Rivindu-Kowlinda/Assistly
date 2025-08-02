@@ -59,7 +59,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
 
   private sub?: Subscription;
   private needScroll = false;
-  private currentUserId!: string;
+  private currentUserId: string = '';
 
   private chatService?: ChatService;
   private reqService?: HelpRequestService;
@@ -75,6 +75,62 @@ export class Popup implements AfterViewChecked, OnDestroy {
   private getServices() {
     if (!this.chatService) this.chatService = this.injector.get(ChatService);
     if (!this.reqService) this.reqService = this.injector.get(HelpRequestService);
+  }
+
+  // Helper method to get current user ID with multiple fallback strategies
+  private getCurrentUserId(): string {
+    // Strategy 1: Try the service method
+    try {
+      if (this.reqService) {
+        const serviceUserId = this.reqService.currentUserId();
+        if (serviceUserId && serviceUserId.trim() !== '') {
+          console.log('Got user ID from service:', serviceUserId);
+          return serviceUserId;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from service:', error);
+    }
+
+    // Strategy 2: Try localStorage
+    try {
+      const storedUserId = localStorage.getItem('userId') || localStorage.getItem('currentUserId') || localStorage.getItem('user_id');
+      if (storedUserId && storedUserId.trim() !== '') {
+        console.log('Got user ID from localStorage:', storedUserId);
+        return storedUserId;
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from localStorage:', error);
+    }
+
+    // Strategy 3: Try sessionStorage
+    try {
+      const sessionUserId = sessionStorage.getItem('userId') || sessionStorage.getItem('currentUserId') || sessionStorage.getItem('user_id');
+      if (sessionUserId && sessionUserId.trim() !== '') {
+        console.log('Got user ID from sessionStorage:', sessionUserId);
+        return sessionUserId;
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from sessionStorage:', error);
+    }
+
+    // Strategy 4: Try to extract from JWT token
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('jwt');
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const tokenUserId = payload.userId || payload.sub || payload.id || payload.user_id;
+        if (tokenUserId && tokenUserId.trim() !== '') {
+          console.log('Got user ID from JWT token:', tokenUserId);
+          return tokenUserId;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to get user ID from JWT token:', error);
+    }
+
+    console.error('Could not determine current user ID using any strategy');
+    return '';
   }
 
   // Public getter methods for template access
@@ -120,7 +176,23 @@ export class Popup implements AfterViewChecked, OnDestroy {
     
     try {
       this.getServices();
-      this.currentUserId = this.reqService!.currentUserId();
+      
+      // Get current user ID with extensive debugging
+      this.currentUserId = this.getCurrentUserId();
+      
+      console.log('=== USER ID DEBUG ===');
+      console.log('Final currentUserId:', `"${this.currentUserId}"`);
+      console.log('currentUserId length:', this.currentUserId.length);
+      console.log('currentUserId type:', typeof this.currentUserId);
+      console.log('isEmpty:', this.currentUserId === '');
+      console.log('====================');
+      
+      if (!this.currentUserId || this.currentUserId.trim() === '') {
+        this.error = 'Unable to identify current user. Please log in again.';
+        console.error('CRITICAL: currentUserId is empty after all strategies');
+        return;
+      }
+      
       this.chatAccepted = this.request.status === 'IN_PROGRESS';
 
       // Load chat history with improved error handling
@@ -183,6 +255,15 @@ export class Popup implements AfterViewChecked, OnDestroy {
       this.loading = true;
       this.error = null;
       
+      // Ensure we have a valid user ID before accepting
+      if (!this.currentUserId || this.currentUserId.trim() === '') {
+        this.currentUserId = this.getCurrentUserId();
+        if (!this.currentUserId || this.currentUserId.trim() === '') {
+          this.error = 'Unable to identify current user. Please refresh the page.';
+          return;
+        }
+      }
+      
       const updated = await this.reqService!.acceptRequest(this.request.id);
       
       this.chatAccepted = true;
@@ -212,13 +293,35 @@ export class Popup implements AfterViewChecked, OnDestroy {
     const txt = this.newMessage.trim();
     if (!txt || !this.chatAccepted) return;
 
+    // Validate user ID before sending
+    if (!this.currentUserId || this.currentUserId.trim() === '') {
+      console.error('SEND MESSAGE ERROR: currentUserId is empty');
+      console.log('Attempting to re-fetch user ID...');
+      
+      this.currentUserId = this.getCurrentUserId();
+      
+      if (!this.currentUserId || this.currentUserId.trim() === '') {
+        this.error = 'Unable to identify current user. Please refresh the page and try again.';
+        console.error('CRITICAL: Still no user ID after re-fetch attempt');
+        return;
+      }
+    }
+
     try {
+      console.log('=== SENDING MESSAGE DEBUG ===');
+      console.log('senderId:', `"${this.currentUserId}"`);
+      console.log('requestId:', this.request.id);
+      console.log('content:', txt);
+      console.log('============================');
+
       const msg: ChatMessage = {
         requestId: this.request.id,
         senderId: this.currentUserId,
         content: txt,
         timestamp: new Date().toISOString()
       };
+
+      console.log('Complete message object:', msg);
 
       await this.chatService!.sendMessage(msg);
       this.newMessage = '';

@@ -1,4 +1,4 @@
-/* Response Popup Styling - Matching Main Popup Design */
+/* Response Popup Styling - With Chat Functionality */
 
 /* Popup Wrapper */
 .popup-wrapper {
@@ -53,6 +53,46 @@
   color: #6c757d;
   font-size: 1rem;
   margin: 0;
+}
+
+/* Error Banner */
+.error-banner {
+  flex-shrink: 0;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0;
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-icon {
+  color: #721c24;
+  font-size: 1rem;
+}
+
+.error-text {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  color: #721c24;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.error-close:hover {
+  background-color: rgba(114, 28, 36, 0.1);
 }
 
 /* Chat Messages Area */
@@ -229,6 +269,81 @@
   opacity: 0.8;
 }
 
+/* Chat Input Section */
+.chat-input-section {
+  flex-shrink: 0;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 1.5rem;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.message-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #dee2e6;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: white;
+}
+
+.message-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
+}
+
+.message-input:disabled {
+  background-color: #f8f9fa;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+:host ::ng-deep .send-button {
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+  border-radius: 50% !important;
+  width: 45px !important;
+  height: 45px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+:host ::ng-deep .send-button:hover:not(:disabled) {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3) !important;
+}
+
+:host ::ng-deep .send-button:disabled {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  opacity: 0.6 !important;
+  transform: none !important;
+  cursor: not-allowed !important;
+}
+
+:host ::ng-deep .send-button .pi {
+  font-size: 0.9rem !important;
+  color: white !important;
+}
+
 /* Complete Footer */
 .complete-footer {
   flex-shrink: 0;
@@ -383,7 +498,17 @@
   }
   
   .complete-footer,
-  .rating-footer {
+  .rating-footer,
+  .chat-input-section {
     padding: 1rem;
+  }
+  
+  .input-wrapper {
+    gap: 0.5rem;
+  }
+  
+  :host ::ng-deep .send-button {
+    width: 40px !important;
+    height: 40px !important;
   }
 }
