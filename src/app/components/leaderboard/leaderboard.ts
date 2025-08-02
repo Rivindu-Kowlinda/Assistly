@@ -15,8 +15,9 @@ export class Leaderboard {
   @Input() helpers: EmployeeStat[] = [];
 
   sortOptions = [
-    { label: 'Points Earned',    value: 'pointsEarned'   },
-    { label: 'Helps Provided',   value: 'helpsProvided'   }
+    { label: 'Points Earned',  value: 'pointsEarned' },
+    { label: 'Helps Provided', value: 'helpsProvided' }
   ];
-  selectedSort: 'pointsEarned'|'helpsProvided' = 'pointsEarned';
+  
+  selectedSort: 'pointsEarned' | 'helpsProvided' = 'pointsEarned';
 }

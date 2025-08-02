@@ -15,6 +15,9 @@ import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { AvatarModule } from 'primeng/avatar';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 import { UserService, ApiUser } from '../../services/user.service';
 
@@ -30,6 +33,9 @@ interface User {
   requestCount?: number;
   helpPendingCount?: number;
   helpAcceptedCount?: number;
+  deleted?: boolean;
+  deletedAt?: string;
+  deletedBy?: string;
 }
 
 @Component({
@@ -53,8 +59,11 @@ interface User {
     PasswordModule,
     CardModule,
     DividerModule,
-    AvatarModule
-  ]
+    AvatarModule,
+    ConfirmDialogModule,
+    ToastModule
+  ],
+  providers: [ConfirmationService, MessageService]
 })
 export class TableFilterBasicDemo implements OnInit {
   customers: User[] = [];
@@ -86,11 +95,15 @@ export class TableFilterBasicDemo implements OnInit {
     ADMIN: 'Admin'
   };
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.roles = [
-      { label: 'Junior', value: 'JUNIOR' },
+      { label: 'Junior', value: 'Junior' },
       { label: 'Mid',    value: 'MID'    },
       { label: 'Senior', value: 'SENIOR' },
       { label: 'Admin',  value: 'ADMIN'  }
@@ -145,8 +158,20 @@ export class TableFilterBasicDemo implements OnInit {
           balancePoints: 0,
           monthlyAllocation: 0
         };
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'User created successfully'
+        });
       },
-      error: err => console.error('Create user failed', err)
+      error: err => {
+        console.error('Create user failed', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to create user'
+        });
+      }
     });
   }
 
@@ -165,13 +190,21 @@ export class TableFilterBasicDemo implements OnInit {
           newPassword: '',
           requestCount: user.requestCount,
           helpPendingCount: user.helpPendingCount,
-          helpAcceptedCount: user.helpAcceptedCount
+          helpAcceptedCount: user.helpAcceptedCount,
+          deleted: user.deleted,
+          deletedAt: user.deletedAt,
+          deletedBy: user.deletedBy
         }));
         this.loading = false;
       },
       error: (err) => {
         console.error('Failed to fetch users:', err);
         this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load users'
+        });
       }
     });
   }
@@ -267,10 +300,76 @@ export class TableFilterBasicDemo implements OnInit {
           this.selectedUser!.price = updatedUser.balancePoints.toString();
           this.updateUserInList();
           this.isEditingMode = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'User updated successfully'
+          });
         },
-        error: err => console.error('Failed to update user:', err)
+        error: err => {
+          console.error('Failed to update user:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update user'
+          });
+        }
       });
     }
+  }
+
+  confirmDeleteUser() {
+    if (!this.selectedUser) return;
+
+    this.confirmationService.confirm({
+      message: `Are you sure you want to delete user "${this.selectedUser.username}"? This action will soft delete the user and they won't be able to login.`,
+      header: 'Confirm User Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon: 'pi pi-trash',
+      rejectIcon: 'pi pi-times',
+      acceptLabel: 'Delete User',
+      rejectLabel: 'Cancel',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.deleteUser();
+      }
+    });
+  }
+
+  deleteUser() {
+    if (!this.selectedUser) return;
+
+    this.userService.softDeleteUser(this.selectedUser.id).subscribe({
+      next: (response) => {
+        // Remove user from the list
+        this.customers = this.customers.filter(user => user.id !== this.selectedUser!.id);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'User Deleted',
+          detail: `User "${response.deletedUser}" has been successfully deleted`
+        });
+        
+        this.closeDialog();
+      },
+      error: (err) => {
+        console.error('Failed to delete user:', err);
+        let errorMessage = 'Failed to delete user';
+        
+        if (err.error?.message) {
+          errorMessage = err.error.message;
+        } else if (err.status === 400) {
+          errorMessage = 'Cannot delete this user. You may be trying to delete your own account.';
+        }
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Delete Failed',
+          detail: errorMessage
+        });
+      }
+    });
   }
 
   updateUserInList() {

@@ -13,7 +13,7 @@
     [sortField]="selectedSort"
     [sortOrder]="-1"
     [paginator]="true"
-    [rows]="10"
+    [rows]="3"
     [responsiveLayout]="'scroll'"
   >
     <ng-template pTemplate="header">
@@ -30,6 +30,7 @@
         </th>
       </tr>
     </ng-template>
+
     <ng-template pTemplate="body" let-hel let-i="rowIndex">
       <tr>
         <td>{{ tbl.first + i + 1 }}</td>
@@ -38,6 +39,7 @@
         <td>{{ hel.helpsProvided }}</td>
       </tr>
     </ng-template>
+
     <ng-template pTemplate="emptymessage">
       <tr>
         <td colspan="4">No helpers found.</td>

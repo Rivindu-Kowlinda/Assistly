@@ -334,6 +334,20 @@ export class Popup implements AfterViewChecked, OnDestroy {
   }
 
   private toUI(m: ChatMessage): UIMessage {
+    // ✅ FIXED: Handle system messages properly
+    if (m.senderId === 'system') {
+      return {
+        id: m.id ?? `sys-${Date.now()}-${Math.random()}`,
+        type: 'system',
+        sender: 'system',
+        senderName: 'System',
+        avatar: '',
+        text: m.content,
+        timestamp: new Date(m.timestamp)
+      };
+    }
+
+    // Handle regular messages
     const me = m.senderId === this.currentUserId;
     const processed = this.processMessageContent(m.content);
     
@@ -341,7 +355,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
       id: m.id ?? `msg-${Date.now()}-${Math.random()}`,
       type: 'text',
       sender: me ? 'me' : 'them',
-      senderName: me ? 'You' : 'Helper',
+      senderName: me ? 'You' : 'Requester', // ✅ FIXED: Changed from 'Helper' to 'Requester'
       avatar: '',
       text: processed.text,
       images: processed.images,

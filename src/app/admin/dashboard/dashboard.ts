@@ -23,7 +23,7 @@ interface TableRow {
   id: string;
   requestName: string;
   recipientUsernames: string;
-  type: string;        // 'Request' or 'Response'
+  type: string;
   dateTime: Date;
   userName: string;
   status: string;
@@ -92,7 +92,11 @@ export class AdminDashboard implements OnInit {
         price: r.cost
       }));
 
-      this.tableRows = [...reqRows, ...respRows];
+      // Combine and sort by dateTime (newest first)
+      this.tableRows = [...reqRows, ...respRows].sort(
+        (a, b) => b.dateTime.getTime() - a.dateTime.getTime()
+      );
+
       this.loading = false;
     });
   }

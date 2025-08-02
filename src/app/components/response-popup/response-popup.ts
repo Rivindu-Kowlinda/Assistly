@@ -68,6 +68,9 @@ export class Popup implements AfterViewChecked, OnDestroy {
   rating = 0;
   rated = false;
 
+  // ✅ Add request status tracking for proper validation
+  private requestStatus: string = '';
+
   // Computed properties for UI logic
   get isRequest(): boolean {
     return this.itemType === 'Request';
@@ -78,7 +81,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
   }
 
   get shouldShowCompleteButton(): boolean {
-    return this.isRequest && !this.completed && this.chatAccepted;
+    return this.isRequest && !this.completed && this.chatAccepted && this.requestStatus === 'IN_PROGRESS';
   }
 
   get shouldShowInteractiveRating(): boolean {
@@ -96,11 +99,28 @@ export class Popup implements AfterViewChecked, OnDestroy {
     return this.rating;
   }
 
-  // ✅ Chat input visibility logic
+  // ✅ FIXED: Strict chat input visibility logic with maximum validation
   get shouldShowChatInput(): boolean {
-    // Show chat input for active requests, or for helps (to allow helper to respond)
-    return (this.isRequest && this.chatAccepted && !this.completed) || 
-           (this.itemType === 'Help' && this.chatAccepted);
+    // Only show chat input for:
+    // 1. Requests that are specifically IN_PROGRESS status AND chatAccepted is true
+    // 2. Never show for completed requests or helps
+    
+    console.log('Chat input visibility check:', {
+      isRequest: this.isRequest,
+      itemType: this.itemType,
+      requestStatus: this.requestStatus,
+      chatAccepted: this.chatAccepted,
+      completed: this.completed,
+      shouldShow: this.isRequest && 
+                  this.requestStatus === 'IN_PROGRESS' && 
+                  this.chatAccepted && 
+                  !this.completed
+    });
+
+    return this.isRequest && 
+           this.requestStatus === 'IN_PROGRESS' && 
+           this.chatAccepted && 
+           !this.completed;
   }
 
   private sub?: Subscription;
@@ -192,16 +212,122 @@ export class Popup implements AfterViewChecked, OnDestroy {
     return { text, images };
   }
 
-  /** ✅ Updated showDialog method - now async and with loading state */
+  // ✅ FIXED: Enhanced message processing with timeline-based sender logic
+  private processMessages(chatHistory: ChatMessage[]): UIMessage[] {
+    // First, find the system acceptance message index
+    const systemAcceptanceIndex = chatHistory.findIndex(msg => 
+      msg.senderId === 'system' && 
+      msg.content.toLowerCase().includes('accepted')
+    );
+    
+    console.log('System acceptance message found at index:', systemAcceptanceIndex);
+    
+    return chatHistory.map((m, index) => {
+      let sender: 'me' | 'them' | 'system';
+      let senderName: string;
+      
+      if (m.senderId === 'system') {
+        sender = 'system';
+        senderName = 'System';
+      } else {
+        // ✅ CRITICAL FIX: Timeline-based sender determination
+        const isBeforeAcceptance = systemAcceptanceIndex !== -1 && index < systemAcceptanceIndex;
+        
+        if (isBeforeAcceptance) {
+          // Messages before acceptance are ALWAYS from the requester
+          if (this.isRequest) {
+            // For requests (recipient's perspective) - before acceptance = always "me" (requester)
+            sender = 'me';
+            senderName = 'You';
+          } else {
+            // For helps (helper's perspective) - before acceptance = always "them" (requester)
+            sender = 'them';
+            senderName = 'Requester';
+          }
+        } else {
+          // Messages after acceptance follow normal logic based on actual senderId
+          const isMyMessage = m.senderId === this.currentUserId;
+          
+          if (this.isRequest) {
+            // For requests (recipient's perspective)
+            sender = isMyMessage ? 'me' : 'them';
+            senderName = isMyMessage ? 'You' : 'Helper';
+          } else {
+            // For helps (helper's perspective) 
+            sender = isMyMessage ? 'me' : 'them';
+            senderName = isMyMessage ? 'You' : 'Requester';
+          }
+        }
+      }
+      
+      const processed = this.processMessageContent(m.content);
+      
+      // Enhanced debug logging
+      console.log('Message Processing Debug:', {
+        index,
+        messageContent: m.content,
+        senderId: m.senderId,
+        currentUserId: this.currentUserId,
+        itemType: this.itemType,
+        timestamp: m.timestamp,
+        systemAcceptanceIndex,
+        isBeforeAcceptance: m.senderId !== 'system' ? (systemAcceptanceIndex !== -1 && index < systemAcceptanceIndex) : 'N/A',
+        determinedSender: sender,
+        senderName: senderName
+      });
+      
+      return {
+        id:         m.id ?? `msg-${Date.now()}-${Math.random()}-${index}`,
+        type:       m.senderId === 'system' ? 'system' : 'text',
+        sender:     sender,
+        senderName: senderName,
+        text:       processed.text,
+        images:     processed.images,
+        timestamp:  new Date(m.timestamp)
+      };
+    });
+  }
+
+  // ✅ Helper method for processing live messages (always after acceptance)
+  private toLiveUI(m: ChatMessage): UIMessage {
+    let sender: 'me' | 'them' | 'system';
+    let senderName: string;
+    
+    if (m.senderId === 'system') {
+      sender = 'system';
+      senderName = 'System';
+    } else {
+      // Live messages are always after acceptance, so use normal logic
+      const isMyMessage = m.senderId === this.currentUserId;
+      
+      if (this.isRequest) {
+        // For requests (recipient's perspective)
+        sender = isMyMessage ? 'me' : 'them';
+        senderName = isMyMessage ? 'You' : 'Helper';
+      } else {
+        // For helps (helper's perspective) 
+        sender = isMyMessage ? 'me' : 'them';
+        senderName = isMyMessage ? 'You' : 'Requester';
+      }
+    }
+    
+    const processed = this.processMessageContent(m.content);
+    
+    return {
+      id:         m.id ?? `msg-${Date.now()}-${Math.random()}`,
+      type:       m.senderId === 'system' ? 'system' : 'text',
+      sender:     sender,
+      senderName: senderName,
+      text:       processed.text,
+      images:     processed.images,
+      timestamp:  new Date(m.timestamp)
+    };
+  }
+
+  /** ✅ Updated showDialog method with proper cleanup and validation */
   async showDialog(): Promise<void> {
-    // Clean up any prior subscription / state
-    this.sub?.unsubscribe();
-    this.messages = [];
-    this.completed = false;
-    this.rated = false;
-    this.rating = 0;
-    this.newMessage = '';
-    this.error = null;
+    // ✅ CRITICAL: Clean up ALL state when opening dialog
+    this.resetDialogState();
     
     // ✅ Show dialog and loading state
     this.visible = true;
@@ -223,15 +349,41 @@ export class Popup implements AfterViewChecked, OnDestroy {
     }
   }
 
+  // ✅ NEW: Comprehensive state reset method
+  private resetDialogState(): void {
+    // Clean up subscription
+    this.sub?.unsubscribe();
+    this.sub = undefined;
+    
+    // Reset all dialog state
+    this.messages = [];
+    this.completed = false;
+    this.rated = false;
+    this.rating = 0;
+    this.newMessage = '';
+    this.error = null;
+    this.chatAccepted = false;
+    this.requestStatus = '';
+    this.sendingMessage = false;
+    this.needScroll = false;
+    
+    console.log('Dialog state reset for:', this.itemType, this.requestId);
+  }
+
   /** ✅ Updated to return Promise for completed helps */
   private async loadCompletedHelpData(): Promise<void> {
     this.getServices();
     this.currentUserId = this.getCurrentUserId();
 
+    // ✅ For completed helps, explicitly set status to ensure no chat input
+    this.requestStatus = 'COMPLETED';
+    this.chatAccepted = false;
+
     // Load existing chat history
     try {
-      const hist = await this.reqSvc.getChatHistory(this.requestId);
-      this.messages = hist.map(m => this.toUI(m));
+      const chatHistory = await this.reqSvc.getChatHistory(this.requestId);
+      // ✅ Use the new processMessages method
+      this.messages = this.processMessages(chatHistory);
     } catch {
       this.messages = [];
     }
@@ -243,19 +395,19 @@ export class Popup implements AfterViewChecked, OnDestroy {
     this.sub = this.chatSvc
       .onMessage(this.requestId)
       .subscribe(m => {
-        this.messages.push(this.toUI(m));
+        const uiMessage = this.toLiveUI(m);
+        this.messages.push(uiMessage);
         this.scrollToBottom();
       });
   }
 
-  /** Tear down on hide */
+  /** ✅ Enhanced onDialogHide with complete cleanup */
   onDialogHide(): void {
-    this.sub?.unsubscribe();
-    this.newMessage = '';
-    this.error = null;
+    console.log('Dialog hiding - cleaning up state');
+    this.resetDialogState();
   }
 
-  /** ✅ Updated initialize method to return Promise */
+  /** ✅ Updated initialize method with proper status tracking */
   private async initialize(): Promise<void> {
     this.getServices();
     this.currentUserId = this.getCurrentUserId();
@@ -273,9 +425,20 @@ export class Popup implements AfterViewChecked, OnDestroy {
       return;
     }
 
-    // 1) Load request to see if it's already in‐progress
+    // 1) Load request to see current status and set proper state
     try {
       const req = await this.reqSvc.getRequest(this.requestId);
+      
+      // ✅ CRITICAL: Always track the actual request status
+      this.requestStatus = req.status;
+      
+      console.log('Request status loaded:', {
+        requestId: this.requestId,
+        status: req.status,
+        itemType: this.itemType
+      });
+      
+      // Set chatAccepted based on status
       this.chatAccepted = req.status === 'IN_PROGRESS';
       
       // If request is already completed and has a rating, show it
@@ -284,14 +447,17 @@ export class Popup implements AfterViewChecked, OnDestroy {
         this.rated = true;
         this.rating = req.rating;
       }
-    } catch {
+    } catch (error) {
+      console.error('Failed to load request:', error);
       this.chatAccepted = false;
+      this.requestStatus = 'UNKNOWN';
     }
 
-    // 2) Load existing chat history
+    // 2) Load existing chat history and process with timeline logic
     try {
-      const hist = await this.reqSvc.getChatHistory(this.requestId);
-      this.messages = hist.map(m => this.toUI(m));
+      const chatHistory = await this.reqSvc.getChatHistory(this.requestId);
+      // ✅ Use the new processMessages method instead of mapping with toUI
+      this.messages = this.processMessages(chatHistory);
     } catch {
       this.messages = [];
     }
@@ -299,66 +465,39 @@ export class Popup implements AfterViewChecked, OnDestroy {
     // ✅ Ensure scrolling happens after messages are loaded
     this.scrollToBottom();
 
-    // 3) Subscribe for live updates
-    this.sub = this.chatSvc
-      .onMessage(this.requestId)
-      .subscribe(m => {
-        this.messages.push(this.toUI(m));
-        this.scrollToBottom();
-      });
-  }
-
-  // ✅ FIXED: Simplified toUI method using direct comparison like the working popup component
-  private toUI(m: ChatMessage): UIMessage {
-    let sender: 'me' | 'them' | 'system';
-    let senderName: string;
-    
-    if (m.senderId === 'system') {
-      sender = 'system';
-      senderName = 'System';
+    // 3) Subscribe for live updates ONLY if this is an active request
+    if (this.isRequest && this.requestStatus === 'IN_PROGRESS') {
+      this.sub = this.chatSvc
+        .onMessage(this.requestId)
+        .subscribe(m => {
+          // ✅ For live messages, we need to determine if they come after acceptance
+          // Since we're subscribing to live updates, any new message is after acceptance
+          const uiMessage = this.toLiveUI(m);
+          this.messages.push(uiMessage);
+          this.scrollToBottom();
+        });
     } else {
-      // ✅ Fixed: Simple direct comparison like the working popup component
-      const isMyMessage = m.senderId === this.currentUserId;
-      
-      if (this.isRequest) {
-        // For requests (recipient's perspective)
-        sender = isMyMessage ? 'me' : 'them';
-        senderName = isMyMessage ? 'You' : 'Helper';
-      } else {
-        // For helps (helper's perspective) 
-        sender = isMyMessage ? 'me' : 'them';
-        senderName = isMyMessage ? 'You' : 'Requester';
-      }
+      console.log('Skipping live message subscription - not an active request');
     }
-    
-    const processed = this.processMessageContent(m.content);
-    
-    // Enhanced debug logging
-    console.log('Message Debug:', {
-      messageContent: m.content,
-      senderId: m.senderId,
-      currentUserId: this.currentUserId,
-      itemType: this.itemType,
-      isMyMessage: m.senderId === this.currentUserId,
-      determinedSender: sender,
-      senderName: senderName
-    });
-    
-    return {
-      id:         m.id ?? `msg-${Date.now()}-${Math.random()}`,
-      type:       m.senderId === 'system' ? 'system' : 'text',
-      sender:     sender,
-      senderName: senderName,
-      text:       processed.text,
-      images:     processed.images,
-      timestamp:  new Date(m.timestamp)
-    };
   }
 
-  // ✅ Add sendMessage functionality
+  // ✅ Enhanced sendMessage with additional validation
   async sendMessage(): Promise<void> {
     const txt = this.newMessage.trim();
     if (!txt || this.sendingMessage) return;
+
+    // ✅ CRITICAL: Additional validation before sending
+    if (!this.shouldShowChatInput) {
+      console.error('SEND MESSAGE BLOCKED: Chat input should not be visible');
+      this.error = 'Chat is not available for this item';
+      return;
+    }
+
+    if (this.requestStatus !== 'IN_PROGRESS') {
+      console.error('SEND MESSAGE BLOCKED: Request is not in progress, status:', this.requestStatus);
+      this.error = 'Cannot send messages - request is not active';
+      return;
+    }
 
     // Validate user ID before sending
     if (!this.currentUserId || this.currentUserId.trim() === '') {
@@ -382,6 +521,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
       console.log('senderId:', `"${this.currentUserId}"`);
       console.log('requestId:', this.requestId);
       console.log('content:', txt);
+      console.log('requestStatus:', this.requestStatus);
       console.log('============================');
 
       const msg: ChatMessage = {
@@ -404,7 +544,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     }
   }
 
-  // ✅ Add keyboard handler for Enter key
+  // ✅ Enhanced keyboard handler with validation
   onInputKeydown(ev: KeyboardEvent): void {
     if (ev.key === 'Enter' && !ev.shiftKey && this.shouldShowChatInput) {
       ev.preventDefault();
@@ -417,13 +557,14 @@ export class Popup implements AfterViewChecked, OnDestroy {
     this.error = null;
   }
 
-  /** Mark the help as completed, enables rating (only for requests) */
+  /** ✅ Enhanced onComplete with status update */
   async onComplete() {
-    if (!this.isRequest) return;
+    if (!this.isRequest || this.requestStatus !== 'IN_PROGRESS') return;
     
     try {
       await this.reqSvc.completeRequest(this.requestId);
       this.completed = true;
+      this.requestStatus = 'COMPLETED'; // ✅ Update status to hide chat input
       
       // ✅ Emit event to notify parent component about completion
       // This allows the parent to refresh user data (including points balance)
@@ -468,6 +609,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub?.unsubscribe();
+    console.log('Component destroying - cleaning up');
+    this.resetDialogState();
   }
 }
