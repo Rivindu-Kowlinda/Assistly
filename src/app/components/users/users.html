@@ -27,12 +27,11 @@
           />
         </p-iconfield>
         <p-button
-          icon="pi pi-plus"
           styleClass="create-user-button"
           (onClick)="openCreateUserDialog()"
           tooltip="New User"
           tooltipPosition="top"
-        ></p-button>
+        >Add User</p-button>
       </div>
     </ng-template>
 
@@ -139,7 +138,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <p-password
               *ngIf="isEditingMode"
-              [(ngModel)]="editingUser.password"
+              [(ngModel)]="editingUser.newPassword"
               [toggleMask]="true"
               placeholder="Enter new password"
               styleClass="w-full"
@@ -296,6 +295,8 @@
         </div>
       </p-card>
     </div>
+    <br>
+
     <p-divider></p-divider>
     <div class="flex justify-end gap-2">
       <p-button label="Cancel" icon="pi pi-times" (onClick)="displayCreateUserDialog = false" severity="secondary" size="small"></p-button>

@@ -24,6 +24,7 @@ import {
 
 interface ExtendedRequestMade extends RequestMade {
   rating?: number;
+  requestName?: string; // ✅ Fix: Add requestName from backend payload
 }
 
 import { ChartLine } from '../../components/chart-line/chart-line';
@@ -129,7 +130,7 @@ export class EmployeeDashboard implements OnInit {
             requestName: h.heading,
             type: 'Help',
             dateTime: new Date(h.createdAt),
-            userName: h.recipientUsernames,
+            userName: h.requestName || 'Unknown', // ✅ Safely access requestName for helps
             status: this.mapStatus(h.status),
             price: h.cost,
             rating: h.rating

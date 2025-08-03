@@ -29,7 +29,14 @@ export const appConfig: ApplicationConfig = {
     ),
 
     providePrimeNG({
-      theme: { preset: Aura }
+      theme: {
+        preset: Aura,
+        options: {
+          prefix: 'p',
+          darkModeSelector: false,
+          cssLayer: false
+        }
+      }
     })
     
   ]

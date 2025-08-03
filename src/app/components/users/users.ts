@@ -87,12 +87,17 @@ export class TableFilterBasicDemo implements OnInit {
     monthlyAllocation: 0
   };
 
-  // Role label map
+  // Fixed Role label map to handle both uppercase and lowercase
   roleLabelMap: { [key: string]: string } = {
     JUNIOR: 'Junior',
     MID: 'Mid',
     SENIOR: 'Senior',
-    ADMIN: 'Admin'
+    ADMIN: 'Admin',
+    // Add fallback for lowercase versions if needed
+    junior: 'Junior',
+    mid: 'Mid',
+    senior: 'Senior',
+    admin: 'Admin'
   };
 
   constructor(
@@ -102,8 +107,9 @@ export class TableFilterBasicDemo implements OnInit {
   ) {}
 
   ngOnInit() {
+    // FIXED: Updated roles array to use uppercase values that match backend
     this.roles = [
-      { label: 'Junior', value: 'Junior' },
+      { label: 'Junior', value: 'JUNIOR' }, // Fixed: Changed from 'Junior' to 'JUNIOR'
       { label: 'Mid',    value: 'MID'    },
       { label: 'Senior', value: 'SENIOR' },
       { label: 'Admin',  value: 'ADMIN'  }
@@ -119,7 +125,7 @@ export class TableFilterBasicDemo implements OnInit {
     this.newUser = {
       username: '',
       password: '',
-      role: this.roles[0].value,
+      role: this.roles[0].value, // This will now be 'JUNIOR'
       balancePoints: 0,
       monthlyAllocation: 0
     };
@@ -213,13 +219,14 @@ export class TableFilterBasicDemo implements OnInit {
     table.clear();
   }
 
+  // FIXED: Updated getRoleSeverity to handle JUNIOR properly and provide fallback
   getRoleSeverity(role: string) {
     switch (role.toUpperCase()) {
       case 'ADMIN': return 'danger';
       case 'SENIOR': return 'success';
       case 'MID': return 'warn';
-      case 'JUNIOR': return 'info';
-      default: return null;
+      case 'JUNIOR': return 'info'; // This should now work correctly
+      default: return 'info'; // Changed from null to 'info' as fallback
     }
   }
 

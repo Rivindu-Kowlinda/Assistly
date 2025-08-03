@@ -56,13 +56,13 @@ export class AdminDashboard implements OnInit {
 
   statuses = [
     { label: 'Pending', value: 'pending' },
-    { label: 'In Progress', value: 'inProgress' },
+    { label: 'In Progress', value: 'inprogress' },
     { label: 'Completed', value: 'completed' }
   ];
 
   statusLabelMap: { [key: string]: string } = {
     pending: 'Pending',
-    inProgress: 'In Progress',
+    inprogress: 'In Progress',
     completed: 'Completed'
   };
 
@@ -70,29 +70,31 @@ export class AdminDashboard implements OnInit {
 
   ngOnInit() {
     this.service.getDashboard().subscribe((res: AdminDashboardResponse) => {
+      const normalizeStatus = (status: string) =>
+        status.toLowerCase().replace(/_/g, '');
+
       const reqRows: TableRow[] = res.requests.map(r => ({
         id: r.id,
         requestName: r.heading,
-        recipientUsernames: r.recipientUsernames,
+        recipientUsernames: r.requestName, // swapped
         type: 'Request',
         dateTime: new Date(r.createdAt),
-        userName: r.requestName,
-        status: r.status.toLowerCase(),
+        userName: r.recipientUsernames, // swapped
+        status: normalizeStatus(r.status),
         price: r.cost
       }));
 
       const respRows: TableRow[] = res.responses.map(r => ({
         id: r.id,
         requestName: r.heading,
-        recipientUsernames: r.recipientUsernames,
+        recipientUsernames: r.requestName, // swapped
         type: 'Response',
         dateTime: new Date(r.createdAt),
-        userName: r.requestName,
-        status: r.status.toLowerCase(),
+        userName: r.recipientUsernames, // swapped
+        status: normalizeStatus(r.status),
         price: r.cost
       }));
 
-      // Combine and sort by dateTime (newest first)
       this.tableRows = [...reqRows, ...respRows].sort(
         (a, b) => b.dateTime.getTime() - a.dateTime.getTime()
       );
@@ -106,9 +108,9 @@ export class AdminDashboard implements OnInit {
   }
 
   getSeverity(status: string) {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'pending': return 'warn';
-      case 'inProgress': return 'info';
+      case 'inprogress': return 'info';
       case 'completed': return 'success';
       default: return null;
     }
@@ -122,6 +124,6 @@ export class AdminDashboard implements OnInit {
       tgt.closest('.p-select') ||
       tgt.closest('.p-columnfilter')
     ) return;
-    // Optionally open a dialog here
+    // Optional: open modal or navigate
   }
 }

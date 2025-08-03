@@ -5,10 +5,34 @@
   <div class="help-header">
     <h1>Help Requests</h1>
     <p class="help-subtitle">Manage and respond to help requests from your team</p>
+    
+    <!-- Search Section -->
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <input 
+          type="text" 
+          class="search-input"
+          placeholder="Search requests by title or requester name..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+        />
+        <button 
+          *ngIf="searchTerm" 
+          class="clear-search-btn"
+          (click)="clearSearch()"
+          title="Clear search"
+        >
+          ×
+        </button>
+      </div>
+      <div *ngIf="searchTerm" class="search-results-info">
+        Found {{ filteredRequests.length }} request(s) matching "{{ searchTerm }}"
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="requests.length > 0; else noData" class="requests-container">
-    <div *ngFor="let req of requests" class="request-card">
+  <div *ngIf="filteredRequests.length > 0; else noData" class="requests-container">
+    <div *ngFor="let req of filteredRequests; let i = index" class="request-card">
       <div class="card-header">
         <h3 class="request-title">{{ req.heading }}</h3>
         <span class="status-badge" [class]="'status-' + getStatusClass(req.status)">
@@ -38,8 +62,10 @@
   <ng-template #noData>
     <div class="no-tasks">
       <div class="no-tasks-icon">📋</div>
-      <h3>All caught up!</h3>
-      <p>No help requests require your attention right now.</p>
+      <h3 *ngIf="!searchTerm">All caught up!</h3>
+      <h3 *ngIf="searchTerm">No matching requests found</h3>
+      <p *ngIf="!searchTerm">No help requests require your attention right now.</p>
+      <p *ngIf="searchTerm">Try adjusting your search terms or <button class="link-button" (click)="clearSearch()">clear the search</button>.</p>
     </div>
   </ng-template>
 </div>

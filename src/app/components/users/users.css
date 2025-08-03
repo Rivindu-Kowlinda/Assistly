@@ -1,4 +1,4 @@
-/* Users Component Light Theme CSS - Complete File - FIXED */
+/* Users Component Complete CSS - Simplified Clean Design */
 
 :host {
   display: block;
@@ -57,32 +57,29 @@
   font-size: 1rem !important;
 }
 
-/* Create User Button - Ensure icon is visible */
+/* Create User Button - Clean styling */
 ::ng-deep .create-user-button .p-button {
-  background: linear-gradient(45deg, #007bff, #0056b3) !important;
-  border: none !important;
+  background: #3b82f6 !important;
+  border: 1px solid #3b82f6 !important;
   color: white !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   padding: 0.75rem 1rem !important;
-  transition: all 0.3s ease !important;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
 }
 
 ::ng-deep .create-user-button .p-button:hover {
-  background: linear-gradient(45deg, #0056b3, #004085) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4) !important;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
-::ng-deep .create-user-button .p-button .p-button-icon {
-  color: white !important;
-  font-size: 1.1rem !important;
-  margin-right: 0 !important;
-}
-
+::ng-deep .create-user-button .p-button .p-button-icon,
 ::ng-deep .create-user-button .p-button .pi {
   color: white !important;
-  font-size: 1.1rem !important;
+  font-size: 0.875rem !important;
 }
 
 /* Table styling */
@@ -169,7 +166,7 @@
   background-color: white !important;
 }
 
-/* Filter buttons - Fix missing icons */
+/* Filter buttons */
 ::ng-deep .p-column-filter .p-button {
   background-color: #6c757d !important;
   border: 1px solid #6c757d !important;
@@ -181,8 +178,8 @@
 }
 
 ::ng-deep .p-column-filter .p-button:hover {
-  background-color: #007bff !important;
-  border-color: #007bff !important;
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
   transform: translateY(-1px) !important;
 }
 
@@ -190,19 +187,6 @@
 ::ng-deep .p-column-filter .p-button .pi {
   color: white !important;
   font-size: 0.9rem !important;
-}
-
-/* Ensure filter icons are visible */
-::ng-deep .p-column-filter .p-button.p-column-filter-menu-button .pi::before,
-::ng-deep .p-column-filter .p-button.p-column-filter-clear-button .pi::before {
-  font-family: "primeicons" !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-variant: normal !important;
-  text-transform: none !important;
-  line-height: 1 !important;
-  display: inline-block !important;
-  -webkit-font-smoothing: antialiased !important;
 }
 
 ::ng-deep .p-multiselect,
@@ -227,12 +211,12 @@
 
 /* Tag styling */
 ::ng-deep .p-tag {
-  border-radius: 6px !important;
+  border-radius: 4px !important;
   font-size: 0.75rem !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   padding: 0.25rem 0.5rem !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.025em !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
 }
 
 /* Paginator styling */
@@ -275,114 +259,119 @@
   padding: 2rem !important;
 }
 
-/* Dialog styling */
+/* ===== SIMPLIFIED DIALOG STYLING ===== */
+
+/* Dialog base styling - Clean and simple */
 ::ng-deep .user-details-dialog .p-dialog {
-  border-radius: 20px !important;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
-  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e5e7eb !important;
   background-color: white !important;
 }
 
+/* Simple white header */
 ::ng-deep .user-details-dialog .p-dialog-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
-  border-radius: 20px 20px 0 0 !important;
-  padding: 1.5rem 2rem !important;
-  border-bottom: none !important;
+  background-color: white !important;
+  color: #374151 !important;
+  border-radius: 8px 8px 0 0 !important;
+  padding: 1rem 1.5rem !important;
+  border-bottom: 1px solid #e5e7eb !important;
 }
 
 ::ng-deep .user-details-dialog .p-dialog-title {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  color: white !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
 }
 
-/* Fix close button icon visibility */
-::ng-deep .user-details-dialog .p-dialog-header-icon,
+/* Simple X close button */
 ::ng-deep .user-details-dialog .p-dialog-header-close {
-  color: white !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-radius: 50% !important;
+  color: #6b7280 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 4px !important;
   width: 2rem !important;
   height: 2rem !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-::ng-deep .user-details-dialog .p-dialog-header-icon:hover,
 ::ng-deep .user-details-dialog .p-dialog-header-close:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  transform: scale(1.1) !important;
+  background: #f3f4f6 !important;
+  color: #374151 !important;
 }
 
-::ng-deep .user-details-dialog .p-dialog-header-icon .pi,
 ::ng-deep .user-details-dialog .p-dialog-header-close .pi {
-  color: white !important;
+  color: inherit !important;
   font-size: 1rem !important;
+  font-weight: normal !important;
 }
 
-/* Ensure close icon is properly loaded */
-::ng-deep .user-details-dialog .p-dialog-header-close .pi-times::before {
-  content: "\e90b" !important;
-  font-family: "primeicons" !important;
-  color: white !important;
-}
-
+/* Clean dialog content */
 ::ng-deep .user-details-dialog .p-dialog-content {
-  background-color: #fafbfc !important;
-  padding: 2rem !important;
+  background-color: white !important;
+  padding: 1.5rem !important;
   border-radius: 0 !important;
 }
 
+/* Simple footer */
 ::ng-deep .user-details-dialog .p-dialog-footer {
   background-color: white !important;
-  padding: 1.5rem 2rem !important;
-  border-top: 1px solid #e2e8f0 !important;
-  border-radius: 0 0 20px 20px !important;
+  padding: 1rem 1.5rem !important;
+  border-top: 1px solid #e5e7eb !important;
+  border-radius: 0 0 8px 8px !important;
 }
 
-/* User details content styling */
+/* Simplified user details content */
 .user-details-content {
-  background-color: transparent !important;
+  background-color: white !important;
 }
 
-.user-details-content h2 {
-  color: #1e293b !important;
-  margin-bottom: 0.25rem !important;
+/* Clean header section - no gradient */
+.user-details-content > div:first-child:not(.grid) {
+  background: white !important;
+  color: #374151 !important;
+  border-radius: 8px !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: none !important;
+  margin-bottom: 1.5rem !important;
+  padding: 1.5rem !important;
 }
 
-.user-details-content p {
-  color: #64748b !important;
+.user-details-content > div:first-child:not(.grid) h2,
+.user-details-content > div:first-child:not(.grid) p {
+  color: #374151 !important;
 }
 
-/* Avatar gradient background */
+/* Simple avatar */
 ::ng-deep .p-avatar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+  box-shadow: none !important;
 }
 
-/* Card styling in dialog */
+/* Clean card styling */
 ::ng-deep .user-details-content .p-card {
   background-color: white !important;
-  border: none !important;
-  border-radius: 16px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  transition: none !important;
 }
 
 ::ng-deep .user-details-content .p-card:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 ::ng-deep .user-details-content .p-card .p-card-header {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
-  color: #1e293b !important;
-  border-radius: 16px 16px 0 0 !important;
-  font-weight: 600 !important;
-  border-bottom: 2px solid #e2e8f0 !important;
+  background: #f9fafb !important;
+  color: #374151 !important;
+  border-radius: 8px 8px 0 0 !important;
+  font-weight: 500 !important;
+  border-bottom: 1px solid #e5e7eb !important;
   padding: 1rem 1.5rem !important;
 }
 
@@ -403,113 +392,122 @@
 }
 
 .field .p-inputtext,
-.field .p-password input {
-  background-color: #f9fafb !important;
-  border: 2px solid #e5e7eb !important;
-  border-radius: 10px !important;
-  padding: 0.75rem 1rem !important;
-  font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
+.field .p-password input,
+.field input[type="number"] {
+  background-color: white !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  padding: 0.75rem !important;
+  font-size: 0.875rem !important;
+  transition: border-color 0.2s ease !important;
   color: #374151 !important;
+  width: 100% !important;
 }
 
 .field .p-inputtext:focus,
-.field .p-password input:focus {
+.field .p-password input:focus,
+.field input[type="number"]:focus {
   border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
   background-color: white !important;
   outline: none !important;
 }
 
 .field .p-select {
-  background-color: #f9fafb !important;
-  border: 2px solid #e5e7eb !important;
-  border-radius: 10px !important;
-  transition: all 0.3s ease !important;
+  background-color: white !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  transition: border-color 0.2s ease !important;
+  width: 100% !important;
 }
 
 .field .p-select:focus {
   border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
+}
+
+.field .p-select .p-select-label {
+  padding: 0.75rem !important;
 }
 
 .field p {
   background-color: #f9fafb !important;
-  color: #4b5563 !important;
-  padding: 0.75rem 1rem !important;
-  border-radius: 10px !important;
-  border: 2px solid #e5e7eb !important;
+  color: #6b7280 !important;
+  padding: 0.75rem !important;
+  border-radius: 6px !important;
+  border: 1px solid #e5e7eb !important;
   margin: 0 !important;
 }
 
-/* Button styling - All buttons blue */
+/* ===== SIMPLIFIED BUTTON STYLING ===== */
+
+/* Base button styling - simple and clean */
 ::ng-deep .p-button {
-  border-radius: 10px !important;
-  font-weight: 600 !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
   transition: all 0.2s ease !important;
-  border: none !important;
-  padding: 0.75rem 1.5rem !important;
-  font-size: 0.9rem !important;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
-  color: white !important;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  border: 1px solid #d1d5db !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+  background: white !important;
+  color: #374151 !important;
+  box-shadow: none !important;
 }
 
 ::ng-deep .p-button:hover {
-  background: linear-gradient(135deg, #0056b3 0%, #004085 100%) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4) !important;
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
+/* Primary button (Save/Create) */
+::ng-deep .p-button.p-button-success,
+::ng-deep .p-button:not(.p-button-secondary):not(.p-button-danger) {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
+}
+
+::ng-deep .p-button.p-button-success:hover,
+::ng-deep .p-button:not(.p-button-secondary):not(.p-button-danger):hover {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+/* Secondary button */
 ::ng-deep .p-button.p-button-secondary {
-  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
-  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+  background: white !important;
+  border-color: #d1d5db !important;
+  color: #6b7280 !important;
 }
 
 ::ng-deep .p-button.p-button-secondary:hover {
-  background: linear-gradient(135deg, #5a6268 0%, #4e555b 100%) !important;
-  box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4) !important;
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+  color: #374151 !important;
 }
 
-::ng-deep .p-button.p-button-success {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
-}
-
-::ng-deep .p-button.p-button-success:hover {
-  background: linear-gradient(135deg, #218838 0%, #1abc9c 100%) !important;
-  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4) !important;
-}
-
-/* Delete User Button Styling */
+/* Danger button */
+::ng-deep .p-button.p-button-danger,
 ::ng-deep .delete-user-button .p-button {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
-  border: none !important;
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
   color: white !important;
 }
 
+::ng-deep .p-button.p-button-danger:hover,
 ::ng-deep .delete-user-button .p-button:hover {
-  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%) !important;
-  box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4) !important;
-  transform: translateY(-1px) !important;
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  transform: none !important;
 }
 
-::ng-deep .p-button.p-button-danger {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
-}
-
-::ng-deep .p-button.p-button-danger:hover {
-  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%) !important;
-  box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4) !important;
-}
-
-/* Ensure all button icons are visible */
+/* Simple button icons */
 ::ng-deep .p-button .p-button-icon,
 ::ng-deep .p-button .pi {
-  color: white !important;
-  font-size: 0.9rem !important;
+  color: inherit !important;
+  font-size: 0.875rem !important;
 }
 
 ::ng-deep .p-button .p-button-icon-left {
@@ -520,129 +518,155 @@
   margin-left: 0.5rem !important;
 }
 
-/* Fix icon loading issues */
-::ng-deep .pi::before {
-  font-family: "primeicons" !important;
-  font-style: normal !important;
+/* Remove complex info box styling */
+::ng-deep .user-details-content .bg-blue-50 {
+  background-color: #f8fafc !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  padding: 0.75rem !important;
+}
+
+::ng-deep .user-details-content .bg-blue-50 p {
+  color: #6b7280 !important;
   font-weight: normal !important;
-  font-variant: normal !important;
-  text-transform: none !important;
-  line-height: 1 !important;
-  display: inline-block !important;
-  -webkit-font-smoothing: antialiased !important;
+  font-size: 0.875rem !important;
 }
 
-/* Specific icon fixes */
-::ng-deep .pi-plus::before {
-  content: "\e92b" !important;
+::ng-deep .user-details-content .bg-blue-50 .pi-info-circle {
+  color: #6b7280 !important;
 }
 
-::ng-deep .pi-times::before {
-  content: "\e90b" !important;
+/* Simple divider */
+::ng-deep .p-divider {
+  border-color: #e5e7eb !important;
+  margin: 1.5rem 0 !important;
 }
 
-::ng-deep .pi-search::before {
-  content: "\e909" !important;
-}
+/* ===== SIMPLE CONFIRMATION DIALOG ===== */
 
-::ng-deep .pi-pencil::before {
-  content: "\e929" !important;
-}
-
-::ng-deep .pi-check::before {
-  content: "\e901" !important;
-}
-
-::ng-deep .pi-trash::before {
-  content: "\e92f" !important;
-}
-
-::ng-deep .pi-exclamation-triangle::before {
-  content: "\e91b" !important;
-}
-
-/* Confirmation Dialog Styling */
 ::ng-deep .confirm-delete-dialog .p-dialog {
-  border-radius: 16px !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
-  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e5e7eb !important;
   background-color: white !important;
-  max-width: 450px !important;
+  max-width: 400px !important;
 }
 
 ::ng-deep .confirm-delete-dialog .p-dialog-header {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
-  color: white !important;
-  border-radius: 16px 16px 0 0 !important;
-  padding: 1.5rem !important;
-  border-bottom: none !important;
+  background: white !important;
+  color: #374151 !important;
+  border-radius: 8px 8px 0 0 !important;
+  padding: 1rem 1.5rem !important;
+  border-bottom: 1px solid #e5e7eb !important;
 }
 
 ::ng-deep .confirm-delete-dialog .p-dialog-title {
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  color: white !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
 }
 
-::ng-deep .confirm-delete-dialog .p-dialog-header-icon {
-  color: white !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-radius: 50% !important;
+::ng-deep .confirm-delete-dialog .p-dialog-header-close {
+  color: #6b7280 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 4px !important;
   width: 2rem !important;
   height: 2rem !important;
-  transition: all 0.3s ease !important;
 }
 
-::ng-deep .confirm-delete-dialog .p-dialog-header-icon:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
+::ng-deep .confirm-delete-dialog .p-dialog-header-close:hover {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
 }
 
 ::ng-deep .confirm-delete-dialog .p-dialog-content {
   background-color: white !important;
-  padding: 2rem !important;
-  color: #374151 !important;
-  font-size: 1rem !important;
-  line-height: 1.6 !important;
+  padding: 1.5rem !important;
+  color: #6b7280 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
 }
 
 ::ng-deep .confirm-delete-dialog .p-dialog-footer {
-  background-color: #f9fafb !important;
-  padding: 1.5rem !important;
+  background-color: white !important;
+  padding: 1rem 1.5rem !important;
   border-top: 1px solid #e5e7eb !important;
-  border-radius: 0 0 16px 16px !important;
+  border-radius: 0 0 8px 8px !important;
   justify-content: flex-end !important;
-  gap: 0.75rem !important;
+  gap: 0.5rem !important;
 }
 
 ::ng-deep .confirm-delete-dialog .p-confirm-dialog-icon {
-  color: #dc3545 !important;
-  font-size: 2rem !important;
-  margin-right: 1rem !important;
-  margin-bottom: 1rem !important;
+  color: #ef4444 !important;
+  font-size: 1.5rem !important;
+  margin-right: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
-::ng-deep .confirm-delete-dialog .p-confirm-dialog-message {
-  margin-left: 0 !important;
+/* Password field styling */
+::ng-deep .user-details-content .p-password {
+  width: 100% !important;
 }
 
-/* Toast Messages Styling */
+::ng-deep .user-details-content .p-password .p-inputtext {
+  width: 100% !important;
+}
+
+/* Clean dropdown panel */
+::ng-deep .p-select-panel {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  background-color: white !important;
+}
+
+::ng-deep .p-select-panel .p-select-items .p-select-item {
+  padding: 0.5rem 0.75rem !important;
+  transition: background-color 0.2s ease !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+::ng-deep .p-select-panel .p-select-items .p-select-item:hover {
+  background-color: #f9fafb !important;
+  color: #374151 !important;
+}
+
+::ng-deep .p-select-panel .p-select-items .p-select-item.p-highlight {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+/* ===== FIXED TOAST MESSAGES STYLING - NO WHITE BOX ===== */
+
 ::ng-deep .p-toast {
   z-index: 9999 !important;
-  background: transparent !important;
 }
 
+/* AGGRESSIVE FIX - Target all possible white background sources */
+::ng-deep .p-toast .p-toast-message,
+::ng-deep .p-toast .p-toast-message::before,
+::ng-deep .p-toast .p-toast-message::after,
+::ng-deep .p-toast .p-toast-message * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Base toast message - COMPLETELY remove white background */
 ::ng-deep .p-toast .p-toast-message {
   border-radius: 12px !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
   border: none !important;
   margin: 0.5rem 0 !important;
-  padding: 1rem 1.5rem !important;
+  padding: 0 !important;
   background: transparent !important;
+  backdrop-filter: blur(10px) !important;
   overflow: hidden !important;
+  position: relative !important;
 }
 
+/* Create a colored overlay that covers the entire toast */
 ::ng-deep .p-toast .p-toast-message::before {
   content: '' !important;
   position: absolute !important;
@@ -654,172 +678,195 @@
   z-index: -1 !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-success {
-  color: white !important;
-  position: relative !important;
-}
-
+/* Success notification - Green theme */
 ::ng-deep .p-toast .p-toast-message.p-toast-message-success::before {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-error {
-  color: white !important;
-  position: relative !important;
-}
-
+/* Error notification - Red theme */
 ::ng-deep .p-toast .p-toast-message.p-toast-message-error::before {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-warn {
-  color: white !important;
-  position: relative !important;
-}
-
+/* Warning notification - Orange theme */
 ::ng-deep .p-toast .p-toast-message.p-toast-message-warn::before {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
 }
 
-::ng-deep .p-toast .p-toast-message.p-toast-message-info {
-  color: white !important;
-  position: relative !important;
-}
-
+/* Info notification - Blue theme */
 ::ng-deep .p-toast .p-toast-message.p-toast-message-info::before {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
 }
 
+/* Toast message content */
 ::ng-deep .p-toast .p-toast-message-content {
-  padding: 0 !important;
+  padding: 1rem 1.5rem !important;
   background: transparent !important;
+  align-items: center !important;
+  border-radius: 12px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  box-sizing: border-box !important;
   position: relative !important;
   z-index: 1 !important;
 }
 
+/* Force all text to be white */
+::ng-deep .p-toast .p-toast-message.p-toast-message-success,
+::ng-deep .p-toast .p-toast-message.p-toast-message-error,
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn,
+::ng-deep .p-toast .p-toast-message.p-toast-message-info {
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-success .p-toast-icon {
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-success .p-toast-summary {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-success .p-toast-detail {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Error notification - Red theme */
+::ng-deep .p-toast .p-toast-message.p-toast-message-error .p-toast-message-content {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-error {
+  background: transparent !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-error .p-toast-icon {
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-error .p-toast-summary {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-error .p-toast-detail {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Warning notification - Orange theme */
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn .p-toast-message-content {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn {
+  background: transparent !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn .p-toast-icon {
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn .p-toast-summary {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn .p-toast-detail {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Info notification - Blue theme */
+::ng-deep .p-toast .p-toast-message.p-toast-message-info .p-toast-message-content {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-info {
+  background: transparent !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-info .p-toast-icon {
+  color: white !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-info .p-toast-summary {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-info .p-toast-detail {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Toast content and icons */
 ::ng-deep .p-toast .p-toast-icon {
   font-size: 1.25rem !important;
-  color: white !important;
   margin-right: 0.75rem !important;
 }
 
 ::ng-deep .p-toast .p-toast-summary {
-  font-weight: 700 !important;
-  color: white !important;
+  font-weight: 600 !important;
   margin-bottom: 0.25rem !important;
+  font-size: 0.95rem !important;
 }
 
 ::ng-deep .p-toast .p-toast-detail {
   font-weight: 400 !important;
-  color: rgba(255, 255, 255, 0.9) !important;
   margin: 0 !important;
+  font-size: 0.875rem !important;
 }
 
+/* Close button styling */
 ::ng-deep .p-toast .p-toast-icon-close {
-  color: white !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-radius: 50% !important;
-  width: 1.5rem !important;
-  height: 1.5rem !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 6px !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
   transition: all 0.2s ease !important;
   border: none !important;
-  position: relative !important;
-  z-index: 2 !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
 }
 
 ::ng-deep .p-toast .p-toast-icon-close:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.05) !important;
 }
 
-/* Fix any potential white background containers */
-::ng-deep .p-toast-message-content,
-::ng-deep .p-toast-message-text,
-::ng-deep .p-toast-message-wrapper {
-  background: transparent !important;
-}
-
-/* Ensure toast container has no background */
-::ng-deep .p-toast-container {
-  background: transparent !important;
-}
-
-/* Divider styling */
-::ng-deep .p-divider {
-  border-color: #e2e8f0 !important;
-  margin: 2rem 0 !important;
-}
-
-/* Gradient header section - FIXED to not affect admin info */
-.user-details-content > div:first-child:not(.grid) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+::ng-deep .p-toast .p-toast-icon-close .pi {
   color: white !important;
-  border-radius: 16px !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
-  margin-bottom: 2rem !important;
+  font-size: 0.875rem !important;
 }
 
-.user-details-content > div:first-child:not(.grid) h2,
-.user-details-content > div:first-child:not(.grid) p:not(.bg-blue-50 p) {
-  color: white !important;
+/* Remove any default animations and add smooth ones */
+::ng-deep .p-toast .p-toast-message {
+  animation: slideInRight 0.3s ease-out !important;
 }
 
-.user-details-content > div:first-child:not(.grid) .p-tag {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* ADMIN INFO MESSAGE FIX - Ensure black text */
-::ng-deep .user-details-content .field .bg-blue-50 p,
-::ng-deep .user-details-content .bg-blue-50 p {
-  color: #1f2937 !important; /* Dark gray/black */
-  font-weight: 500 !important;
-}
-
-::ng-deep .user-details-content .bg-blue-50.p-3.rounded-lg.border.border-blue-200 p {
-  color: #1f2937 !important; /* Dark gray/black */
-  font-weight: 500 !important;
-}
-
-::ng-deep .user-details-content .bg-blue-50 .pi-info-circle {
-  color: #1f2937 !important; /* Dark gray/black */
-}
-
-::ng-deep .user-details-content .text-blue-800 {
-  color: #1f2937 !important; /* Override blue-800 to black */
-}
-
-/* Most specific selector for admin info message */
-::ng-deep .user-details-dialog .p-dialog-content .user-details-content .p-card .space-y-4 .field .bg-blue-50 p,
-::ng-deep .user-details-content .p-card .p-card-body .field .bg-blue-50 p {
-  color: #1f2937 !important; /* Dark gray/black */
-  font-weight: 500 !important;
-}
-
-/* Info box styling - FIXED */
-.bg-blue-50.border-blue-200 {
-  background-color: #eff6ff !important;
-  border-color: #bfdbfe !important;
-}
-
-.bg-blue-50.border-blue-200 p {
-  color: #1f2937 !important; /* Dark gray/black */
-}
-
-/* Grid improvements */
-.grid {
-  display: grid !important;
-  gap: 1.5rem !important;
-}
-
-.grid-cols-1 {
-  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-}
-
-@media (min-width: 768px) {
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Hover effect for better interactivity */
+::ng-deep .p-toast .p-toast-message:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
 }
 
 /* Utility classes */
@@ -956,7 +1003,7 @@
 }
 
 .text-blue-800 {
-  color: #1f2937 !important; /* Override to black for better readability */
+  color: #1f2937 !important;
 }
 
 .text-green-600 {
@@ -1016,41 +1063,20 @@
   cursor: pointer !important;
 }
 
-/* Create User Form specific styles */
-::ng-deep .user-details-content .field input[type="number"] {
-  background-color: #f9fafb !important;
-  border: 2px solid #e5e7eb !important;
-  border-radius: 10px !important;
-  padding: 0.75rem 1rem !important;
-  font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
-  color: #374151 !important;
-  width: 100% !important;
+/* Grid improvements */
+.grid {
+  display: grid !important;
+  gap: 1.5rem !important;
 }
 
-::ng-deep .user-details-content .field input[type="number"]:focus {
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-  background-color: white !important;
-  outline: none !important;
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
 }
 
-/* Password field specific styling */
-::ng-deep .user-details-content .p-password {
-  width: 100% !important;
-}
-
-::ng-deep .user-details-content .p-password .p-inputtext {
-  width: 100% !important;
-}
-
-/* Select dropdown styling in forms */
-::ng-deep .user-details-content .p-select {
-  width: 100% !important;
-}
-
-::ng-deep .user-details-content .p-select .p-select-label {
-  padding: 0.75rem 1rem !important;
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
 }
 
 /* Responsive adjustments */
@@ -1140,24 +1166,55 @@
   outline-offset: -1px !important;
 }
 
-/* Animation for smooth transitions */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Selection highlight */
+::ng-deep .p-datatable .p-datatable-tbody > tr.p-highlight {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
 }
 
-::ng-deep .p-dialog {
-  animation: fadeIn 0.3s ease-out !important;
+/* Input placeholders */
+::ng-deep .p-inputtext::placeholder {
+  color: #9ca3af !important;
 }
 
-::ng-deep .p-toast .p-toast-message {
-  animation: fadeIn 0.3s ease-out !important;
+::ng-deep .p-password input::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Tooltip styling */
+::ng-deep .p-tooltip {
+  border-radius: 6px !important;
+  background-color: #1f2937 !important;
+  color: white !important;
+  font-size: 0.875rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+::ng-deep .p-tooltip .p-tooltip-arrow {
+  border-top-color: #1f2937 !important;
+  border-bottom-color: #1f2937 !important;
+  border-left-color: #1f2937 !important;
+  border-right-color: #1f2937 !important;
+}
+
+/* Fix icon loading issues */
+::ng-deep .pi::before {
+  font-family: "primeicons" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Ensure close icon is properly loaded */
+::ng-deep .user-details-dialog .p-dialog-header-close .pi-times::before,
+::ng-deep .confirm-delete-dialog .p-dialog-header-close .pi-times::before {
+  content: "\e90b" !important;
+  font-family: "primeicons" !important;
+  color: inherit !important;
 }
 
 /* Print styles */
@@ -1180,59 +1237,90 @@
     background: white !important;
   }
 }
-
-/* Additional enhancements */
-::ng-deep .p-inputtext::placeholder {
-  color: #9ca3af !important;
+/* Toast Messages Styling */
+::ng-deep .p-toast {
+  z-index: 9999 !important;
+  background: transparent !important;
 }
 
-::ng-deep .p-password input::placeholder {
-  color: #9ca3af !important;
-}
-
-/* Selection highlight */
-::ng-deep .p-datatable .p-datatable-tbody > tr.p-highlight {
-  background-color: #dbeafe !important;
-  color: #1e40af !important;
-}
-
-/* Dropdown panel styling */
-::ng-deep .p-select-panel {
-  border: 1px solid #e2e8f0 !important;
+::ng-deep .p-toast .p-toast-message {
   border-radius: 12px !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-  background-color: white !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+  margin: 0.5rem 0 !important;
+  padding: 1rem 1.5rem !important;
+  background: transparent !important;
+  overflow: hidden !important;
 }
 
-::ng-deep .p-select-panel .p-select-items .p-select-item {
-  padding: 0.75rem 1rem !important;
-  transition: all 0.2s ease !important;
-  border-radius: 8px !important;
-  margin: 0.25rem !important;
+::ng-deep .p-toast .p-toast-message::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  border-radius: 12px !important;
+  z-index: -1 !important;
 }
 
-::ng-deep .p-select-panel .p-select-items .p-select-item:hover {
-  background-color: #f8fafc !important;
-  color: #1e293b !important;
-}
-
-::ng-deep .p-select-panel .p-select-items .p-select-item.p-highlight {
-  background-color: #3b82f6 !important;
+::ng-deep .p-toast .p-toast-message.p-toast-message-success {
   color: white !important;
+  position: relative !important;
 }
 
-/* Tooltip styling */
-::ng-deep .p-tooltip {
-  border-radius: 8px !important;
-  background-color: #1f2937 !important;
+::ng-deep .p-toast .p-toast-message.p-toast-message-success::before {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-error {
   color: white !important;
-  font-size: 0.875rem !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  position: relative !important;
 }
 
-::ng-deep .p-tooltip .p-tooltip-arrow {
-  border-top-color: #1f2937 !important;
-  border-bottom-color: #1f2937 !important;
-  border-left-color: #1f2937 !important;
-  border-right-color: #1f2937 !important;
+::ng-deep .p-toast .p-toast-message.p-toast-message-error::before {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn {
+  color: white !important;
+  position: relative !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn::before {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-info {
+  color: white !important;
+  position: relative !important;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-info::before {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+::ng-deep .p-toast .p-toast-message-content {
+  padding: 0 !important;
+  background: transparent !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+::ng-deep .p-toast .p-toast-icon {
+  font-size: 1.25rem !important;
+  color: white !important;
+  margin-right: 0.75rem !important;
+}
+
+::ng-deep .p-toast .p-toast-summary {
+  font-weight: 700 !important;
+  color: white !important;
+  margin-bottom: 0.25rem !important;
+}
+
+::ng-deep .p-toast .p-toast-detail {
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin: 0 !important;
 }

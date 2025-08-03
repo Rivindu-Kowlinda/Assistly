@@ -4,6 +4,7 @@ import { HelpService } from '../../services/help.service';
 import { HelpRequest } from '../models/help-request.model';
 
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { Popup } from '../../components/popup/popup';
 
@@ -12,6 +13,7 @@ import { Popup } from '../../components/popup/popup';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     Sidebar,
     Popup
   ],
@@ -20,7 +22,9 @@ import { Popup } from '../../components/popup/popup';
 })
 export class Help implements OnInit {
   requests: HelpRequest[] = [];
+  filteredRequests: HelpRequest[] = [];
   selectedRequestId: string | null = null;
+  searchTerm: string = '';
 
   constructor(private helpService: HelpService) {
     console.log('🏗️ Help component constructor');
@@ -38,10 +42,19 @@ export class Help implements OnInit {
       this.helpService.getReceivedRequests().subscribe({
         next: (res) => {
           console.log('✅ Help component received data:', res);
-          // Filter out any completed requests
+          // Filter out any completed requests and sort by creation date (oldest first)
           this.requests = (res || [])
-            .filter(req => req.status.toLowerCase() !== 'completed');
-          console.log('💾 Component requests after filtering:', this.requests);
+            .filter(req => req.status.toLowerCase() !== 'completed')
+            .sort((a, b) => {
+              // Sort by createdAt date - oldest first
+              const dateA = new Date(a.createdAt).getTime();
+              const dateB = new Date(b.createdAt).getTime();
+              return dateA - dateB;
+            });
+          
+          // Initialize filtered requests
+          this.filteredRequests = [...this.requests];
+          console.log('💾 Component requests after filtering and sorting:', this.requests);
         },
         error: (err) => {
           console.error('❌ Help component subscription error:', err);
@@ -56,6 +69,25 @@ export class Help implements OnInit {
     } catch (error) {
       console.error('💥 Exception in ngOnInit:', error);
     }
+  }
+
+  // Search functionality
+  onSearchChange(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredRequests = [...this.requests];
+    } else {
+      const searchLower = this.searchTerm.toLowerCase().trim();
+      this.filteredRequests = this.requests.filter(req => 
+        req.heading?.toLowerCase().includes(searchLower) ||
+        req.requestName?.toLowerCase().includes(searchLower)
+      );
+    }
+  }
+
+  // Clear search
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredRequests = [...this.requests];
   }
 
   openChat(requestId: string): void {
