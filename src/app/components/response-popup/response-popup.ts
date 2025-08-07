@@ -193,7 +193,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     return '';
   }
 
-  // Helper method to process message content and extract images
+  // ✅ ENHANCED: Helper method to process message content and extract images
   processMessageContent(content: string): { text: string; images: string[] } {
     if (!content) return { text: '', images: [] };
     
@@ -206,13 +206,25 @@ export class Popup implements AfterViewChecked, OnDestroy {
       images.push(match[1]);
     }
     
-    // Remove HTML img tags and return clean text
-    const text = content.replace(/<img[^>]*>/g, '').trim();
+    // Remove ALL HTML tags, not just img tags
+    // This will handle image-wrapper divs, br tags, and any other HTML
+    let text = content
+      .replace(/<[^>]*>/g, '') // Remove all HTML tags
+      .replace(/&nbsp;/g, ' ') // Replace HTML entities
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim(); // Remove leading/trailing whitespace
+    
+    // Remove extra whitespace that might be left after HTML removal
+    text = text.replace(/\s+/g, ' ').trim();
     
     return { text, images };
   }
 
-  // ✅ FIXED: Enhanced message processing with timeline-based sender logic
+  // ✅ FIXED: Enhanced message processing with status-based sender logic
   private processMessages(chatHistory: ChatMessage[]): UIMessage[] {
     // First, find the system acceptance message index
     const systemAcceptanceIndex = chatHistory.findIndex(msg => 
@@ -221,6 +233,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     );
     
     console.log('System acceptance message found at index:', systemAcceptanceIndex);
+    console.log('Request status:', this.requestStatus);
     
     return chatHistory.map((m, index) => {
       let sender: 'me' | 'them' | 'system';
@@ -230,32 +243,38 @@ export class Popup implements AfterViewChecked, OnDestroy {
         sender = 'system';
         senderName = 'System';
       } else {
-        // ✅ CRITICAL FIX: Timeline-based sender determination
-        const isBeforeAcceptance = systemAcceptanceIndex !== -1 && index < systemAcceptanceIndex;
-        
-        if (isBeforeAcceptance) {
-          // Messages before acceptance are ALWAYS from the requester
-          if (this.isRequest) {
-            // For requests (recipient's perspective) - before acceptance = always "me" (requester)
-            sender = 'me';
-            senderName = 'You';
-          } else {
-            // For helps (helper's perspective) - before acceptance = always "them" (requester)
-            sender = 'them';
-            senderName = 'Requester';
-          }
+        // ✅ HARDCODED FIX: If status is PENDING, all messages should be on the right (from requester)
+        if (this.requestStatus === 'PENDING') {
+          sender = 'me';
+          senderName = 'You';
         } else {
-          // Messages after acceptance follow normal logic based on actual senderId
-          const isMyMessage = m.senderId === this.currentUserId;
+          // For non-pending requests, use timeline-based logic
+          const isBeforeAcceptance = systemAcceptanceIndex !== -1 && index < systemAcceptanceIndex;
           
-          if (this.isRequest) {
-            // For requests (recipient's perspective)
-            sender = isMyMessage ? 'me' : 'them';
-            senderName = isMyMessage ? 'You' : 'Helper';
+          if (isBeforeAcceptance) {
+            // Messages before acceptance are ALWAYS from the requester
+            if (this.isRequest) {
+              // For requests (recipient's perspective) - before acceptance = always "me" (requester)
+              sender = 'me';
+              senderName = 'You';
+            } else {
+              // For helps (helper's perspective) - before acceptance = always "them" (requester)
+              sender = 'them';
+              senderName = 'Requester';
+            }
           } else {
-            // For helps (helper's perspective) 
-            sender = isMyMessage ? 'me' : 'them';
-            senderName = isMyMessage ? 'You' : 'Requester';
+            // Messages after acceptance follow normal logic based on actual senderId
+            const isMyMessage = m.senderId === this.currentUserId;
+            
+            if (this.isRequest) {
+              // For requests (recipient's perspective)
+              sender = isMyMessage ? 'me' : 'them';
+              senderName = isMyMessage ? 'You' : 'Helper';
+            } else {
+              // For helps (helper's perspective) 
+              sender = isMyMessage ? 'me' : 'them';
+              senderName = isMyMessage ? 'You' : 'Requester';
+            }
           }
         }
       }
@@ -269,6 +288,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
         senderId: m.senderId,
         currentUserId: this.currentUserId,
         itemType: this.itemType,
+        requestStatus: this.requestStatus,
         timestamp: m.timestamp,
         systemAcceptanceIndex,
         isBeforeAcceptance: m.senderId !== 'system' ? (systemAcceptanceIndex !== -1 && index < systemAcceptanceIndex) : 'N/A',

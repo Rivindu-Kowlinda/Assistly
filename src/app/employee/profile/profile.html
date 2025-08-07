@@ -1,29 +1,33 @@
-<!-- profile.html -->
 <app-sidebar></app-sidebar>
 <div class="main-wrapper">
   <div class="profile-wrapper">
     <div class="profile-card-modern">
       <div class="left-section">
-        <div class="avatar">
-          {{ getFirstLetter(user.username) }}
-        </div>
+        <div class="avatar">{{ getFirstLetter(user.username) }}</div>
         <h2 class="username">{{ user.username }}</h2>
         <p class="role">{{ user.role }}</p>
-        
-        <!-- Logout Button positioned under role -->
-        <button 
-          pButton 
+
+        <button
+          pButton
           type="button"
           icon="pi pi-sign-out"
           label="Logout"
           class="logout-btn"
           (click)="logout()"
         ></button>
+
+        <button
+          pButton
+          type="button"
+          icon="pi pi-key"
+          label="Change Password"
+          class="change-pw-btn"
+          (click)="openChangePassword()"
+        ></button>
       </div>
 
       <div class="right-section">
         <h3 class="stats-title">Account Overview</h3>
-        
         <div class="stat">
           <label>Balance</label>
           <span>{{ user.balancePoints }} pts</span>
@@ -48,3 +52,87 @@
     </div>
   </div>
 </div>
+
+<p-dialog
+  header="Change Password"
+  [(visible)]="displayChangePassword"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '400px' }"
+  [baseZIndex]="10000"
+>
+  <form (ngSubmit)="submitChangePassword()" novalidate class="password-dialog">
+    <!-- Current Password -->
+    <div class="field">
+      <label for="current">
+        Current Password<span class="required-star">*</span>
+      </label>
+      <input
+        id="current"
+        pInputText
+        type="password"
+        [(ngModel)]="currentPassword"
+        name="currentPassword"
+        (blur)="onBlur('current')"
+        [class.invalid-input]="!!currentError"
+      />
+      <div *ngIf="currentError" class="field-error">{{ currentError }}</div>
+    </div>
+
+    <!-- New Password -->
+    <div class="field">
+      <label for="new">
+        New Password<span class="required-star">*</span>
+      </label>
+      <input
+        id="new"
+        pInputText
+        type="password"
+        [(ngModel)]="newPassword"
+        name="newPassword"
+        (blur)="onBlur('new')"
+        [class.invalid-input]="!!newError"
+      />
+      <div *ngIf="newError" class="field-error">{{ newError }}</div>
+    </div>
+
+    <!-- Confirm New Password -->
+    <div class="field">
+      <label for="confirm">
+        Confirm New Password<span class="required-star">*</span>
+      </label>
+      <input
+        id="confirm"
+        pInputText
+        type="password"
+        [(ngModel)]="confirmPassword"
+        name="confirmPassword"
+        (blur)="onBlur('confirm')"
+        [class.invalid-input]="!!confirmError"
+      />
+      <div *ngIf="confirmError" class="field-error">{{ confirmError }}</div>
+    </div>
+
+    <div class="dialog-buttons">
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        styleClass="cancel-btn p-button-text"
+        (click)="displayChangePassword = false"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        label="Save"
+        styleClass="save-btn"
+        [disabled]="!isFormValid()"
+      ></button>
+    </div>
+
+    <!-- NEW: global error at the bottom -->
+    <div *ngIf="changeError" class="field-error global-error">
+      {{ changeError }}
+    </div>
+  </form>
+</p-dialog>

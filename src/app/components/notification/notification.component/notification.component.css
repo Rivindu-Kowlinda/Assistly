@@ -1,69 +1,175 @@
 .notification-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 10000;
-    min-width: 300px;
-    max-width: 500px;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: slideIn 0.3s ease-out;
-  }
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  min-width: 320px;
+  max-width: 450px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
 
+.notification-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.notification-content::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.notification-message {
+  flex: 1;
+  margin-right: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+.notification-close {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.notification-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+.notification-close:active {
+  transform: scale(0.95);
+}
+
+/* Enhanced color schemes with gradients */
+.notification-info {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+}
+
+.notification-success {
+  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+}
+
+.notification-warning {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+}
+
+.notification-error {
+  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+}
+
+/* Enhanced animations */
+@keyframes slideIn {
+  0% {
+    transform: translateX(120%) scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(-8px) scale(1.02);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Add slide out animation for when notification is removed */
+.notification-container.fade-out {
+  animation: slideOut 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
+
+@keyframes slideOut {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: translateX(20%) scale(0.95);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(120%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .notification-container {
+    top: 15px;
+    right: 15px;
+    left: 15px;
+    min-width: unset;
+    max-width: unset;
+    margin: 0;
+  }
+  
   .notification-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    color: white;
+    padding: 14px 16px;
   }
-
+  
   .notification-message {
-    flex: 1;
+    font-size: 13px;
     margin-right: 12px;
   }
-
+  
   .notification-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
   }
+}
 
-  .notification-close:hover {
-    opacity: 0.8;
-  }
+/* Additional visual enhancements */
+.notification-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  pointer-events: none;
+  border-radius: inherit;
+}
 
-  .notification-info {
-    background-color: #2196F3;
-  }
+/* Subtle pulsing effect for error notifications */
+.notification-error {
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), errorPulse 2s ease-in-out infinite;
+}
 
-  .notification-success {
-    background-color: #4CAF50;
+@keyframes errorPulse {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   }
-
-  .notification-warning {
-    background-color: #FF9800;
+  50% {
+    box-shadow: 0 10px 30px rgba(244, 67, 54, 0.4);
   }
-
-  .notification-error {
-    background-color: #F44336;
-  }
-
-  @keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
+}

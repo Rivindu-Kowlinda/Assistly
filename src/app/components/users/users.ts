@@ -38,6 +38,32 @@ interface User {
   deletedBy?: string;
 }
 
+interface CreateUserForm {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+  balancePoints: number;
+  monthlyAllocation: number;
+}
+
+interface FormValidation {
+  username: { touched: boolean; invalid: boolean };
+  password: { touched: boolean; invalid: boolean };
+  confirmPassword: { touched: boolean; invalid: boolean };
+  role: { touched: boolean; invalid: boolean };
+  balancePoints: { touched: boolean; invalid: boolean };
+  monthlyAllocation: { touched: boolean; invalid: boolean };
+}
+
+interface EditFormValidation {
+  username: { touched: boolean; invalid: boolean };
+  newPassword: { touched: boolean; invalid: boolean };
+  confirmNewPassword: { touched: boolean; invalid: boolean };
+  role: { touched: boolean; invalid: boolean };
+  monthlyAllocation: { touched: boolean; invalid: boolean };
+}
+
 @Component({
   selector: 'users',
   templateUrl: 'users.html',
@@ -79,13 +105,38 @@ export class TableFilterBasicDemo implements OnInit {
   isEditingMode = false;
 
   displayCreateUserDialog = false;
-  newUser = {
+  newUser: CreateUserForm = {
     username: '',
     password: '',
+    confirmPassword: '',
     role: '',
     balancePoints: 0,
     monthlyAllocation: 0
   };
+
+  // Form validation states
+  createFormValidation: FormValidation = {
+    username: { touched: false, invalid: false },
+    password: { touched: false, invalid: false },
+    confirmPassword: { touched: false, invalid: false },
+    role: { touched: false, invalid: false },
+    balancePoints: { touched: false, invalid: false },
+    monthlyAllocation: { touched: false, invalid: false }
+  };
+
+  editFormValidation: EditFormValidation = {
+    username: { touched: false, invalid: false },
+    newPassword: { touched: false, invalid: false },
+    confirmNewPassword: { touched: false, invalid: false },
+    role: { touched: false, invalid: false },
+    monthlyAllocation: { touched: false, invalid: false }
+  };
+
+  // Password confirmation for edit mode
+  confirmNewPassword: string = '';
+
+  // Current logged in user (you'll need to get this from your auth service)
+  currentUserUsername: string = 'admin'; // Replace with actual current user
 
   // Fixed Role label map to handle both uppercase and lowercase
   roleLabelMap: { [key: string]: string } = {
@@ -93,7 +144,6 @@ export class TableFilterBasicDemo implements OnInit {
     MID: 'Mid',
     SENIOR: 'Senior',
     ADMIN: 'Admin',
-    // Add fallback for lowercase versions if needed
     junior: 'Junior',
     mid: 'Mid',
     senior: 'Senior',
@@ -107,9 +157,8 @@ export class TableFilterBasicDemo implements OnInit {
   ) {}
 
   ngOnInit() {
-    // FIXED: Updated roles array to use uppercase values that match backend
     this.roles = [
-      { label: 'Junior', value: 'JUNIOR' }, // Fixed: Changed from 'Junior' to 'JUNIOR'
+      { label: 'Junior', value: 'JUNIOR' },
       { label: 'Mid',    value: 'MID'    },
       { label: 'Senior', value: 'SENIOR' },
       { label: 'Admin',  value: 'ADMIN'  }
@@ -121,18 +170,187 @@ export class TableFilterBasicDemo implements OnInit {
     return this.customers.length > 0 && this.customers.every(customer => customer.role === 'ADMIN');
   }
 
+  // Check if current user can delete the selected user
+  canDeleteUser(): boolean {
+    if (!this.selectedUser) return false;
+    return this.selectedUser.username !== this.currentUserUsername;
+  }
+
+  // Helper methods to check password validity for visual styling
+  isCreatePasswordInvalid(): boolean {
+    return this.newUser.password.length > 0 && this.newUser.password.length < 6;
+  }
+
+  isCreateConfirmPasswordInvalid(): boolean {
+    return this.newUser.confirmPassword.length > 0 && 
+           (this.newUser.confirmPassword !== this.newUser.password || this.newUser.confirmPassword.length < 6);
+  }
+
+  isEditPasswordInvalid(): boolean {
+    if (!this.editingUser?.newPassword) return false;
+    return this.editingUser.newPassword.length > 0 && this.editingUser.newPassword.length < 6;
+  }
+
+  isEditConfirmPasswordInvalid(): boolean {
+    if (!this.editingUser?.newPassword || !this.confirmNewPassword) return false;
+    return this.confirmNewPassword.length > 0 && 
+           (this.confirmNewPassword !== this.editingUser.newPassword || this.confirmNewPassword.length < 6);
+  }
+
+  // Check if we should show confirm password field in edit mode
+  shouldShowConfirmPasswordInEdit(): boolean {
+    return this.editingUser?.newPassword !== undefined && this.editingUser.newPassword.length > 0;
+  }
+
+  // Validation methods for create form
+  validateCreateUsername(): void {
+    this.createFormValidation.username.touched = true;
+    this.createFormValidation.username.invalid = !this.newUser.username.trim();
+  }
+
+  validateCreatePassword(): void {
+    this.createFormValidation.password.touched = true;
+    this.createFormValidation.password.invalid = this.newUser.password.length < 6;
+  }
+
+  validateCreateConfirmPassword(): void {
+    this.createFormValidation.confirmPassword.touched = true;
+    this.createFormValidation.confirmPassword.invalid = 
+      this.newUser.password !== this.newUser.confirmPassword || this.newUser.confirmPassword.length < 6;
+  }
+
+  validateCreateRole(): void {
+    this.createFormValidation.role.touched = true;
+    this.createFormValidation.role.invalid = !this.newUser.role;
+  }
+
+  validateCreateBalancePoints(): void {
+    if (this.newUser.role !== 'ADMIN') {
+      this.createFormValidation.balancePoints.touched = true;
+      this.createFormValidation.balancePoints.invalid = this.newUser.balancePoints < 0;
+    }
+  }
+
+  validateCreateMonthlyAllocation(): void {
+    if (this.newUser.role !== 'ADMIN') {
+      this.createFormValidation.monthlyAllocation.touched = true;
+      this.createFormValidation.monthlyAllocation.invalid = this.newUser.monthlyAllocation < 0;
+    }
+  }
+
+  // Validation methods for edit form
+  validateEditUsername(): void {
+    if (!this.editingUser) return;
+    this.editFormValidation.username.touched = true;
+    this.editFormValidation.username.invalid = !this.editingUser.username?.trim();
+  }
+
+  validateEditPassword(): void {
+    if (!this.editingUser) return;
+    this.editFormValidation.newPassword.touched = true;
+    if (this.editingUser.newPassword && this.editingUser.newPassword.trim()) {
+      this.editFormValidation.newPassword.invalid = this.editingUser.newPassword.length < 6;
+    } else {
+      this.editFormValidation.newPassword.invalid = false;
+    }
+  }
+
+  validateEditConfirmPassword(): void {
+    this.editFormValidation.confirmNewPassword.touched = true;
+    if (this.editingUser?.newPassword && this.editingUser.newPassword.trim()) {
+      this.editFormValidation.confirmNewPassword.invalid = 
+        this.editingUser.newPassword !== this.confirmNewPassword || this.confirmNewPassword.length < 6;
+    } else {
+      this.editFormValidation.confirmNewPassword.invalid = false;
+    }
+  }
+
+  validateEditRole(): void {
+    if (!this.editingUser) return;
+    this.editFormValidation.role.touched = true;
+    this.editFormValidation.role.invalid = !this.editingUser.role;
+  }
+
+  validateEditMonthlyAllocation(): void {
+    if (!this.editingUser || this.editingUser.role === 'ADMIN') return;
+    this.editFormValidation.monthlyAllocation.touched = true;
+    this.editFormValidation.monthlyAllocation.invalid = (this.editingUser.monthlyAllocation || 0) < 0;
+  }
+
+  // Check if create form is valid
+  isCreateFormValid(): boolean {
+    const isUsernameValid = this.newUser.username.trim() !== '';
+    const isPasswordValid = this.newUser.password.length >= 6;
+    const isConfirmPasswordValid = this.newUser.password === this.newUser.confirmPassword && this.newUser.confirmPassword.length >= 6;
+    const isRoleValid = this.newUser.role !== '';
+    
+    let isBalanceValid = true;
+    let isAllocationValid = true;
+    
+    if (this.newUser.role !== 'ADMIN') {
+      isBalanceValid = this.newUser.balancePoints >= 0;
+      isAllocationValid = this.newUser.monthlyAllocation >= 0;
+    }
+
+    return isUsernameValid && isPasswordValid && isConfirmPasswordValid && isRoleValid && isBalanceValid && isAllocationValid;
+  }
+
+  // Check if edit form is valid
+  isEditFormValid(): boolean {
+    if (!this.editingUser) return false;
+    
+    const isUsernameValid = this.editingUser.username?.trim() !== '';
+    const isRoleValid = this.editingUser.role !== '';
+    
+    let isPasswordValid = true;
+    let isConfirmPasswordValid = true;
+    
+    if (this.editingUser.newPassword && this.editingUser.newPassword.trim()) {
+      isPasswordValid = this.editingUser.newPassword.length >= 6;
+      isConfirmPasswordValid = this.editingUser.newPassword === this.confirmNewPassword && this.confirmNewPassword.length >= 6;
+    }
+    
+    let isAllocationValid = true;
+    if (this.editingUser.role !== 'ADMIN') {
+      isAllocationValid = (this.editingUser.monthlyAllocation || 0) >= 0;
+    }
+
+    return isUsernameValid && isRoleValid && isPasswordValid && isConfirmPasswordValid && isAllocationValid;
+  }
+
   openCreateUserDialog() {
     this.newUser = {
       username: '',
       password: '',
-      role: this.roles[0].value, // This will now be 'JUNIOR'
+      confirmPassword: '',
+      role: this.roles[0].value,
       balancePoints: 0,
       monthlyAllocation: 0
     };
+    
+    // Reset validation state
+    this.createFormValidation = {
+      username: { touched: false, invalid: false },
+      password: { touched: false, invalid: false },
+      confirmPassword: { touched: false, invalid: false },
+      role: { touched: false, invalid: false },
+      balancePoints: { touched: false, invalid: false },
+      monthlyAllocation: { touched: false, invalid: false }
+    };
+    
     this.displayCreateUserDialog = true;
   }
 
   saveNewUser() {
+    if (!this.isCreateFormValid()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please fill all required fields correctly'
+      });
+      return;
+    }
+
     const payload = {
       username: this.newUser.username,
       password: this.newUser.password,
@@ -157,13 +375,6 @@ export class TableFilterBasicDemo implements OnInit {
           }
         ];
         this.displayCreateUserDialog = false;
-        this.newUser = {
-          username: '',
-          password: '',
-          role: this.roles[0].value,
-          balancePoints: 0,
-          monthlyAllocation: 0
-        };
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
@@ -219,14 +430,13 @@ export class TableFilterBasicDemo implements OnInit {
     table.clear();
   }
 
-  // FIXED: Updated getRoleSeverity to handle JUNIOR properly and provide fallback
   getRoleSeverity(role: string) {
     switch (role.toUpperCase()) {
       case 'ADMIN': return 'danger';
       case 'SENIOR': return 'success';
       case 'MID': return 'warn';
-      case 'JUNIOR': return 'info'; // This should now work correctly
-      default: return 'info'; // Changed from null to 'info' as fallback
+      case 'JUNIOR': return 'info';
+      default: return 'info';
     }
   }
 
@@ -249,7 +459,18 @@ export class TableFilterBasicDemo implements OnInit {
         password: '',
         newPassword: ''
       };
+      this.confirmNewPassword = '';
       this.isEditingMode = false;
+      
+      // Reset edit form validation
+      this.editFormValidation = {
+        username: { touched: false, invalid: false },
+        newPassword: { touched: false, invalid: false },
+        confirmNewPassword: { touched: false, invalid: false },
+        role: { touched: false, invalid: false },
+        monthlyAllocation: { touched: false, invalid: false }
+      };
+      
       this.displayUserDialog = true;
     }, 50);
   }
@@ -270,8 +491,19 @@ export class TableFilterBasicDemo implements OnInit {
         password: '',
         newPassword: ''
       };
+      this.confirmNewPassword = '';
+      
+      // Reset validation state
+      this.editFormValidation = {
+        username: { touched: false, invalid: false },
+        newPassword: { touched: false, invalid: false },
+        confirmNewPassword: { touched: false, invalid: false },
+        role: { touched: false, invalid: false },
+        monthlyAllocation: { touched: false, invalid: false }
+      };
     } else if (this.editingUser) {
       this.editingUser.newPassword = '';
+      this.confirmNewPassword = '';
     }
   }
 
@@ -280,9 +512,19 @@ export class TableFilterBasicDemo implements OnInit {
     this.selectedUser = null;
     this.editingUser = null;
     this.isEditingMode = false;
+    this.confirmNewPassword = '';
   }
 
   saveChanges() {
+    if (!this.isEditFormValid()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please fill all required fields correctly'
+      });
+      return;
+    }
+
     if (this.editingUser && this.selectedUser) {
       const updatedUser: any = {
         id: this.selectedUser.id,
@@ -328,6 +570,15 @@ export class TableFilterBasicDemo implements OnInit {
   confirmDeleteUser() {
     if (!this.selectedUser) return;
 
+    if (!this.canDeleteUser()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Delete Not Allowed',
+        detail: 'You cannot delete your own account'
+      });
+      return;
+    }
+
     this.confirmationService.confirm({
       message: `Are you sure you want to delete user "${this.selectedUser.username}"? This action will soft delete the user and they won't be able to login.`,
       header: 'Confirm User Deletion',
@@ -349,7 +600,6 @@ export class TableFilterBasicDemo implements OnInit {
 
     this.userService.softDeleteUser(this.selectedUser.id).subscribe({
       next: (response) => {
-        // Remove user from the list
         this.customers = this.customers.filter(user => user.id !== this.selectedUser!.id);
         
         this.messageService.add({

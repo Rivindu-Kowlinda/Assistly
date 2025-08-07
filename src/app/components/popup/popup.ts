@@ -151,7 +151,7 @@ export class Popup implements AfterViewChecked, OnDestroy {
     }
   }
 
-  // Helper method to process message content and extract images
+  // ✅ ENHANCED: Helper method to process message content and extract images
   processMessageContent(content: string): { text: string; images: string[] } {
     if (!content) return { text: '', images: [] };
     
@@ -164,8 +164,20 @@ export class Popup implements AfterViewChecked, OnDestroy {
       images.push(match[1]);
     }
     
-    // Remove HTML img tags and return clean text
-    const text = content.replace(/<img[^>]*>/g, '').trim();
+    // Remove ALL HTML tags, not just img tags
+    // This will handle image-wrapper divs, br tags, and any other HTML
+    let text = content
+      .replace(/<[^>]*>/g, '') // Remove all HTML tags
+      .replace(/&nbsp;/g, ' ') // Replace HTML entities
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim(); // Remove leading/trailing whitespace
+    
+    // Remove extra whitespace that might be left after HTML removal
+    text = text.replace(/\s+/g, ' ').trim();
     
     return { text, images };
   }

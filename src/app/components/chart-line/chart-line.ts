@@ -12,6 +12,7 @@ interface RangeOption {
   selector: 'chart-line',
   standalone: true,
   imports: [CommonModule, FormsModule, ChartModule],
+  styleUrls: ['./chart-line.css'],
   templateUrl: './chart-line.html'
 })
 export class ChartLine implements OnChanges {

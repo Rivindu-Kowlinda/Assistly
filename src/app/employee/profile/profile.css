@@ -27,7 +27,6 @@ app-sidebar {
   padding: 2rem;
   border-radius: 8px;
   margin-top: 20px;
-  
 }
 
 .profile-wrapper {
@@ -309,4 +308,89 @@ app-sidebar {
     font-size: 1.1rem;
     padding: 0.5rem 1rem;
   }
+}
+
+/* Required‐field star */
+.required-star {
+  color: #dc2626;
+  margin-left: 0.25rem;
+}
+
+/* Invalid input styling */
+.invalid-input {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+}
+
+/* Field error text */
+.field-error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Change Password button */
+:host ::ng-deep .change-pw-btn {
+  margin-top: 1rem !important;
+  background: transparent !important;
+  border: 2px solid #3b82f6 !important;
+  color: #3b82f6 !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+:host ::ng-deep .change-pw-btn:hover {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
+/* Dialog footer buttons — blue */
+.cancel-btn {
+  color: #2563eb !important;
+}
+.save-btn {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: white !important;
+}
+
+/* Layout for dialog fields */
+.password-dialog .field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.password-dialog .field label {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+.password-dialog .field input {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+/* Buttons container */
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Global error message under the form */
+.global-error {
+  margin-top: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* — FORCE LOGOUT & CHANGE-PW BUTTONS TO IDENTICAL WIDTH & PREVENT WRAP — */
+:host ::ng-deep .logout-btn,
+:host ::ng-deep .change-pw-btn {
+  width: 200px !important;    /* adjust this value as needed */
+  box-sizing: border-box;     /* include padding in width */
+  white-space: nowrap !important;
 }

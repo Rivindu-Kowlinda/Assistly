@@ -8,6 +8,7 @@
   height: 100vh;
   background-color: white;
   font-family: 'Poppins', sans-serif;
+  position: relative;
 }
 
 .login-left {
@@ -82,10 +83,29 @@
   gap: 20px;
 }
 
+/* =========================
+   FORM INPUT STYLES
+========================= */
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 label {
   color: #333;
   font-size: 14px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.required-star {
+  color: #e74c3c;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 input {
@@ -99,6 +119,25 @@ input {
 input:focus {
   outline: none;
   border-color: #0a53f0;
+}
+
+/* Error state for inputs */
+input.ng-invalid.ng-touched {
+  border-color: #e74c3c;
+  background-color: #fdf2f2;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error-icon {
+  font-size: 14px;
 }
 
 button {

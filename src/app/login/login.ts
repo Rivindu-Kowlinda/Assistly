@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -14,9 +15,13 @@ import { AuthService } from '../services/auth.service';
 export class Login {
   loginForm: FormGroup;
   isLoading = false;
-  errorMessage = '';
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+    private notificationService: NotificationService
+  ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required]
@@ -24,41 +29,44 @@ export class Login {
   }
 
   onLogin(): void {
+    this.markFormGroupTouched();
+
     if (this.loginForm.valid) {
       this.isLoading = true;
-      this.errorMessage = '';
-      
       console.log('Login attempt started');
-      
+
       this.auth.login(this.loginForm.value).subscribe({
         next: (response) => {
           console.log('Login successful:', response);
           this.isLoading = false;
-          
+
           const role = this.auth.getRole();
           console.log('User role:', role);
-          
-          // Navigate to the correct routes based on your routing configuration
+
           if (role === 'ADMIN') {
-            console.log('Navigating to adminDashboard');
             this.router.navigate(['/adminDashboard']);
           } else if (role === 'JUNIOR' || role === 'MID' || role === 'SENIOR') {
-            console.log('Navigating to employeeDashboard');
             this.router.navigate(['/employeeDashboard']);
           } else {
             console.warn('Unknown role:', role);
-            this.errorMessage = 'Invalid role received';
+            this.notificationService.showNotification('Invalid role received', 'error');
           }
         },
         error: (error) => {
           console.error('Login failed:', error);
           this.isLoading = false;
-          this.errorMessage = 'Invalid login credentials';
+          this.notificationService.showNotification('Invalid username or password. Please try again.', 'error');
         }
       });
     } else {
       console.log('Form is invalid');
-      this.errorMessage = 'Please fill in all required fields';
     }
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.loginForm.controls).forEach(key => {
+      const control = this.loginForm.get(key);
+      control?.markAsTouched();
+    });
   }
 }

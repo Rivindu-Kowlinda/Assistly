@@ -1,12 +1,13 @@
+<!-- request.html -->
 <app-sidebar></app-sidebar>
 <div class="main-wrapper">
-  <p-stepper [value]="active">
+  <p-stepper [(value)]="active">
   
-    <!-- STEP I: Enter Request -->
-    <p-step-item [value]="0">
+    <!-- STEP 1: Enter Request -->
+    <p-step-item [value]="1">
       <p-step>Enter Request</p-step>
       <p-step-panel>
-        <ng-template #content let-activateCallback="activateCallback">
+        <ng-template #content let-activateCallback="activateCallback" let-deactivateCallback="deactivateCallback">
           <div class="flex flex-column gap-3">
             <!-- Heading input -->
             <input 
@@ -25,10 +26,10 @@
             ></textBox>
           </div>
 
-          <div class="flex py-4">
+          <div class="flex py-4 gap-2">
             <p-button 
               label="Next" 
-              (onClick)="goToNextStep(activateCallback, 1)"
+              (onClick)="goToNextStep(activateCallback, 2)"
               [disabled]="!canGoToStep2()"
             ></p-button>
           </div>
@@ -36,8 +37,8 @@
       </p-step-panel>
     </p-step-item>
 
-    <!-- STEP II: Select User -->
-    <p-step-item [value]="1">
+    <!-- STEP 2: Select User -->
+    <p-step-item [value]="2">
       <p-step>Select User</p-step>
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback" let-deactivateCallback="deactivateCallback">
@@ -54,7 +55,6 @@
             </div>
           </div>
           
-          <!-- Step 2 Validation Messages -->
           <div class="step-validation-messages" *ngIf="selectedEmployees.length === 0 || (employeeList && !employeeList.hasAffordableEmployees)">
             <div class="validation-message error" *ngIf="selectedEmployees.length === 0">
               <i class="pi pi-exclamation-triangle"></i>
@@ -66,11 +66,11 @@
             <p-button
               label="Back"
               severity="secondary"
-              (onClick)="deactivateCallback()"
+              (onClick)="goToPrevStep(deactivateCallback)"
             ></p-button>
             <p-button 
               label="Next" 
-              (onClick)="goToNextStep(activateCallback, 2)"
+              (onClick)="goToNextStep(activateCallback, 3)"
               [disabled]="!canGoToStep3()"
               [title]="!canGoToStep3() ? 'Please select affordable employees to continue' : ''"
             ></p-button>
@@ -79,8 +79,8 @@
       </p-step-panel>
     </p-step-item>
 
-    <!-- STEP III: Summary -->
-    <p-step-item [value]="2">
+    <!-- STEP 3: Summary -->
+    <p-step-item [value]="3">
       <p-step>Summary</p-step>
       <p-step-panel>
         <ng-template #content let-deactivateCallback="deactivateCallback">
@@ -152,7 +152,6 @@
             </div>
           </div>
 
-          <!-- Final Validation Messages -->
           <div class="step-validation-messages" *ngIf="!canSubmit()">
             <div class="validation-message error" *ngIf="!canAffordCurrentSelection()">
               <i class="pi pi-wallet"></i>
@@ -164,7 +163,7 @@
             <p-button 
               label="Back" 
               severity="secondary"
-              (onClick)="deactivateCallback()"
+              (onClick)="goToPrevStep(deactivateCallback)"
             ></p-button>
             <p-button 
               [label]="getSubmitButtonLabel()"

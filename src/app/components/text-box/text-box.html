@@ -18,6 +18,17 @@
         severity="secondary"
         (onClick)="triggerFileInput()"
       ></p-button>
+      
+      <!-- Conditional Clear Images Button -->
+      <p-button 
+        *ngIf="hasImages"
+        icon="pi pi-times-circle" 
+        label="Clear Images"
+        size="small"
+        severity="danger"
+        (onClick)="clearAllImages()"
+        class="ml-2"
+      ></p-button>
     </div>
 
     <!-- Rich text editor -->

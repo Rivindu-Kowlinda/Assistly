@@ -1324,3 +1324,289 @@
   color: rgba(255, 255, 255, 0.9) !important;
   margin: 0 !important;
 }
+* Validation styling */
+.invalid-field input,
+.invalid-field .p-inputtext,
+.invalid-field .p-password input,
+.invalid-field .p-select {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Required field asterisk */
+.text-red-500 {
+  color: #ef4444 !important;
+}
+
+/* Disabled button styling */
+::ng-deep .p-button:disabled {
+  background: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+}
+
+::ng-deep .p-button:disabled:hover {
+  background: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+  transform: none !important;
+}
+
+/* Fix password field validation styling */
+::ng-deep .invalid-field .p-password .p-inputtext {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
+}
+
+/* Fix select field validation styling */
+::ng-deep .invalid-field .p-select .p-select-label {
+  border-color: #ef4444 !important;
+}
+
+::ng-deep .invalid-field .p-select:not(.p-disabled):hover {
+  border-color: #ef4444 !important;
+}
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+  padding: 2rem;
+  margin: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+.form-section h3 {
+  margin: 0 0 1rem 0;
+  color: #374151;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background: #fff;
+  color: #374151;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* Invalid field styling - Red border */
+.input-field.invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
+}
+
+.input-field.invalid:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+  min-height: 1rem;
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.password-toggle:hover {
+  color: #374151;
+}
+
+.select-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 0.5rem;
+}
+
+.button-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.button-primary:hover {
+  background: #2563eb;
+}
+
+.button-primary:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.button-secondary {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.button-secondary:hover {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.validation-info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #1e40af;
+}
+
+.toggle-mode {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+      grid-template-columns: 1fr;
+  }
+}
+/* Additional CSS rules for password field validation - Add these to your existing CSS */
+
+/* Password field invalid styling - targets the actual input inside p-password */
+::ng-deep .password-field-invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
+::ng-deep .password-field-invalid:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+  background-color: white !important;
+}
+
+/* Password container invalid styling */
+::ng-deep .password-invalid .p-password .p-inputtext {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
+::ng-deep .password-invalid .p-password .p-inputtext:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+  background-color: white !important;
+}
+
+/* Override PrimeNG password wrapper styling when invalid */
+::ng-deep .password-invalid .p-password {
+  border-color: transparent !important;
+}
+
+/* Ensure password toggle button doesn't interfere */
+::ng-deep .password-invalid .p-password .p-password-toggle-mask {
+  color: #6b7280 !important;
+}
+
+/* Additional focus states for better UX */
+::ng-deep .password-invalid .p-password .p-inputtext:hover {
+  border-color: #dc2626 !important;
+}
+
+/* Make sure the validation styling is consistent across different states */
+::ng-deep .password-invalid .p-password .p-inputtext.p-focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}

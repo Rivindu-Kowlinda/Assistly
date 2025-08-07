@@ -14,6 +14,11 @@ interface UserProfileResponse {
   helpAcceptedCount: number;
 }
 
+interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword:     string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private apiUrl = 'http://localhost:8080/api/employee/profile'; 
@@ -22,5 +27,10 @@ export class UserService {
 
   getProfile(): Observable<UserProfileResponse> {
     return this.http.get<UserProfileResponse>(this.apiUrl);
+  }
+
+  // ─── New method ───
+  changePassword(payload: ChangePasswordPayload): Observable<any> {
+    return this.http.put(`${this.apiUrl}/password`, payload);
   }
 }
