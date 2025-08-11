@@ -1,4 +1,3 @@
-// request.ts - Updated for steps 1-3
 import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -36,7 +35,7 @@ export class Request {
   @ViewChild('summaryTextBox') summaryTextBox!: TextArea;
   @ViewChild('employeeListRef') employeeList!: EmployeeList;
 
-  active = 1; // Start from step 1 instead of 0
+  active = 1; 
   requestHeading = '';
   requestContent = '';
   selectedEmployees: any[] = [];
@@ -84,22 +83,18 @@ export class Request {
   }
 
   goToNextStep(activateCallback: Function, stepIndex: number) {
-    // Updated validation for steps 2 and 3 (instead of 1 and 2)
     if ((stepIndex === 2 && !this.canGoToStep2()) || (stepIndex === 3 && !this.canGoToStep3())) {
       return;
     }
     this.active = stepIndex;
     activateCallback(stepIndex);
-    // Update summary content when moving to step 3 (instead of step 2)
     if (stepIndex === 3 && this.summaryTextBox) {
-      // Use cleaned content for summary to avoid showing image wrapper code
       const cleanContent = this.requestTextBox?.getContentForSubmission() || this.requestContent;
       this.summaryTextBox.setContent(cleanContent);
     }
   }
 
   goToPrevStep(deactivateCallback: Function) {
-    // Go back from current step, minimum is step 1 (instead of 0)
     if (this.active > 1) {
       this.active--;
       deactivateCallback();
@@ -148,19 +143,17 @@ export class Request {
 
     const formData = new FormData();
     
-    // Use getContentForSubmission() instead of raw requestContent
     const cleanContent = this.requestTextBox?.getContentForSubmission() || this.requestContent;
     
     const payload = {
       heading: this.requestHeading,
-      description: cleanContent, // Use cleaned content without close buttons
+      description: cleanContent, 
       recipientIds: this.selectedEmployees.map(emp => emp.id),
       recipientUsernames: this.selectedEmployees.map(emp => emp.name),
       cost: this.selectedEmployees.reduce((sum, emp) => sum + (emp.price || 0), 0)
     };
     formData.append('data', JSON.stringify(payload));
 
-    // Get images from the text box component instead of raw DOM query
     const images = this.requestTextBox?.getImages() || [];
     images.forEach((imageSrc, i) => {
       if (imageSrc.startsWith('data:image')) {
@@ -211,7 +204,7 @@ export class Request {
     this.requestContent = '';
     this.selectedEmployees = [];
     this.userBalancePoints = 0;
-    this.active = 1; // Reset to step 1 instead of 0
+    this.active = 1; 
   }
 
   private base64ToFile(base64: string, filename: string): File {

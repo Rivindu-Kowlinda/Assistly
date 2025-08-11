@@ -1,4 +1,3 @@
-// unauthorized.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -21,12 +20,10 @@ export class UnauthorizedComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Try to get the return URL from query params
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/login';
   }
 
   goBack(): void {
-    // Use Angular's Location service for better back navigation
     this.location.back();
   }
 
@@ -35,7 +32,6 @@ export class UnauthorizedComponent implements OnInit {
   }
 
   goToDashboard(): void {
-    // Use helper methods for cleaner code
     if (this.authService.isAdmin()) {
       this.router.navigate(['/adminDashboard']);
     } else if (this.authService.isEmployee()) {

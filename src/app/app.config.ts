@@ -1,4 +1,3 @@
-// src/app/app.config.ts
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { HttpClientModule }                      from '@angular/common/http';
 import { provideRouter }                         from '@angular/router';
@@ -16,15 +15,13 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
 
-    // ← classic module provider: absolutely sure HttpClient is in the root injector
     importProvidersFrom(HttpClientModule),
 
-    // ← your standalone HttpClient + functional interceptors
     provideHttpClient(
-      withFetch(), // Enable Fetch API support
+      withFetch(), 
       withInterceptors([ 
-        authValidationInterceptor, // Validate tokens first
-        TokenInterceptor           // Then add tokens to requests
+        authValidationInterceptor, 
+        TokenInterceptor          
       ])
     ),
 

@@ -76,10 +76,10 @@ export class AdminDashboard implements OnInit {
       const reqRows: TableRow[] = res.requests.map(r => ({
         id: r.id,
         requestName: r.heading,
-        recipientUsernames: r.requestName, // swapped
+        recipientUsernames: r.requestName, 
         type: 'Request',
         dateTime: new Date(r.createdAt),
-        userName: r.recipientUsernames, // swapped
+        userName: r.recipientUsernames, 
         status: normalizeStatus(r.status),
         price: r.cost
       }));
@@ -87,10 +87,10 @@ export class AdminDashboard implements OnInit {
       const respRows: TableRow[] = res.responses.map(r => ({
         id: r.id,
         requestName: r.heading,
-        recipientUsernames: r.requestName, // swapped
+        recipientUsernames: r.requestName, 
         type: 'Response',
         dateTime: new Date(r.createdAt),
-        userName: r.recipientUsernames, // swapped
+        userName: r.recipientUsernames,
         status: normalizeStatus(r.status),
         price: r.cost
       }));
@@ -124,6 +124,5 @@ export class AdminDashboard implements OnInit {
       tgt.closest('.p-select') ||
       tgt.closest('.p-columnfilter')
     ) return;
-    // Optional: open modal or navigate
   }
 }

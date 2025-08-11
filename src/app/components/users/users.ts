@@ -18,7 +18,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-
 import { UserService, ApiUser } from '../../services/user.service';
 
 interface User {
@@ -95,15 +94,12 @@ export class TableFilterBasicDemo implements OnInit {
   customers: User[] = [];
   roles: any[] = [];
   loading = true;
-
   selectedRole: any = null;
   searchTerm: string = '';
-
   displayUserDialog = false;
   selectedUser: User | null = null;
   editingUser: User | null = null;
   isEditingMode = false;
-
   displayCreateUserDialog = false;
   newUser: CreateUserForm = {
     username: '',
@@ -113,8 +109,6 @@ export class TableFilterBasicDemo implements OnInit {
     balancePoints: 0,
     monthlyAllocation: 0
   };
-
-  // Form validation states
   createFormValidation: FormValidation = {
     username: { touched: false, invalid: false },
     password: { touched: false, invalid: false },
@@ -123,7 +117,6 @@ export class TableFilterBasicDemo implements OnInit {
     balancePoints: { touched: false, invalid: false },
     monthlyAllocation: { touched: false, invalid: false }
   };
-
   editFormValidation: EditFormValidation = {
     username: { touched: false, invalid: false },
     newPassword: { touched: false, invalid: false },
@@ -131,14 +124,8 @@ export class TableFilterBasicDemo implements OnInit {
     role: { touched: false, invalid: false },
     monthlyAllocation: { touched: false, invalid: false }
   };
-
-  // Password confirmation for edit mode
   confirmNewPassword: string = '';
-
-  // Current logged in user (you'll need to get this from your auth service)
-  currentUserUsername: string = 'admin'; // Replace with actual current user
-
-  // Fixed Role label map to handle both uppercase and lowercase
+  currentUserUsername: string = 'admin';
   roleLabelMap: { [key: string]: string } = {
     JUNIOR: 'Junior',
     MID: 'Mid',
@@ -159,9 +146,9 @@ export class TableFilterBasicDemo implements OnInit {
   ngOnInit() {
     this.roles = [
       { label: 'Junior', value: 'JUNIOR' },
-      { label: 'Mid',    value: 'MID'    },
+      { label: 'Mid', value: 'MID' },
       { label: 'Senior', value: 'SENIOR' },
-      { label: 'Admin',  value: 'ADMIN'  }
+      { label: 'Admin', value: 'ADMIN' }
     ];
     this.loadUsersFromAPI();
   }
@@ -170,20 +157,17 @@ export class TableFilterBasicDemo implements OnInit {
     return this.customers.length > 0 && this.customers.every(customer => customer.role === 'ADMIN');
   }
 
-  // Check if current user can delete the selected user
   canDeleteUser(): boolean {
     if (!this.selectedUser) return false;
     return this.selectedUser.username !== this.currentUserUsername;
   }
 
-  // Helper methods to check password validity for visual styling
   isCreatePasswordInvalid(): boolean {
     return this.newUser.password.length > 0 && this.newUser.password.length < 6;
   }
 
   isCreateConfirmPasswordInvalid(): boolean {
-    return this.newUser.confirmPassword.length > 0 && 
-           (this.newUser.confirmPassword !== this.newUser.password || this.newUser.confirmPassword.length < 6);
+    return this.newUser.confirmPassword.length > 0 && (this.newUser.confirmPassword !== this.newUser.password || this.newUser.confirmPassword.length < 6);
   }
 
   isEditPasswordInvalid(): boolean {
@@ -193,16 +177,13 @@ export class TableFilterBasicDemo implements OnInit {
 
   isEditConfirmPasswordInvalid(): boolean {
     if (!this.editingUser?.newPassword || !this.confirmNewPassword) return false;
-    return this.confirmNewPassword.length > 0 && 
-           (this.confirmNewPassword !== this.editingUser.newPassword || this.confirmNewPassword.length < 6);
+    return this.confirmNewPassword.length > 0 && (this.confirmNewPassword !== this.editingUser.newPassword || this.confirmNewPassword.length < 6);
   }
 
-  // Check if we should show confirm password field in edit mode
   shouldShowConfirmPasswordInEdit(): boolean {
     return this.editingUser?.newPassword !== undefined && this.editingUser.newPassword.length > 0;
   }
 
-  // Validation methods for create form
   validateCreateUsername(): void {
     this.createFormValidation.username.touched = true;
     this.createFormValidation.username.invalid = !this.newUser.username.trim();
@@ -215,8 +196,7 @@ export class TableFilterBasicDemo implements OnInit {
 
   validateCreateConfirmPassword(): void {
     this.createFormValidation.confirmPassword.touched = true;
-    this.createFormValidation.confirmPassword.invalid = 
-      this.newUser.password !== this.newUser.confirmPassword || this.newUser.confirmPassword.length < 6;
+    this.createFormValidation.confirmPassword.invalid = this.newUser.password !== this.newUser.confirmPassword || this.newUser.confirmPassword.length < 6;
   }
 
   validateCreateRole(): void {
@@ -238,7 +218,6 @@ export class TableFilterBasicDemo implements OnInit {
     }
   }
 
-  // Validation methods for edit form
   validateEditUsername(): void {
     if (!this.editingUser) return;
     this.editFormValidation.username.touched = true;
@@ -258,8 +237,7 @@ export class TableFilterBasicDemo implements OnInit {
   validateEditConfirmPassword(): void {
     this.editFormValidation.confirmNewPassword.touched = true;
     if (this.editingUser?.newPassword && this.editingUser.newPassword.trim()) {
-      this.editFormValidation.confirmNewPassword.invalid = 
-        this.editingUser.newPassword !== this.confirmNewPassword || this.confirmNewPassword.length < 6;
+      this.editFormValidation.confirmNewPassword.invalid = this.editingUser.newPassword !== this.confirmNewPassword || this.confirmNewPassword.length < 6;
     } else {
       this.editFormValidation.confirmNewPassword.invalid = false;
     }
@@ -277,44 +255,34 @@ export class TableFilterBasicDemo implements OnInit {
     this.editFormValidation.monthlyAllocation.invalid = (this.editingUser.monthlyAllocation || 0) < 0;
   }
 
-  // Check if create form is valid
   isCreateFormValid(): boolean {
     const isUsernameValid = this.newUser.username.trim() !== '';
     const isPasswordValid = this.newUser.password.length >= 6;
     const isConfirmPasswordValid = this.newUser.password === this.newUser.confirmPassword && this.newUser.confirmPassword.length >= 6;
     const isRoleValid = this.newUser.role !== '';
-    
     let isBalanceValid = true;
     let isAllocationValid = true;
-    
     if (this.newUser.role !== 'ADMIN') {
       isBalanceValid = this.newUser.balancePoints >= 0;
       isAllocationValid = this.newUser.monthlyAllocation >= 0;
     }
-
     return isUsernameValid && isPasswordValid && isConfirmPasswordValid && isRoleValid && isBalanceValid && isAllocationValid;
   }
 
-  // Check if edit form is valid
   isEditFormValid(): boolean {
     if (!this.editingUser) return false;
-    
     const isUsernameValid = this.editingUser.username?.trim() !== '';
     const isRoleValid = this.editingUser.role !== '';
-    
     let isPasswordValid = true;
     let isConfirmPasswordValid = true;
-    
     if (this.editingUser.newPassword && this.editingUser.newPassword.trim()) {
       isPasswordValid = this.editingUser.newPassword.length >= 6;
       isConfirmPasswordValid = this.editingUser.newPassword === this.confirmNewPassword && this.confirmNewPassword.length >= 6;
     }
-    
     let isAllocationValid = true;
     if (this.editingUser.role !== 'ADMIN') {
       isAllocationValid = (this.editingUser.monthlyAllocation || 0) >= 0;
     }
-
     return isUsernameValid && isRoleValid && isPasswordValid && isConfirmPasswordValid && isAllocationValid;
   }
 
@@ -327,8 +295,6 @@ export class TableFilterBasicDemo implements OnInit {
       balancePoints: 0,
       monthlyAllocation: 0
     };
-    
-    // Reset validation state
     this.createFormValidation = {
       username: { touched: false, invalid: false },
       password: { touched: false, invalid: false },
@@ -337,57 +303,39 @@ export class TableFilterBasicDemo implements OnInit {
       balancePoints: { touched: false, invalid: false },
       monthlyAllocation: { touched: false, invalid: false }
     };
-    
     this.displayCreateUserDialog = true;
   }
 
   saveNewUser() {
     if (!this.isCreateFormValid()) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Validation Error',
-        detail: 'Please fill all required fields correctly'
-      });
+      this.messageService.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields correctly' });
       return;
     }
-
     const payload = {
       username: this.newUser.username,
       password: this.newUser.password,
-      role: [ this.newUser.role ],
+      role: [this.newUser.role],
       balancePoints: this.newUser.role === 'ADMIN' ? 0 : this.newUser.balancePoints,
       monthlyAllocation: this.newUser.role === 'ADMIN' ? 0 : this.newUser.monthlyAllocation
     };
-
     this.userService.createUser(payload).subscribe({
       next: created => {
-        this.customers = [
-          ...this.customers,
-          {
-            id: created.id,
-            name: created.username,
-            username: created.username,
-            password: created.password,
-            role: created.role[0],
-            price: created.balancePoints.toString(),
-            monthlyAllocation: created.monthlyAllocation,
-            newPassword: ''
-          }
-        ];
+        this.customers = [...this.customers, {
+          id: created.id,
+          name: created.username,
+          username: created.username,
+          password: created.password,
+          role: created.role[0],
+          price: created.balancePoints.toString(),
+          monthlyAllocation: created.monthlyAllocation,
+          newPassword: ''
+        }];
         this.displayCreateUserDialog = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'User created successfully'
-        });
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User created successfully' });
       },
       error: err => {
         console.error('Create user failed', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to create user'
-        });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create user' });
       }
     });
   }
@@ -414,14 +362,10 @@ export class TableFilterBasicDemo implements OnInit {
         }));
         this.loading = false;
       },
-      error: (err) => {
+      error: err => {
         console.error('Failed to fetch users:', err);
         this.loading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load users'
-        });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load users' });
       }
     });
   }
@@ -461,8 +405,6 @@ export class TableFilterBasicDemo implements OnInit {
       };
       this.confirmNewPassword = '';
       this.isEditingMode = false;
-      
-      // Reset edit form validation
       this.editFormValidation = {
         username: { touched: false, invalid: false },
         newPassword: { touched: false, invalid: false },
@@ -470,7 +412,6 @@ export class TableFilterBasicDemo implements OnInit {
         role: { touched: false, invalid: false },
         monthlyAllocation: { touched: false, invalid: false }
       };
-      
       this.displayUserDialog = true;
     }, 50);
   }
@@ -492,8 +433,6 @@ export class TableFilterBasicDemo implements OnInit {
         newPassword: ''
       };
       this.confirmNewPassword = '';
-      
-      // Reset validation state
       this.editFormValidation = {
         username: { touched: false, invalid: false },
         newPassword: { touched: false, invalid: false },
@@ -517,14 +456,9 @@ export class TableFilterBasicDemo implements OnInit {
 
   saveChanges() {
     if (!this.isEditFormValid()) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Validation Error',
-        detail: 'Please fill all required fields correctly'
-      });
+      this.messageService.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields correctly' });
       return;
     }
-
     if (this.editingUser && this.selectedUser) {
       const updatedUser: any = {
         id: this.selectedUser.id,
@@ -536,11 +470,9 @@ export class TableFilterBasicDemo implements OnInit {
         helpPendingCount: this.selectedUser.helpPendingCount ?? 0,
         helpAcceptedCount: this.selectedUser.helpAcceptedCount ?? 0
       };
-
       if (this.editingUser.newPassword?.trim()) {
         updatedUser.password = this.editingUser.newPassword.trim();
       }
-
       this.userService.updateUser(updatedUser).subscribe({
         next: () => {
           this.selectedUser!.username = updatedUser.username;
@@ -549,19 +481,11 @@ export class TableFilterBasicDemo implements OnInit {
           this.selectedUser!.price = updatedUser.balancePoints.toString();
           this.updateUserInList();
           this.isEditingMode = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'User updated successfully'
-          });
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User updated successfully' });
         },
         error: err => {
           console.error('Failed to update user:', err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update user'
-          });
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update user' });
         }
       });
     }
@@ -569,16 +493,10 @@ export class TableFilterBasicDemo implements OnInit {
 
   confirmDeleteUser() {
     if (!this.selectedUser) return;
-
     if (!this.canDeleteUser()) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Delete Not Allowed',
-        detail: 'You cannot delete your own account'
-      });
+      this.messageService.add({ severity: 'error', summary: 'Delete Not Allowed', detail: 'You cannot delete your own account' });
       return;
     }
-
     this.confirmationService.confirm({
       message: `Are you sure you want to delete user "${this.selectedUser.username}"? This action will soft delete the user and they won't be able to login.`,
       header: 'Confirm User Deletion',
@@ -597,34 +515,21 @@ export class TableFilterBasicDemo implements OnInit {
 
   deleteUser() {
     if (!this.selectedUser) return;
-
     this.userService.softDeleteUser(this.selectedUser.id).subscribe({
-      next: (response) => {
+      next: response => {
         this.customers = this.customers.filter(user => user.id !== this.selectedUser!.id);
-        
-        this.messageService.add({
-          severity: 'success',
-          summary: 'User Deleted',
-          detail: `User "${response.deletedUser}" has been successfully deleted`
-        });
-        
+        this.messageService.add({ severity: 'success', summary: 'User Deleted', detail: `User "${response.deletedUser}" has been successfully deleted` });
         this.closeDialog();
       },
-      error: (err) => {
+      error: err => {
         console.error('Failed to delete user:', err);
         let errorMessage = 'Failed to delete user';
-        
         if (err.error?.message) {
           errorMessage = err.error.message;
         } else if (err.status === 400) {
           errorMessage = 'Cannot delete this user. You may be trying to delete your own account.';
         }
-        
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Delete Failed',
-          detail: errorMessage
-        });
+        this.messageService.add({ severity: 'error', summary: 'Delete Failed', detail: errorMessage });
       }
     });
   }

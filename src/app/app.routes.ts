@@ -12,7 +12,6 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
 import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-    // Public routes (no guard needed)
     {
         path: "login",
         component: Login
@@ -21,8 +20,6 @@ export const routes: Routes = [
         path: "unauthorized",
         component: UnauthorizedComponent
     },
-    
-    // Employee routes - accessible by JUNIOR, MID, and SENIOR roles
     {
         path: "employeeDashboard",
         component: EmployeeDashboard,
@@ -47,8 +44,6 @@ export const routes: Routes = [
         canActivate: [RoleGuard],
         data: { expectedRole: ['JUNIOR', 'MID', 'SENIOR'] }
     },
-    
-    // Admin routes - accessible by ADMIN role only
     {
         path: "adminDashboard",
         component: AdminDashboard,
@@ -73,8 +68,6 @@ export const routes: Routes = [
         canActivate: [RoleGuard],
         data: { expectedRole: 'ADMIN' }
     },
-    
-    // Alias routes for shorter URLs (optional)
     {
         path: "employee",
         redirectTo: "/employeeDashboard",
@@ -85,8 +78,6 @@ export const routes: Routes = [
         redirectTo: "/adminDashboard", 
         pathMatch: "full"
     },
-    
-    // Fallback routes
     { 
         path: '', 
         redirectTo: '/login', 

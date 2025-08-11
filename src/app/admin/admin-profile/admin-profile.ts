@@ -16,8 +16,6 @@ import { UserService, UserProfile } from '../../services/user.admin.service';
 })
 export class AdminProfile implements OnInit {
   user: UserProfile | null = null;
-
-  // role label map for display
   roleLabelMap: Record<string, string> = {
     'ADMIN':  'Admin',
     'JUNIOR': 'Junior',
