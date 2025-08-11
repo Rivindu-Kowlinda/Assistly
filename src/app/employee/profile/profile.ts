@@ -44,7 +44,6 @@ export class Profile implements OnInit {
   newTouched     = false;
   confirmTouched = false;
 
-  // Now allow null so we can reset to null
   currentError: string | null = null;
   newError:     string | null = null;
   confirmError: string | null = null;
@@ -97,7 +96,6 @@ export class Profile implements OnInit {
     this.newTouched       = false;
     this.confirmTouched   = false;
 
-    // reset all errors to null
     this.currentError = null;
     this.newError     = null;
     this.confirmError = null;
@@ -108,6 +106,8 @@ export class Profile implements OnInit {
     if (field === 'current') {
       this.currentTouched = true;
       this.validateCurrent();
+      // Revalidate new password when current password changes
+      if (this.newTouched) this.validateNew();
     }
     if (field === 'new') {
       this.newTouched = true;
@@ -131,6 +131,8 @@ export class Profile implements OnInit {
       this.newError = 'New password is required';
     } else if (this.newPassword.length < 6) {
       this.newError = 'Password must be at least 6 characters';
+    } else if (this.currentPassword && this.newPassword === this.currentPassword) {
+      this.newError = 'New password must be different from current password';
     } else {
       this.newError = null;
     }
@@ -152,6 +154,7 @@ export class Profile implements OnInit {
     return (
       !!this.currentPassword &&
       this.newPassword.length >= 6 &&
+      this.newPassword !== this.currentPassword &&
       this.confirmPassword === this.newPassword &&
       !this.currentError &&
       !this.newError &&
